@@ -1,0 +1,54 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  name: theme-organization
+spec:
+  displayName: Organization
+  author:
+    name: MSIEFA
+    website: https://msiefa.org
+  description: 本主题为社团组织等官网主题，由机魂社（MSIEFA.ORG）开发。
+  logo: https://msiefa.org/logo.png
+  homepage: https://msiefa.org
+  repo: https://github.com/bi1kbu/halo-themes-org
+  issues: https://github.com/bi1kbu/halo-themes-org/issues
+  # 关联设置表单（settings.yaml 的 metadata.name）
+  settingName: halo-theme-settings
+  # 设置持久化的 ConfigMap 名称（可自定义，但需与 settingName 成对出现）
+  configMapName: halo-theme-config
+  customTemplates:
+    post:
+      - name: 默认文章
+        description: 左正文右目录，适配绝大多数场景
+        file: post.html
+      - name: 公告
+        description: 无目录，含文件编号解析与公告元信息区
+        file: post-announcement.html
+    category:
+      - name: 默认分类
+        description: 通用分类列表（含子分类入口 + 文章标题列表）
+        file: category.html
+      - name: 项目聚合页
+        description: 卡片式项目入口（封面取分类封面）
+        file: category-projects.html
+      - name: 单项目介绍页
+        description: 每行一个条目（左头图右信息）
+        file: category-project.html
+      - name: 动态分类页
+        description: 模块化多栏（单/双/三栏组合）
+        file: category-news.html
+    page:
+      - name: 默认单页
+        description: 通用内容页（正文排版为主）
+        file: page.html
+      - name: 概括
+        description: 左目录(H2)分节切换 + 锚点分享
+        file: page-outline.html
+      - name: 历史
+        description: 适配时间轴插件字号与间距
+        file: page-history.html
+  version: 1.0.0
+  requires: "2.0.0"
+  license:
+    - name: MIT
+      url: https://opensource.org/licenses/MIT
