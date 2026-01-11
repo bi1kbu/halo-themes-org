@@ -1,0 +1,68 @@
+<header class="site-header" th:with="menu=${menuFinder.getPrimary()}">
+  <div class="container header-inner">
+    <a class="brand" href="/">
+      <img
+        th:if="${theme.config.global.logo_type == 'image'} and ${not #strings.isEmpty(site.logo)}"
+        th:src="${site.logo}"
+        th:alt="${site.title}"
+        class="brand-logo"
+      />
+      <span
+        th:if="${theme.config.global.logo_type == 'text'} or ${#strings.isEmpty(site.logo)}"
+        class="brand-title"
+        th:text="${site.title}"
+      ></span>
+    </a>
+    <nav class="site-nav" th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}">
+      <ul class="nav-list">
+        <li class="nav-item" th:each="menuItem : ${menu.menuItems}">
+          <a
+            class="nav-link"
+            th:href="@{${menuItem.status.href}}"
+            th:text="${menuItem.status.displayName}"
+            th:target="${menuItem.spec.target?.value}"
+          ></a>
+          <ul class="nav-sublist" th:if="${not #lists.isEmpty(menuItem.children)}">
+            <li class="nav-subitem" th:each="childMenuItem : ${menuItem.children}">
+              <a
+                class="nav-sublink"
+                th:href="@{${childMenuItem.status.href}}"
+                th:text="${childMenuItem.status.displayName}"
+                th:target="${childMenuItem.spec.target?.value}"
+              ></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button
+        th:if="${theme.config.global.show_search_button}"
+        type="button"
+        class="btn-ghost"
+        aria-disabled="true"
+        title="Search (placeholder)"
+      >
+        Search
+      </button>
+      <button
+        th:if="${theme.config.global.show_color_toggle}"
+        type="button"
+        class="btn-ghost"
+        aria-disabled="true"
+        title="Theme (placeholder)"
+      >
+        Theme
+      </button>
+      <button
+        th:if="${theme.config.global.show_login_button}"
+        type="button"
+        class="btn-ghost"
+        aria-disabled="true"
+        title="Login (placeholder)"
+      >
+        Login
+      </button>
+    </div>
+  </div>
+</header>

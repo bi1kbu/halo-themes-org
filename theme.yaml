@@ -21,6 +21,9 @@ spec:
       - name: 默认文章
         description: 左正文右目录，适配绝大多数场景
         file: post.html
+      - name: 文档
+        description: 兼容旧模板名称（暂用默认文章）
+        file: post.html
       - name: 公告
         description: 无目录，含文件编号解析与公告元信息区
         file: post-announcement.html
@@ -28,6 +31,12 @@ spec:
       - name: 默认分类
         description: 通用分类列表（含子分类入口 + 文章标题列表）
         file: category.html
+      - name: 项目分类介绍页
+        description: 兼容旧模板名称（卡片式项目入口）
+        file: category-projects.html
+      - name: 单项目归档介绍页
+        description: 兼容旧模板名称（每行一个条目）
+        file: category-project.html
       - name: 项目聚合页
         description: 卡片式项目入口（封面取分类封面）
         file: category-projects.html
@@ -38,6 +47,9 @@ spec:
         description: 模块化多栏（单/双/三栏组合）
         file: category-news.html
     page:
+      - name: 单页
+        description: 兼容旧模板名称（通用内容页）
+        file: page.html
       - name: 默认单页
         description: 通用内容页（正文排版为主）
         file: page.html

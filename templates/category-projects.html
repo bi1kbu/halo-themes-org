@@ -1,0 +1,14 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-category-projects')}"
+>
+  <th:block th:fragment="content">
+    <section class="content-block">
+      <header class="content-header">
+        <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
+      </header>
+      <div class="content-body">Projects placeholder</div>
+    </section>
+  </th:block>
+</html>

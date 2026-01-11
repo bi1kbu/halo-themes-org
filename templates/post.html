@@ -1,0 +1,18 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = ${post.spec.title} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-post')}"
+>
+  <th:block th:fragment="content">
+    <article class="content-block">
+      <header class="content-header">
+        <h1 class="content-title" th:text="${post.spec.title}"></h1>
+        <div class="content-meta">
+          <span th:if="${post.owner != null}" th:text="${post.owner.displayName}"></span>
+          <span th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+        </div>
+      </header>
+      <div class="content-body" th:utext="${post.content.content}"></div>
+    </article>
+  </th:block>
+</html>

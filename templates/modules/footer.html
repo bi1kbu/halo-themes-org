@@ -1,0 +1,14 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <div class="footer-title" th:text="${site.title}"></div>
+      <div
+        class="footer-desc"
+        th:text="${#strings.isEmpty(theme.config.global.footer_text) ? '' : theme.config.global.footer_text}"
+      ></div>
+    </div>
+    <div class="footer-meta">
+      <span th:text="|© ${#dates.format(#dates.createNow(), 'yyyy')} ${site.title}|"></span>
+    </div>
+  </div>
+</footer>

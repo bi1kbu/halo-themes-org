@@ -139,7 +139,7 @@ globalRules:
 milestones:
   - id: M0
     name: 仓库骨架可运行
-    是否完成: 待开始
+    是否完成: 已完成
     goal: 交付“可打开但可留空”的最小主题骨架（含 Header/Footer/菜单），不要求首页功能。
     acceptance:
       - 主题切换后访问首页/文章/分类/自定义页均能打开（允许空白内容区，但禁止空白页/报错）。
@@ -147,7 +147,7 @@ milestones:
     tasks:
       - id: M0-T1
         title: 规划目录结构
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 创建 templates/ 与 static/ 的基础结构（含 modules/、assets/ 等）。
           - 明确公共模块拆分策略（base/layout/header/footer）。
@@ -156,7 +156,7 @@ milestones:
           - "static/"
       - id: M0-T2
         title: 落地最小模板（index/post/category/page）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 新增首页模板 index.html，内容区可留空（仅占位）。
           - 实现 post.html/category.html/page.html 的最小可渲染版本。
@@ -168,7 +168,7 @@ milestones:
           - "templates/page.html"
       - id: M0-T3
         title: Header/Footer/菜单栏与按钮占位（不接功能）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - Header 接入菜单栏（按 Halo 默认菜单能力），保证主导航可用。
           - 预留按钮但无需功能：搜索、明暗切换、登录（仅 UI 占位/禁用态）。
@@ -179,7 +179,7 @@ milestones:
           - "static/assets/theme.css"
       - id: M0-T4
         title: 新增主题设置表单 settings.yaml
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 新增 settings.yaml，metadata.name 必须为 halo-theme-settings（与 theme.yaml 对齐）。
           - 增加基础字段占位：站点名称、Logo、主题色、暗色模式、导航开关等。
@@ -187,7 +187,7 @@ milestones:
           - "settings.yaml"
       - id: M0-T5
         title: 约定静态资源入口与版本策略
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 约定 CSS/JS 的路径与命名（例如 static/assets/theme.css / theme.js）。
           - 约定 vendor 资源存放位置（例如 static/vendor/）。
@@ -196,7 +196,7 @@ milestones:
           - "static/vendor/"
       - id: M0-T6
         title: 注册自定义模板到 theme.yaml（占位）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 在 theme.yaml 的 customTemplates 中补齐将要实现的模板（先注册，文件可在后续里程碑落地）。
           - 页面：默认/概括/历史；文章：默认/公告；分类：默认/项目聚合/单项目/动态模块化。

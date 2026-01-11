@@ -1,0 +1,14 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = 'Links - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-links')}"
+>
+  <th:block th:fragment="content">
+    <section class="content-block">
+      <header class="content-header">
+        <h1 class="content-title">Links</h1>
+      </header>
+      <div class="content-body">Links placeholder</div>
+    </section>
+  </th:block>
+</html>

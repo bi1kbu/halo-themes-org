@@ -1,0 +1,14 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = ${singlePage.spec.title} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-single')}"
+>
+  <th:block th:fragment="content">
+    <article class="content-block">
+      <header class="content-header">
+        <h1 class="content-title" th:text="${singlePage.spec.title}"></h1>
+      </header>
+      <div class="content-body" th:utext="${singlePage.content.content}"></div>
+    </article>
+  </th:block>
+</html>
