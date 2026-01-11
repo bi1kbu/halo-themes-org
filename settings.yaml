@@ -65,32 +65,49 @@ spec:
     - group: projects
       label: 项目聚合页
       formSchema:
-        - $formkit: select
-          name: card_columns
-          label: 卡片每行数量
-          help: 仅影响 PC 端显示（移动端自动收敛为单列）
-          value: "3"
-          options:
-            - label: 1
-              value: "1"
-            - label: 2
-              value: "2"
-            - label: 3
-              value: "3"
-        - $formkit: select
-          name: card_ratio
-          label: 卡片封面比例
-          help: 默认 4:3
-          value: "4:3"
-          options:
-            - label: 1:1
-              value: "1:1"
-            - label: 4:3
-              value: "4:3"
-            - label: 3:4
-              value: "3:4"
-            - label: 16:9
-              value: "16:9"
+        - $formkit: text
+          name: page_title
+          label: 分类聚合页标题
+          value: ""
+        - $formkit: array
+          name: rows
+          label: 行配置
+          value: []
+          itemLabels:
+            - type: text
+              label: $value.card_count
+          children:
+            - $formkit: number
+              name: card_count
+              label: 卡片数量
+              value: 3
+              min: 1
+              max: 3
+            - $formkit: number
+              name: height_factor
+              label: 高度因子
+              help: 行内卡片高度 = (行宽度 / 卡片数量) × 高度因子
+              value: 1.2
+              step: 0.1
+              min: 0.6
+              max: 2
+            - $formkit: list
+              name: categories
+              label: 行内分类
+              help: 顺序决定卡片顺序；少于卡片数量则空白占位，多余则忽略
+              value: []
+              itemType: string
+              addLabel: 添加分类
+              upControl: true
+              downControl: true
+              removeControl: true
+              children:
+                - $formkit: categorySelect
+                  index: "$index"
+                  label: 分类
+                  validation: required
+                  validation-label: 分类
+                  value: ""
     - group: news
       label: 动态分类页
       formSchema:

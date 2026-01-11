@@ -6,40 +6,58 @@
   <th:block th:fragment="content">
     <section
       class="content-block category-projects"
-      th:with="childNames=${category.spec.children},
-               childCategories=${childNames != null ? categoryFinder.getByNames(childNames) : null},
-               projectConfig=${theme.config.projects},
-               columns=${projectConfig != null && projectConfig.card_columns != null ? projectConfig.card_columns : '3'},
-               ratio=${projectConfig != null && projectConfig.card_ratio != null ? projectConfig.card_ratio : '4:3'},
-               ratioValue=${#strings.replace(ratio, ':', ' / ')}"
+      th:with="projectConfig=${theme.config.projects},
+               pageTitle=${projectConfig != null ? projectConfig.page_title : ''},
+               rows=${projectConfig != null ? projectConfig.rows : null}"
     >
       <header class="content-header">
-        <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
+        <h1 class="content-title" th:text="${#strings.isEmpty(pageTitle) ? category.spec.displayName : pageTitle}"></h1>
         <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
       </header>
-      <div
-        class="project-grid"
-        th:if="${childCategories != null and #lists.size(childCategories) > 0}"
-        th:style="|--project-columns: ${columns}; --project-card-ratio: ${ratioValue};|"
-      >
-        <a
-          class="project-card"
-          th:each="child : ${childCategories}"
-          th:href="@{${child.status.permalink}}"
+      <div class="project-rows" th:if="${rows != null and #lists.size(rows) > 0}">
+        <div
+          class="project-row"
+          th:each="row : ${rows}"
+          th:with="cardCountRaw=${row.card_count != null ? row.card_count : 3},
+                   cardCount=${cardCountRaw instanceof T(java.lang.Number) ? cardCountRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(cardCountRaw))},
+                   heightFactor=${row.height_factor != null ? row.height_factor : 1.2},
+                   selected=${row.categories},
+                   total=${selected != null ? #lists.size(selected) : 0},
+                   visibleCount=${total > cardCount ? cardCount : total},
+                   placeholderCount=${cardCount - visibleCount}"
+          th:style="|--project-columns: ${cardCount}; --project-height-factor: ${heightFactor};|"
         >
+          <a
+            class="project-card"
+            th:each="item, iterStat : ${selected}"
+            th:with="itemIsMap=${item instanceof T(java.util.Map)},
+                     categoryValue=${itemIsMap ? item['category'] : item},
+                     categoryCandidate=${categoryValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || categoryValue instanceof T(java.util.Map) ? categoryValue : null},
+                     categoryName=${categoryCandidate != null && categoryCandidate.metadata != null ? categoryCandidate.metadata.name : categoryValue},
+                     categoryList=${categoryCandidate == null && categoryName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(categoryName))) : null},
+                     category=${categoryCandidate != null ? categoryCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)}"
+            th:if="${iterStat.index < cardCount and category != null}"
+            th:href="@{${category.status.permalink}}"
+          >
+            <div
+              class="project-card-cover"
+              th:if="${not #strings.isEmpty(category.spec.cover)}"
+              th:style="|background-image: url('${category.spec.cover}');|"
+            ></div>
+            <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
+            <div class="project-card-body">
+              <div class="project-card-title" th:text="${category.spec.displayName}"></div>
+              <div class="project-card-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></div>
+            </div>
+          </a>
           <div
-            class="project-card-cover"
-            th:if="${not #strings.isEmpty(child.spec.cover)}"
-            th:style="|background-image: url('${child.spec.cover}');|"
+            class="project-card is-placeholder"
+            th:if="${placeholderCount > 0}"
+            th:each="i : ${#numbers.sequence(1, placeholderCount)}"
           ></div>
-          <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(child.spec.cover)}"></div>
-          <div class="project-card-body">
-            <div class="project-card-title" th:text="${child.spec.displayName}"></div>
-            <div class="project-card-desc" th:if="${not #strings.isEmpty(child.spec.description)}" th:text="${child.spec.description}"></div>
-          </div>
-        </a>
+        </div>
       </div>
-      <div class="empty-state" th:if="${childCategories == null or #lists.size(childCategories) == 0}">
+      <div class="empty-state" th:if="${rows == null or #lists.size(rows) == 0}">
         No projects
       </div>
     </section>

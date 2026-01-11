@@ -387,7 +387,7 @@ milestones:
     tasks:
       - id: M5-T1
         title: 默认分类模板（category-default）
-        是否完成: 进行中
+        是否完成: 已完成
         details:
           - 显示分类名称与描述（如有）。
           - 若有子分类：展示子分类列表/入口（简洁列表或小卡片）。
