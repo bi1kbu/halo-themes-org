@@ -4,11 +4,21 @@
   th:replace="~{modules/layout :: layout(title = ${singlePage.spec.title} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-outline')}"
 >
   <th:block th:fragment="content">
-    <section class="content-block">
-      <header class="content-header">
+    <section class="content-block outline-page" data-outline-page>
+      <header class="content-header outline-header">
         <h1 class="content-title" th:text="${singlePage.spec.title}"></h1>
       </header>
-      <div class="content-body" th:utext="${singlePage.content.content}"></div>
+      <div class="outline-layout">
+        <nav
+          class="outline-nav"
+          data-outline-nav
+          th:with="cover=${singlePage.spec.cover}"
+          th:style="${!#strings.isEmpty(cover) ? '--outline-panel-image: url(''' + cover + ''');' : null}"
+        >
+          <ul class="outline-nav-list" data-outline-list></ul>
+        </nav>
+        <div class="content-body outline-content" data-outline-content th:utext="${singlePage.content.content}"></div>
+      </div>
     </section>
   </th:block>
 </html>

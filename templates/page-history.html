@@ -4,11 +4,11 @@
   th:replace="~{modules/layout :: layout(title = ${singlePage.spec.title} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-history')}"
 >
   <th:block th:fragment="content">
-    <section class="content-block">
+    <section class="content-block history-page">
       <header class="content-header">
         <h1 class="content-title" th:text="${singlePage.spec.title}"></h1>
       </header>
-      <div class="content-body" th:utext="${singlePage.content.content}"></div>
+      <div class="content-body timeline-body" th:utext="${singlePage.content.content}"></div>
     </section>
   </th:block>
 </html>

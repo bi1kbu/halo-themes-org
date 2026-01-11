@@ -47,11 +47,11 @@ spec:
         description: 模块化多栏（单/双/三栏组合）
         file: category-news.html
     page:
-      - name: 单页
-        description: 兼容旧模板名称（通用内容页）
+      - name: 加入我们
+        description: 加入我们页面（通用内容页）
         file: page.html
-      - name: 默认单页
-        description: 通用内容页（正文排版为主）
+      - name: 默认模板
+        description: 通用内容页（合并单页/默认单页/默认模板）
         file: page.html
       - name: 概括
         description: 左目录(H2)分节切换 + 锚点分享
