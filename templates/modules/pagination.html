@@ -1,0 +1,46 @@
+<div th:fragment="pagination(context,prevUrl,nextUrl,totalPages,page,hasPrevious,hasNext)">
+  <nav class="pagination" th:if="${hasPrevious || hasNext}">
+    <a
+      class="pagination-link"
+      th:href="@{${prevUrl}}"
+      th:classappend="${!hasPrevious ? ' is-disabled' : ''}"
+    >上一页</a>
+    <div class="pagination-select">
+      <span>第</span>
+      <select
+        class="pagination-dropdown"
+        data-pagination-select
+        th:attr="data-context=${context}"
+      >
+        <option
+          th:each="i : ${#numbers.sequence(1,totalPages)}"
+          th:selected="${i == page}"
+          th:value="${i}"
+          th:text="|${i} / ${totalPages}|"
+        ></option>
+      </select>
+      <span>页</span>
+    </div>
+    <a
+      class="pagination-link"
+      th:href="@{${nextUrl}}"
+      th:classappend="${!hasNext ? ' is-disabled' : ''}"
+    >下一页</a>
+  </nav>
+
+  <script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", () => {
+      const paginationSelect = document.querySelector("[data-pagination-select]");
+
+      if (!paginationSelect) {
+        return;
+      }
+
+      paginationSelect.addEventListener("change", (event) => {
+        const selectedPage = event.target.value;
+        const base = paginationSelect.dataset.context || "/";
+        window.location.href = `${base}page/${selectedPage}`;
+      });
+    });
+  </script>
+</div>

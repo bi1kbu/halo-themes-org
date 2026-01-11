@@ -4,11 +4,30 @@
   th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-category-project')}"
 >
   <th:block th:fragment="content">
-    <section class="content-block">
+    <section class="content-block category-project">
       <header class="content-header">
         <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
+        <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
       </header>
-      <div class="content-body">Project items placeholder</div>
+      <div class="project-list" th:if="${posts.total gt 0}">
+        <article class="project-item" th:each="post : ${posts.items}">
+          <a class="project-item-cover" th:href="@{${post.status.permalink}}">
+            <img th:if="${not #strings.isEmpty(post.spec.cover)}" th:src="${post.spec.cover}" th:alt="${post.spec.title}" />
+            <div class="project-item-cover is-empty" th:if="${#strings.isEmpty(post.spec.cover)}"></div>
+          </a>
+          <div class="project-item-body">
+            <a class="project-item-title" th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+            <p class="project-item-desc" th:if="${not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}"></p>
+            <div class="project-item-meta">
+              <span th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="empty-state" th:if="${posts.total == 0}">No posts</div>
+      <div
+        th:replace="~{modules/pagination :: pagination(context = |${category.status.permalink}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+      ></div>
     </section>
   </th:block>
 </html>

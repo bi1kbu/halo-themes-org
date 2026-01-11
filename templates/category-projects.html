@@ -4,11 +4,44 @@
   th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-category-projects')}"
 >
   <th:block th:fragment="content">
-    <section class="content-block">
+    <section
+      class="content-block category-projects"
+      th:with="childNames=${category.spec.children},
+               childCategories=${childNames != null ? categoryFinder.getByNames(childNames) : null},
+               projectConfig=${theme.config.projects},
+               columns=${projectConfig != null && projectConfig.card_columns != null ? projectConfig.card_columns : '3'},
+               ratio=${projectConfig != null && projectConfig.card_ratio != null ? projectConfig.card_ratio : '4:3'},
+               ratioValue=${#strings.replace(ratio, ':', ' / ')}"
+    >
       <header class="content-header">
         <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
+        <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
       </header>
-      <div class="content-body">Projects placeholder</div>
+      <div
+        class="project-grid"
+        th:if="${childCategories != null and #lists.size(childCategories) > 0}"
+        th:style="|--project-columns: ${columns}; --project-card-ratio: ${ratioValue};|"
+      >
+        <a
+          class="project-card"
+          th:each="child : ${childCategories}"
+          th:href="@{${child.status.permalink}}"
+        >
+          <div
+            class="project-card-cover"
+            th:if="${not #strings.isEmpty(child.spec.cover)}"
+            th:style="|background-image: url('${child.spec.cover}');|"
+          ></div>
+          <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(child.spec.cover)}"></div>
+          <div class="project-card-body">
+            <div class="project-card-title" th:text="${child.spec.displayName}"></div>
+            <div class="project-card-desc" th:if="${not #strings.isEmpty(child.spec.description)}" th:text="${child.spec.description}"></div>
+          </div>
+        </a>
+      </div>
+      <div class="empty-state" th:if="${childCategories == null or #lists.size(childCategories) == 0}">
+        No projects
+      </div>
     </section>
   </th:block>
 </html>

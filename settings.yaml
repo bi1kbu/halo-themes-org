@@ -62,3 +62,88 @@ spec:
           label: 日程标签
           help: 用该标签筛选日程文章（自定义字段 eventStart/eventEnd 提供日期）
           value: ""
+    - group: projects
+      label: 项目聚合页
+      formSchema:
+        - $formkit: select
+          name: card_columns
+          label: 卡片每行数量
+          help: 仅影响 PC 端显示（移动端自动收敛为单列）
+          value: "3"
+          options:
+            - label: 1
+              value: "1"
+            - label: 2
+              value: "2"
+            - label: 3
+              value: "3"
+        - $formkit: select
+          name: card_ratio
+          label: 卡片封面比例
+          help: 默认 4:3
+          value: "4:3"
+          options:
+            - label: 1:1
+              value: "1:1"
+            - label: 4:3
+              value: "4:3"
+            - label: 3:4
+              value: "3:4"
+            - label: 16:9
+              value: "16:9"
+    - group: news
+      label: 动态分类页
+      formSchema:
+        - $formkit: array
+          name: modules
+          label: 模块配置
+          value: []
+          itemLabels:
+            - type: text
+              label: $value.layout
+          children:
+            - $formkit: select
+              name: layout
+              label: 模块布局
+              value: "1"
+              options:
+                - label: 单栏
+                  value: "1"
+                - label: 双栏
+                  value: "2"
+                - label: 三栏
+                  value: "3"
+            - $formkit: categorySelect
+              name: col1_category
+              label: 第一栏分类
+              value: ""
+            - $formkit: number
+              name: col1_limit
+              label: 第一栏数量
+              value: 6
+              min: 1
+              max: 30
+            - $formkit: categorySelect
+              if: "$value.layout === '2' || $value.layout === '3'"
+              name: col2_category
+              label: 第二栏分类
+              value: ""
+            - $formkit: number
+              if: "$value.layout === '2' || $value.layout === '3'"
+              name: col2_limit
+              label: 第二栏数量
+              value: 6
+              min: 1
+              max: 30
+            - $formkit: categorySelect
+              if: "$value.layout === '3'"
+              name: col3_category
+              label: 第三栏分类
+              value: ""
+            - $formkit: number
+              if: "$value.layout === '3'"
+              name: col3_limit
+              label: 第三栏数量
+              value: 6
+              min: 1
+              max: 30
