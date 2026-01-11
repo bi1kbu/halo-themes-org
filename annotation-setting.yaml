@@ -1,0 +1,21 @@
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: theme-organization-post-annotations
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: Post
+  formSchema:
+    - $formkit: date
+      name: eventStart
+      label: 日程开始时间
+      help: 为空则显示为未定义
+    - $formkit: date
+      name: eventEnd
+      label: 日程结束时间
+      help: 为空则显示为未定义
+    - $formkit: text
+      name: fileNumber
+      label: 文件编号
+      help: MS 文件类别文件序列号[.子文件序列号]-发表年份[/版本]

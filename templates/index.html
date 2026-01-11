@@ -4,8 +4,82 @@
   th:replace="~{modules/layout :: layout(title = ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-home')}"
 >
   <th:block th:fragment="content">
-    <section class="content-block">
-      <div class="content-placeholder">Home placeholder</div>
+    <section
+      class="content-block schedule-section"
+      data-schedule-section
+      th:with="scheduleTitle=${theme.config.home.schedule_title},
+               scheduleTagConfig=${theme.config.home.schedule_tag},
+               scheduleTag=${scheduleTagConfig instanceof T(run.halo.app.theme.finders.vo.TagVo) ? scheduleTagConfig.metadata.name : scheduleTagConfig},
+               hasTag=${!#strings.isEmpty(scheduleTag)}"
+      th:attr="data-schedule-tag=${scheduleTag}"
+    >
+      <header class="content-header schedule-header">
+        <div>
+          <h1
+            class="content-title"
+            th:text="${#strings.isEmpty(scheduleTitle) ? 'Schedule' : scheduleTitle}"
+          ></h1>
+          <p
+            class="content-desc"
+            th:text="${#strings.isEmpty(scheduleTag) ? 'Schedule tag not set' : 'Tag: ' + scheduleTag}"
+          ></p>
+        </div>
+        <div class="schedule-actions">
+          <button class="btn-ghost" type="button" data-cal-today>Today</button>
+          <button class="btn-ghost" type="button" data-cal-reset>Upcoming</button>
+        </div>
+      </header>
+
+      <div class="schedule-grid">
+        <div class="schedule-calendar" data-schedule-calendar>
+          <div class="schedule-cal-header">
+            <button class="btn-ghost" type="button" data-cal-prev>Prev</button>
+            <div class="schedule-cal-title" data-cal-title></div>
+            <button class="btn-ghost" type="button" data-cal-next>Next</button>
+          </div>
+          <div class="schedule-cal-weekdays">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+          <div class="schedule-cal-grid" data-cal-grid></div>
+        </div>
+
+        <div class="schedule-list">
+          <div class="schedule-list-header">
+            <div class="schedule-list-title" data-schedule-title>Upcoming</div>
+            <div class="schedule-list-subtitle" data-schedule-subtitle></div>
+          </div>
+          <ul class="schedule-items" data-schedule-body></ul>
+          <div class="schedule-empty" data-schedule-empty>No schedule</div>
+        </div>
+      </div>
+
+      <div
+        class="schedule-data"
+        data-schedule-items
+        th:if="${hasTag}"
+        th:with="schedulePosts=${postFinder.listByTag(1,200,scheduleTag)}"
+      >
+        <div
+          class="schedule-data-item"
+          data-schedule-item
+          th:each="post : ${schedulePosts.items}"
+          th:with="annotations=${post.metadata.annotations},
+                   eventStart=${annotations != null ? annotations['eventStart'] : null},
+                   eventEnd=${annotations != null ? annotations['eventEnd'] : null}"
+          th:attr="data-title=${post.spec.title},
+                   data-start=${eventStart},
+                   data-end=${eventEnd},
+                   data-author=${post.owner != null ? post.owner.displayName : ''},
+                   data-summary=${post.status?.excerpt ?: ''},
+                   data-link=${post.status?.permalink ?: ''}"
+        ></div>
+      </div>
     </section>
   </th:block>
 </html>

@@ -279,7 +279,7 @@ milestones:
 
   - id: M3
     name: 首页日程表模块（核心特色功能）
-    是否完成: 待开始
+    是否完成: 已完成
     dependsOn: [M2]
     goal: 首页提供“左日历 + 右日程列表”联动；日程来自“指定标签的文章”，日期/范围来自文章自定义字段（支持单日与范围）。
     acceptance:
@@ -290,7 +290,7 @@ milestones:
     tasks:
       - id: M3-T0
         title: 确定日程标签与数据可见性规则（决策点）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 在 settings.yaml 中配置“日程标签”（tag slug/name 二选一，以 Halo 可查询方式为准）。
           - 在 settings.yaml 中配置自定义字段键名：eventStart/eventEnd（默认值按 scheduleSystem.recommended）。
@@ -300,7 +300,7 @@ milestones:
           - "settings.yaml"
       - id: M3-T1
         title: 首页日历组件（纯前端交互）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 月视图：切换月份、点击日期、标记有日程的日期（点/底线即可，避免花哨）。
           - 周起始按约定（周一/周日）实现并在设置中可选（如需要）。
@@ -309,7 +309,7 @@ milestones:
           - "static/assets/theme.js"
       - id: M3-T2
         title: 右侧日程列表（默认从今天开始）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 默认展示：从今天开始的日程，逐日分组或连续列表（二选一，保持简约）。
           - 切换日期：展示该日，支持回到默认模式。
@@ -320,7 +320,7 @@ milestones:
           - "static/assets/theme.js"
       - id: M3-T3
         title: 一年窗口与性能边界
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 未来 1 年窗口：以“今天 + 365 天”为界。
           - 数据量边界：给出合理上限（例如 1000 条以内），超出做截断与提示。
