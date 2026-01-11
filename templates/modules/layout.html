@@ -1,5 +1,9 @@
 <!doctype html>
-<html xmlns:th="https://www.thymeleaf.org" th:fragment="layout(title, content, head, bodyClass)">
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:fragment="layout(title, content, head, bodyClass)"
+  th:attr="data-scheme=${theme.config.style.color_scheme}, data-allow-scheme=${theme.config.style.enable_change_color_scheme}"
+>
   <head>
     <th:block th:replace="~{modules/base-head :: base-head(title=${title})}" />
     <th:block th:if="${head != null}">

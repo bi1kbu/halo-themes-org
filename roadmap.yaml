@@ -205,7 +205,7 @@ milestones:
 
   - id: M1
     name: 设计令牌与基础排版（全站统一基线）
-    是否完成: 待开始
+    是否完成: 已完成
     dependsOn: [M0]
     goal: 建立颜色/字体/间距/圆角/阴影/断点/排版基线，后续页面只拼组件。
     acceptance:
@@ -215,7 +215,7 @@ milestones:
     tasks:
       - id: M1-T1
         title: 定义设计令牌（CSS Variables）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 定义颜色（背景/前景/边框/强调/状态）、字体（族/字号/行高）、圆角、阴影、间距、容器宽度、断点。
           - 明确“功能优先”的视觉取舍：低饱和、低装饰、信息层级清晰。
@@ -223,7 +223,7 @@ milestones:
           - "static/assets/theme.css"
       - id: M1-T2
         title: 明暗模式（跟随系统 + 主题设置切换 + 持久化）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 默认跟随 prefers-color-scheme。
           - 主题设置提供：跟随系统/强制亮/强制暗；选择结果持久化。
@@ -233,7 +233,7 @@ milestones:
           - "settings.yaml"
       - id: M1-T3
         title: 基础排版与通用组件（按钮/卡片/表单）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 定义正文排版样式（.prose 或等价约定）。
           - 定义按钮、卡片、标签、输入框、分割线等基础组件类。
@@ -242,7 +242,7 @@ milestones:
 
   - id: M2
     name: 公共布局与导航（站点结构落地）
-    是否完成: 待开始
+    是否完成: 已完成
     dependsOn: [M1]
     goal: Header/Footer/导航一致，全站可达，移动端可用。
     acceptance:
@@ -252,7 +252,7 @@ milestones:
     tasks:
       - id: M2-T1
         title: Layout 模板拆分（base + modules）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 抽出 base/layout 模板，页面模板只关注内容区。
           - 抽出 modules：header、footer、nav、breadcrumb、pagination 等。
@@ -260,7 +260,7 @@ milestones:
           - "templates/modules/"
       - id: M2-T2
         title: 导航配置化（集中维护）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 优先通过主题设置/集中模板变量管理导航文案与链接。
           - 避免在多个模板中硬编码菜单结构。
@@ -269,7 +269,7 @@ milestones:
           - "templates/modules/header.html"
       - id: M2-T3
         title: 搜索入口占位（不绑定插件）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - Header 放置搜索按钮/输入入口（UI 先到位）。
           - 若搜索插件可用，再在 M7 中接入公开 API。

@@ -1,3 +1,0 @@
-(() => {
-  window.themeOrganization = window.themeOrganization || {};
-})();

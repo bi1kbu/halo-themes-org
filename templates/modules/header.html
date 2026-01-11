@@ -18,6 +18,7 @@
         <li class="nav-item" th:each="menuItem : ${menu.menuItems}">
           <a
             class="nav-link"
+            data-nav-link
             th:href="@{${menuItem.status.href}}"
             th:text="${menuItem.status.displayName}"
             th:target="${menuItem.spec.target?.value}"
@@ -26,6 +27,7 @@
             <li class="nav-subitem" th:each="childMenuItem : ${menuItem.children}">
               <a
                 class="nav-sublink"
+                data-nav-link
                 th:href="@{${childMenuItem.status.href}}"
                 th:text="${childMenuItem.status.displayName}"
                 th:target="${childMenuItem.spec.target?.value}"
@@ -36,6 +38,16 @@
       </ul>
     </nav>
     <div class="header-actions">
+      <button
+        class="nav-toggle"
+        type="button"
+        data-nav-toggle
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        title="Menu"
+      >
+        Menu
+      </button>
       <button
         th:if="${theme.config.global.show_search_button}"
         type="button"
@@ -49,8 +61,9 @@
         th:if="${theme.config.global.show_color_toggle}"
         type="button"
         class="btn-ghost"
-        aria-disabled="true"
-        title="Theme (placeholder)"
+        data-color-toggle
+        th:attr="aria-disabled=${theme.config.style.enable_change_color_scheme} ? 'false' : 'true'"
+        th:title="${theme.config.style.enable_change_color_scheme} ? 'Theme' : 'Theme (placeholder)'"
       >
         Theme
       </button>
@@ -65,4 +78,46 @@
       </button>
     </div>
   </div>
+  <div
+    class="nav-overlay"
+    data-nav-overlay
+    th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}"
+  ></div>
+  <aside
+    class="mobile-nav"
+    data-nav-panel
+    id="mobile-nav"
+    th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}"
+  >
+    <div class="mobile-nav-header">
+      <span class="mobile-nav-title">Menu</span>
+      <button class="nav-close" type="button" data-nav-close aria-label="Close">
+        Close
+      </button>
+    </div>
+    <nav>
+      <ul class="mobile-nav-list">
+        <li class="mobile-nav-item" th:each="menuItem : ${menu.menuItems}">
+          <a
+            class="mobile-nav-link"
+            data-nav-link
+            th:href="@{${menuItem.status.href}}"
+            th:text="${menuItem.status.displayName}"
+            th:target="${menuItem.spec.target?.value}"
+          ></a>
+          <ul class="mobile-sublist" th:if="${not #lists.isEmpty(menuItem.children)}">
+            <li class="mobile-subitem" th:each="childMenuItem : ${menuItem.children}">
+              <a
+                class="mobile-sublink"
+                data-nav-link
+                th:href="@{${childMenuItem.status.href}}"
+                th:text="${childMenuItem.status.displayName}"
+                th:target="${childMenuItem.spec.target?.value}"
+              ></a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </aside>
 </header>

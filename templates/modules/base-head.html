@@ -3,6 +3,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title th:text="${title}"></title>
-  <link rel="stylesheet" th:href="${#theme.assets('/assets/theme.css')}" />
-  <script th:src="${#theme.assets('/assets/theme.js')}" defer></script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var scheme = root.dataset.scheme || "system";
+      var allow = root.dataset.allowScheme === "true";
+      var key = "theme-organization-color-scheme";
+      var stored = allow ? localStorage.getItem(key) : null;
+      var value = stored || scheme;
+      if (value && value !== "system") {
+        root.setAttribute("data-theme", value);
+        root.style.colorScheme = value;
+      }
+    })();
+  </script>
+  <link rel="stylesheet" th:href="${#theme.assets('/theme.css')}" />
+  <script th:src="${#theme.assets('/theme.js')}" defer></script>
 </th:block>
