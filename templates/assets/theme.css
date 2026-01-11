@@ -241,13 +241,22 @@ img {
   left: 0;
   min-width: 160px;
   padding: 8px 0;
-  margin: 6px 0 0;
+  margin: 0;
   list-style: none;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   display: none;
+}
+
+.nav-sublist::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
 }
 
 .nav-item:hover .nav-sublist {
@@ -662,6 +671,10 @@ html.nav-open .mobile-nav {
   font-size: var(--org-timeline-font-size);
   line-height: var(--org-timeline-line-height);
   font-family: var(--font-sans);
+}
+
+.page-history .content-title {
+  text-align: center;
 }
 
 .schedule-section {
