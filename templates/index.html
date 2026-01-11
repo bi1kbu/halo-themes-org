@@ -21,7 +21,7 @@
           ></h1>
           <p
             class="content-desc"
-            th:text="${#strings.isEmpty(scheduleTag) ? 'Schedule tag not set' : 'Tag: ' + scheduleTag}"
+            th:text="${#strings.isEmpty(scheduleTag) ? 'Schedule tag not set' : ''}"
           ></p>
         </div>
         <div class="schedule-actions">
@@ -34,7 +34,20 @@
         <div class="schedule-calendar" data-schedule-calendar>
           <div class="schedule-cal-header">
             <button class="btn-ghost" type="button" data-cal-prev>Prev</button>
-            <div class="schedule-cal-title" data-cal-title></div>
+            <div class="schedule-cal-title-wrap">
+              <button
+                class="schedule-cal-title"
+                type="button"
+                data-cal-title
+                aria-haspopup="dialog"
+                aria-expanded="false"
+              ></button>
+              <div class="schedule-cal-picker" data-cal-picker>
+                <select class="input" data-cal-year></select>
+                <select class="input" data-cal-month></select>
+                <button class="btn-ghost" type="button" data-cal-apply>Go</button>
+              </div>
+            </div>
             <button class="btn-ghost" type="button" data-cal-next>Next</button>
           </div>
           <div class="schedule-cal-weekdays">
@@ -71,13 +84,19 @@
           th:each="post : ${schedulePosts.items}"
           th:with="annotations=${post.metadata.annotations},
                    eventStart=${annotations != null ? annotations['eventStart'] : null},
-                   eventEnd=${annotations != null ? annotations['eventEnd'] : null}"
+                   eventEnd=${annotations != null ? annotations['eventEnd'] : null},
+                   contentVo=${#strings.isEmpty(post.status.excerpt) ? postFinder.content(post.metadata.name) : null},
+                   contentHtml=${contentVo != null && contentVo.content != null ? contentVo.content : ''},
+                   contentRaw=${contentVo != null && contentVo.raw != null ? contentVo.raw : ''}"
           th:attr="data-title=${post.spec.title},
                    data-start=${eventStart},
                    data-end=${eventEnd},
+                   data-pinned=${post.spec.pinned},
                    data-author=${post.owner != null ? post.owner.displayName : ''},
-                   data-summary=${post.status?.excerpt ?: ''},
-                   data-link=${post.status?.permalink ?: ''}"
+                   data-summary=${post.status.excerpt},
+                   data-content=${contentHtml},
+                   data-raw=${contentRaw},
+                   data-link=${post.status.permalink}"
         ></div>
       </div>
     </section>

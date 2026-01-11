@@ -149,11 +149,17 @@
     const listTitle = scheduleSection.querySelector("[data-schedule-title]");
     const listSubtitle = scheduleSection.querySelector("[data-schedule-subtitle]");
     const calTitle = scheduleSection.querySelector("[data-cal-title]");
+    const calPicker = scheduleSection.querySelector("[data-cal-picker]");
+    const calYear = scheduleSection.querySelector("[data-cal-year]");
+    const calMonth = scheduleSection.querySelector("[data-cal-month]");
+    const calApply = scheduleSection.querySelector("[data-cal-apply]");
     const calGrid = scheduleSection.querySelector("[data-cal-grid]");
     const calPrev = scheduleSection.querySelector("[data-cal-prev]");
     const calNext = scheduleSection.querySelector("[data-cal-next]");
     const calToday = scheduleSection.querySelector("[data-cal-today]");
     const calReset = scheduleSection.querySelector("[data-cal-reset]");
+    const scheduleCalendar = scheduleSection.querySelector("[data-schedule-calendar]");
+    const scheduleList = scheduleSection.querySelector(".schedule-list");
     const dataItems = dataRoot
       ? Array.from(dataRoot.querySelectorAll("[data-schedule-item]"))
       : [];
@@ -178,22 +184,100 @@
       }
       return parsed;
     };
+    const startOfWeek = (date) => {
+      const copy = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const offset = (copy.getDay() + 6) % 7;
+      copy.setDate(copy.getDate() - offset);
+      copy.setHours(0, 0, 0, 0);
+      return copy;
+    };
+    const addDays = (date, days) => {
+      const copy = new Date(date);
+      copy.setDate(copy.getDate() + days);
+      return copy;
+    };
 
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const maxDate = new Date(now);
     maxDate.setDate(maxDate.getDate() + 365);
 
+    const decodeHtml = (value) => {
+      if (!value) {
+        return "";
+      }
+      const textarea = document.createElement("textarea");
+      textarea.innerHTML = value;
+      return textarea.value || "";
+    };
+
+    const normalizeText = (value) => value.replace(/\s+/g, " ").trim();
+
+    const stripHtmlText = (content) => {
+      if (!content) {
+        return "";
+      }
+      const holder = document.createElement("div");
+      holder.innerHTML = decodeHtml(content);
+      holder.querySelectorAll("script, style, noscript, template").forEach((node) => {
+        node.remove();
+      });
+      const text = normalizeText(holder.textContent || "");
+      if (!text || text === "null") {
+        return "";
+      }
+      return text;
+    };
+
+    const stripMarkdownText = (raw) => {
+      if (!raw) {
+        return "";
+      }
+      let text = raw;
+      text = text.replace(/```[\s\S]*?```/g, " ");
+      text = text.replace(/`[^`]*`/g, " ");
+      text = text.replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1");
+      text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+      text = text.replace(/^\s{0,3}#{1,6}\s*/gm, "");
+      text = text.replace(/^\s*>\s?/gm, "");
+      text = text.replace(/^\s*[-*+]\s+/gm, "");
+      text = text.replace(/^\s*\d+\.\s+/gm, "");
+      text = normalizeText(text);
+      if (!text || text === "null") {
+        return "";
+      }
+      return text;
+    };
+
+    const buildSummary = (summary, content, raw, limit = 200) => {
+      if (summary) {
+        return summary;
+      }
+      const htmlText = stripHtmlText(content) || stripHtmlText(raw);
+      const text = htmlText || stripMarkdownText(raw);
+      if (!text) {
+        return "";
+      }
+      return text.length > limit ? `${text.slice(0, limit)}...` : text;
+    };
+
     const events = dataItems
       .map((item) => {
         const startRaw = item.dataset.start;
         const endRaw = item.dataset.end;
         const start = parseDateValue(startRaw);
+        const pinned = item.dataset.pinned === "true";
+        const summary = buildSummary(
+          item.dataset.summary || "",
+          item.dataset.content || "",
+          item.dataset.raw || "",
+          200
+        );
         if (!start) {
           return {
             title: item.dataset.title || "",
             author: item.dataset.author || "",
-            summary: item.dataset.summary || "",
+            summary,
             link: item.dataset.link || "",
             start: null,
             end: null,
@@ -201,6 +285,7 @@
             endDay: null,
             timeLabel: "未定义",
             isUndated: true,
+            pinned,
           };
         }
         const end = parseDateValue(endRaw) || start;
@@ -210,11 +295,11 @@
           endDay.setTime(startDay.getTime());
         }
         const hasTime = /\d{2}:\d{2}/.test(startRaw || "");
-        const timeLabel = hasTime ? `${pad(start.getHours())}:${pad(start.getMinutes())}` : "All day";
+        const timeLabel = hasTime ? `${pad(start.getHours())}:${pad(start.getMinutes())}` : "";
         return {
           title: item.dataset.title || "",
           author: item.dataset.author || "",
-          summary: item.dataset.summary || "",
+          summary,
           link: item.dataset.link || "",
           start,
           end,
@@ -222,6 +307,7 @@
           endDay,
           timeLabel,
           isUndated: false,
+          pinned,
         };
       })
       .sort((a, b) => {
@@ -237,6 +323,19 @@
         return a.start - b.start;
       });
 
+    const nowYear = now.getFullYear();
+    let minYear = nowYear - 5;
+    let maxYear = nowYear + 5;
+    events.forEach((event) => {
+      if (event.isUndated || !event.start) {
+        return;
+      }
+      const startYear = event.start.getFullYear();
+      const endYear = event.end ? event.end.getFullYear() : startYear;
+      minYear = Math.min(minYear, startYear, endYear);
+      maxYear = Math.max(maxYear, startYear, endYear);
+    });
+
     const upcomingEvents = events.filter((event) => {
       if (event.isUndated) {
         return true;
@@ -245,6 +344,7 @@
     });
 
     const eventsByDate = new Map();
+    const pinnedDates = new Set();
     events.filter((event) => !event.isUndated).forEach((event) => {
       const cursor = new Date(event.startDay);
       while (cursor <= event.endDay) {
@@ -253,11 +353,46 @@
           eventsByDate.set(key, []);
         }
         eventsByDate.get(key).push(event);
+        if (event.pinned) {
+          pinnedDates.add(key);
+        }
         cursor.setDate(cursor.getDate() + 1);
       }
     });
 
     const formatDateLabel = (dateKey) => dateKey;
+
+    const setPickerOpen = (open) => {
+      if (!calPicker || !calTitle) {
+        return;
+      }
+      calPicker.classList.toggle("is-open", open);
+      calTitle.setAttribute("aria-expanded", open ? "true" : "false");
+    };
+
+    const updatePickerOptions = () => {
+      if (!calYear || !calMonth) {
+        return;
+      }
+      if (!calYear.options.length) {
+        for (let year = minYear; year <= maxYear; year += 1) {
+          const option = document.createElement("option");
+          option.value = String(year);
+          option.textContent = String(year);
+          calYear.appendChild(option);
+        }
+      }
+      if (!calMonth.options.length) {
+        for (let month = 1; month <= 12; month += 1) {
+          const option = document.createElement("option");
+          option.value = pad(month);
+          option.textContent = pad(month);
+          calMonth.appendChild(option);
+        }
+      }
+      calYear.value = String(viewDate.getFullYear());
+      calMonth.value = pad(viewDate.getMonth() + 1);
+    };
 
     const setEmpty = (text) => {
       if (!emptyState) {
@@ -276,11 +411,33 @@
       }
     };
 
+    const syncScheduleHeight = () => {
+      if (!scheduleCalendar || !scheduleList) {
+        return;
+      }
+      if (!window.matchMedia("(min-width: 901px)").matches) {
+        scheduleList.style.height = "";
+        scheduleList.style.maxHeight = "";
+        return;
+      }
+      const height = scheduleCalendar.offsetHeight;
+      if (!height) {
+        requestAnimationFrame(syncScheduleHeight);
+        return;
+      }
+      scheduleList.style.height = `${height}px`;
+      scheduleList.style.maxHeight = `${height}px`;
+      scheduleList.style.setProperty("--schedule-list-height", `${height}px`);
+    };
+
     const renderList = (selectedDateKey) => {
       if (!listBody) {
         return;
       }
       listBody.innerHTML = "";
+      if (scheduleList) {
+        scheduleList.setAttribute("data-list-mode", selectedDateKey ? "day" : "upcoming");
+      }
       let items = [];
       if (selectedDateKey) {
         items = events.filter(
@@ -336,6 +493,9 @@
 
         const itemEl = document.createElement("a");
         itemEl.className = "schedule-item";
+        if (event.pinned) {
+          itemEl.classList.add("is-pinned");
+        }
         if (event.link) {
           itemEl.href = event.link;
         } else {
@@ -352,15 +512,24 @@
 
         const metaEl = document.createElement("div");
         metaEl.className = "schedule-item-meta";
-        const timeEl = document.createElement("span");
-        timeEl.textContent = event.timeLabel;
-        metaEl.appendChild(timeEl);
+        if (event.timeLabel) {
+          const timeEl = document.createElement("span");
+          timeEl.textContent = event.timeLabel;
+          metaEl.appendChild(timeEl);
+        }
         if (event.author) {
           const authorEl = document.createElement("span");
           authorEl.textContent = event.author;
           metaEl.appendChild(authorEl);
         }
         itemEl.appendChild(metaEl);
+
+        if (selectedDateKey && event.summary) {
+          const summaryEl = document.createElement("div");
+          summaryEl.className = "schedule-item-summary";
+          summaryEl.textContent = event.summary;
+          itemEl.appendChild(summaryEl);
+        }
 
         if (selectedDateKey) {
           listBody.appendChild(itemEl);
@@ -372,6 +541,7 @@
 
     let selectedDateKey = null;
     let viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    let viewStartDate = startOfWeek(viewDate);
 
     const renderCalendar = () => {
       if (!calGrid || !calTitle) {
@@ -379,20 +549,13 @@
       }
       calGrid.innerHTML = "";
       calTitle.textContent = `${viewDate.getFullYear()}-${pad(viewDate.getMonth() + 1)}`;
-      const firstDay = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
-      const startOffset = (firstDay.getDay() + 6) % 7;
-      const daysInMonth = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
-      const prevMonthDays = new Date(viewDate.getFullYear(), viewDate.getMonth(), 0).getDate();
+      updatePickerOptions();
       const totalCells = 42;
+      const focusMonth = viewDate.getMonth();
+      const focusYear = viewDate.getFullYear();
 
       for (let index = 0; index < totalCells; index += 1) {
-        const dayOffset = index - startOffset + 1;
-        let cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth(), dayOffset);
-        if (dayOffset <= 0) {
-          cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, prevMonthDays + dayOffset);
-        } else if (dayOffset > daysInMonth) {
-          cellDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, dayOffset - daysInMonth);
-        }
+        const cellDate = addDays(viewStartDate, index);
 
         const dayKey = toDateKey(cellDate);
         const button = document.createElement("button");
@@ -400,7 +563,7 @@
         button.className = "schedule-day";
         button.textContent = String(cellDate.getDate());
         button.dataset.date = dayKey;
-        if (cellDate.getMonth() !== viewDate.getMonth()) {
+        if (cellDate.getMonth() !== focusMonth || cellDate.getFullYear() !== focusYear) {
           button.classList.add("is-outside");
         }
         if (dayKey === toDateKey(now)) {
@@ -408,6 +571,9 @@
         }
         if (eventsByDate.has(dayKey)) {
           button.classList.add("has-events");
+        }
+        if (pinnedDates.has(dayKey)) {
+          button.classList.add("is-pinned");
         }
         if (selectedDateKey && dayKey === selectedDateKey) {
           button.classList.add("is-selected");
@@ -423,16 +589,88 @@
           return;
         }
         selectedDateKey = target.dataset.date;
-        const selectedDate = new Date(selectedDateKey + "T00:00:00");
-        viewDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
         renderCalendar();
         renderList(selectedDateKey);
       });
     }
 
+    if (scheduleCalendar) {
+      let pendingWeekShift = 0;
+      let wheelFrame = null;
+      scheduleCalendar.addEventListener(
+        "wheel",
+        (event) => {
+          if (event.deltaY === 0) {
+            return;
+          }
+          event.preventDefault();
+          pendingWeekShift += event.deltaY > 0 ? 1 : -1;
+          if (wheelFrame) {
+            return;
+          }
+          wheelFrame = requestAnimationFrame(() => {
+            const step = pendingWeekShift;
+            pendingWeekShift = 0;
+            viewStartDate = addDays(viewStartDate, step * 7);
+            viewDate = new Date(viewStartDate.getFullYear(), viewStartDate.getMonth(), 1);
+            renderCalendar();
+            wheelFrame = null;
+          });
+        },
+        { passive: false }
+      );
+    }
+
+    if (calTitle) {
+      calTitle.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (!calPicker) {
+          return;
+        }
+        setPickerOpen(!calPicker.classList.contains("is-open"));
+      });
+    }
+
+    if (calApply) {
+      calApply.addEventListener("click", () => {
+        if (!calYear || !calMonth) {
+          return;
+        }
+        const nextYear = Number.parseInt(calYear.value, 10);
+        const nextMonth = Number.parseInt(calMonth.value, 10) - 1;
+        if (!Number.isNaN(nextYear) && !Number.isNaN(nextMonth)) {
+          viewDate = new Date(nextYear, nextMonth, 1);
+          viewStartDate = startOfWeek(viewDate);
+          if (selectedDateKey) {
+            const [selectedYear, selectedMonth] = selectedDateKey.split("-").map(Number);
+            if (selectedYear !== nextYear || selectedMonth !== nextMonth + 1) {
+              selectedDateKey = null;
+              renderList(null);
+            }
+          }
+          renderCalendar();
+        }
+        setPickerOpen(false);
+      });
+    }
+
+    document.addEventListener("click", (event) => {
+      if (!calPicker || !calTitle) {
+        return;
+      }
+      if (
+        calPicker.classList.contains("is-open") &&
+        !calPicker.contains(event.target) &&
+        !calTitle.contains(event.target)
+      ) {
+        setPickerOpen(false);
+      }
+    });
+
     if (calPrev) {
       calPrev.addEventListener("click", () => {
         viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+        viewStartDate = startOfWeek(viewDate);
         renderCalendar();
       });
     }
@@ -440,6 +678,7 @@
     if (calNext) {
       calNext.addEventListener("click", () => {
         viewDate = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+        viewStartDate = startOfWeek(viewDate);
         renderCalendar();
       });
     }
@@ -448,6 +687,7 @@
       calToday.addEventListener("click", () => {
         selectedDateKey = toDateKey(now);
         viewDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        viewStartDate = startOfWeek(viewDate);
         renderCalendar();
         renderList(selectedDateKey);
       });
@@ -461,7 +701,25 @@
       });
     }
 
+    if (scheduleCalendar && scheduleList && "ResizeObserver" in window) {
+      const observer = new ResizeObserver(() => {
+        syncScheduleHeight();
+      });
+      observer.observe(scheduleCalendar);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setPickerOpen(false);
+      }
+    });
+
     renderCalendar();
     renderList(null);
+    requestAnimationFrame(syncScheduleHeight);
+
+    window.addEventListener("resize", () => {
+      requestAnimationFrame(syncScheduleHeight);
+    });
   }
 })();
