@@ -147,6 +147,15 @@ spec:
               value: []
               multiple: true
             - $formkit: number
+              if: "$value.layout === '2'"
+              name: layout_limit
+              label: 数量
+              help: 控制右侧栏数量，并用于计算左侧展示数量
+              value: 6
+              min: 1
+              max: 30
+            - $formkit: number
+              if: "$value.layout === '1' || $value.layout === '3'"
               name: col1_limit
               label: 第一栏数量
               value: 6
@@ -163,7 +172,7 @@ spec:
               label: 第二栏分类
               value: ""
             - $formkit: number
-              if: "$value.layout === '2' || $value.layout === '3'"
+              if: "$value.layout === '3'"
               name: col2_limit
               label: 第二栏数量
               value: 6
