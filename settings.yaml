@@ -139,12 +139,24 @@ spec:
               name: col1_category
               label: 第一栏分类
               value: ""
+            - $formkit: postSelect
+              if: "$value.layout === '1'"
+              name: carousel_posts
+              label: 轮播文章
+              help: 仅单栏使用，按配置顺序展示
+              value: []
+              multiple: true
             - $formkit: number
               name: col1_limit
               label: 第一栏数量
               value: 6
               min: 1
               max: 30
+            - $formkit: checkbox
+              if: "$value.layout === '1'"
+              name: show_more
+              label: 显示了解更多按钮
+              value: true
             - $formkit: categorySelect
               if: "$value.layout === '2' || $value.layout === '3'"
               name: col2_category

@@ -13,94 +13,154 @@
         <section
           class="news-module"
           th:each="module : ${modules}"
-          th:with="layout=${module.layout != null ? module.layout : '1'}"
+          th:with="layout=${module['layout'] != null ? module['layout'] : '1'}"
           th:classappend="|layout-${layout}|"
         >
           <div class="news-columns">
             <div
-              class="news-column"
-              th:with="colConfig=${module.col1_category},
-                       colName=${colConfig instanceof T(run.halo.app.theme.finders.vo.CategoryVo) ? colConfig.metadata.name : colConfig},
-                       colTitle=${colConfig instanceof T(run.halo.app.theme.finders.vo.CategoryVo) ? colConfig.spec.displayName : ''},
-                       colLimit=${module.col1_limit != null ? module.col1_limit : 6},
-                       colPosts=${!#strings.isEmpty(colName) ? postFinder.listByCategory(1, colLimit, colName) : null},
-                       showCover=${layout == '1'},
-                       showExcerpt=${layout != '3'},
-                       showAuthor=${layout != '3'}"
-              th:if="${colPosts != null}"
+              class="news-column news-column--single"
+              th:with="colConfig=${module['col1_category']},
+                       colIsMap=${colConfig instanceof T(java.util.Map)},
+                       colValue=${colIsMap ? colConfig['category'] : colConfig},
+                       colCandidate=${colValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || colValue instanceof T(java.util.Map) ? colValue : null},
+                       colName=${colCandidate != null && colCandidate.metadata != null ? colCandidate.metadata.name : colValue},
+                       categoryList=${colCandidate == null && colName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(colName))) : null},
+                       category=${colCandidate != null ? colCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)},
+                       colMeta=${category != null ? category.metadata : null},
+                       colSpec=${category != null ? category.spec : null},
+                       colTitle=${colSpec != null ? colSpec.displayName : ''},
+                       colLimitRaw=${module['col1_limit'] != null ? module['col1_limit'] : 6},
+                       colLimit=${colLimitRaw instanceof T(java.lang.Number) ? colLimitRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(colLimitRaw))},
+                       categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
+                       colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
+                       carouselItems=${module['carousel_posts']},
+                       carouselCount=${carouselItems != null ? #lists.size(carouselItems) : 0},
+                       pinnedPosts=${colPosts != null ? colPosts.items.?[spec.pinned == true] : null},
+                       pinnedCount=${pinnedPosts != null ? #lists.size(pinnedPosts) : 0},
+                       normalPosts=${colPosts != null ? colPosts.items.?[spec.pinned != true] : null},
+                       remainingCount=${colLimit > pinnedCount ? colLimit - pinnedCount : 0},
+                       showMore=${module['show_more'] == null ? true : module['show_more']}"
             >
-              <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-items" th:if="${colPosts.total gt 0}">
-                <a
-                  class="news-item"
-                  th:each="post : ${colPosts.items}"
-                  th:href="@{${post.status.permalink}}"
-                  th:classappend="${post.spec.pinned} ? ' is-pinned' : ''"
-                >
-                  <div class="news-item-cover" th:if="${showCover and not #strings.isEmpty(post.spec.cover)}" th:style="|background-image: url('${post.spec.cover}');|"></div>
-                  <div class="news-item-cover is-empty" th:if="${showCover and #strings.isEmpty(post.spec.cover)}"></div>
-                  <div class="news-item-body">
-                    <div class="news-item-title" th:text="${post.spec.title}"></div>
-                    <div class="news-item-desc" th:if="${showExcerpt and not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}"></div>
-                    <div class="news-item-meta">
-                      <span th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
-                      <span th:if="${showAuthor and post.owner != null}" th:text="${post.owner.displayName}"></span>
-                    </div>
-                  </div>
-                </a>
+              <div class="news-column-head">
+                <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
+                <a class="news-column-more" th:if="${showMore and category != null}" th:href="@{${category.status.permalink}}">了解更多</a>
               </div>
-              <div class="empty-state" th:if="${colPosts.total == 0}">No posts</div>
+              <div class="news-feature" th:if="${colPosts != null and colPosts.total gt 0}">
+                <div class="news-carousel" th:if="${carouselItems != null and carouselCount gt 0}" data-news-carousel>
+                  <button class="news-carousel-control is-prev" type="button" data-carousel-prev aria-label="Previous">
+                    ‹
+                  </button>
+                  <button class="news-carousel-control is-next" type="button" data-carousel-next aria-label="Next">
+                    ›
+                  </button>
+                  <div class="news-carousel-track" data-carousel-track>
+                    <span class="news-carousel-data" th:each="item : ${carouselItems}" th:attr="data-id=${item}"></span>
+                  </div>
+                  <div class="news-carousel-dots" data-carousel-dots></div>
+                </div>
+                <div class="news-list" th:if="${colPosts != null and colPosts.total gt 0}">
+                  <a
+                    class="news-list-item is-pinned"
+                    th:each="post, iterStat : ${pinnedPosts}"
+                    th:if="${iterStat.index < colLimit}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <span class="news-list-title">
+                      <span class="news-list-pin">置顶</span>
+                      <span class="news-list-text" th:text="${post.spec.title}"></span>
+                    </span>
+                    <span class="news-list-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"></span>
+                  </a>
+                  <a
+                    class="news-list-item"
+                    th:each="post, iterStat : ${normalPosts}"
+                    th:if="${remainingCount > 0 and iterStat.index < remainingCount}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <span class="news-list-title">
+                      <span class="news-list-text" th:text="${post.spec.title}"></span>
+                    </span>
+                    <span class="news-list-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"></span>
+                  </a>
+                </div>
+              </div>
+              <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
             </div>
             <div
-              class="news-column"
+              class="news-column news-column--double"
+              th:with="colConfig=${module['col2_category']},
+                       colIsMap=${colConfig instanceof T(java.util.Map)},
+                       colValue=${colIsMap ? colConfig['category'] : colConfig},
+                       colCandidate=${colValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || colValue instanceof T(java.util.Map) ? colValue : null},
+                       colName=${colCandidate != null && colCandidate.metadata != null ? colCandidate.metadata.name : colValue},
+                       categoryList=${colCandidate == null && colName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(colName))) : null},
+                       category=${colCandidate != null ? colCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)},
+                       colMeta=${category != null ? category.metadata : null},
+                       colSpec=${category != null ? category.spec : null},
+                       colTitle=${colSpec != null ? colSpec.displayName : ''},
+                       colLimit=${module['col2_limit'] != null ? module['col2_limit'] : 6},
+                       categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
+                       colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
+                       pinnedPosts=${colPosts != null ? colPosts.items.?[spec.pinned == true] : null},
+                       hasPinned=${pinnedPosts != null and #lists.size(pinnedPosts) > 0},
+                       listPosts=${hasPinned ? colPosts.items.?[spec.pinned != true] : (colPosts != null ? colPosts.items : null)}"
               th:if="${layout == '2' or layout == '3'}"
-              th:with="colConfig=${module.col2_category},
-                       colName=${colConfig instanceof T(run.halo.app.theme.finders.vo.CategoryVo) ? colConfig.metadata.name : colConfig},
-                       colTitle=${colConfig instanceof T(run.halo.app.theme.finders.vo.CategoryVo) ? colConfig.spec.displayName : ''},
-                       colLimit=${module.col2_limit != null ? module.col2_limit : 6},
-                       colPosts=${!#strings.isEmpty(colName) ? postFinder.listByCategory(1, colLimit, colName) : null},
-                       showCover=${layout == '1'},
-                       showExcerpt=${layout != '3'},
-                       showAuthor=${layout != '3'}"
-              th:if="${colPosts != null}"
             >
               <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-items" th:if="${colPosts.total gt 0}">
+              <div class="news-pinned" th:if="${colPosts != null and hasPinned}">
                 <a
-                  class="news-item"
-                  th:each="post : ${colPosts.items}"
+                  class="news-pinned-item"
+                  th:each="post, iterStat : ${pinnedPosts}"
+                  th:if="${iterStat.index < 2}"
                   th:href="@{${post.status.permalink}}"
-                  th:classappend="${post.spec.pinned} ? ' is-pinned' : ''"
                 >
-                  <div class="news-item-cover" th:if="${showCover and not #strings.isEmpty(post.spec.cover)}" th:style="|background-image: url('${post.spec.cover}');|"></div>
-                  <div class="news-item-cover is-empty" th:if="${showCover and #strings.isEmpty(post.spec.cover)}"></div>
-                  <div class="news-item-body">
-                    <div class="news-item-title" th:text="${post.spec.title}"></div>
-                    <div class="news-item-desc" th:if="${showExcerpt and not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}"></div>
-                    <div class="news-item-meta">
-                      <span th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
-                      <span th:if="${showAuthor and post.owner != null}" th:text="${post.owner.displayName}"></span>
-                    </div>
+                  <div
+                    class="news-pinned-cover"
+                    th:if="${not #strings.isEmpty(post.spec.cover)}"
+                    th:style="|background-image: url('${post.spec.cover}');|"
+                  ></div>
+                  <div class="news-pinned-cover is-empty" th:if="${#strings.isEmpty(post.spec.cover)}"></div>
+                  <div class="news-pinned-body">
+                    <div class="news-pinned-title" th:text="${post.spec.title}"></div>
+                    <div class="news-pinned-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
                   </div>
                 </a>
               </div>
-              <div class="empty-state" th:if="${colPosts.total == 0}">No posts</div>
+              <div class="news-list news-list--compact" th:if="${colPosts != null and listPosts != null and #lists.size(listPosts) > 0}">
+                <a
+                  class="news-list-item"
+                  th:each="post, iterStat : ${listPosts}"
+                  th:if="${iterStat.index < colLimit}"
+                  th:href="@{${post.status.permalink}}"
+                >
+                  <span class="news-list-title" th:text="${post.spec.title}"></span>
+                  <span class="news-list-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"></span>
+                </a>
+              </div>
+              <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
             </div>
             <div
               class="news-column"
-              th:if="${layout == '3'}"
-              th:with="colConfig=${module.col3_category},
-                       colName=${colConfig instanceof T(run.halo.app.theme.finders.vo.CategoryVo) ? colConfig.metadata.name : colConfig},
-                       colTitle=${colConfig instanceof T(run.halo.app.theme.finders.vo.CategoryVo) ? colConfig.spec.displayName : ''},
-                       colLimit=${module.col3_limit != null ? module.col3_limit : 6},
-                       colPosts=${!#strings.isEmpty(colName) ? postFinder.listByCategory(1, colLimit, colName) : null},
+              th:with="colConfig=${module['col3_category']},
+                       colIsMap=${colConfig instanceof T(java.util.Map)},
+                       colValue=${colIsMap ? colConfig['category'] : colConfig},
+                       colCandidate=${colValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || colValue instanceof T(java.util.Map) ? colValue : null},
+                       colName=${colCandidate != null && colCandidate.metadata != null ? colCandidate.metadata.name : colValue},
+                       categoryList=${colCandidate == null && colName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(colName))) : null},
+                       category=${colCandidate != null ? colCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)},
+                       colMeta=${category != null ? category.metadata : null},
+                       colSpec=${category != null ? category.spec : null},
+                       colTitle=${colSpec != null ? colSpec.displayName : ''},
+                       colLimit=${module['col3_limit'] != null ? module['col3_limit'] : 6},
+                       categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
+                       colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
                        showCover=${layout == '1'},
                        showExcerpt=${layout != '3'},
                        showAuthor=${layout != '3'}"
-              th:if="${colPosts != null}"
+              th:if="${layout == '3'}"
             >
               <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-items" th:if="${colPosts.total gt 0}">
+              <div class="news-items" th:if="${colPosts != null and colPosts.total gt 0}">
                 <a
                   class="news-item"
                   th:each="post : ${colPosts.items}"
@@ -119,7 +179,7 @@
                   </div>
                 </a>
               </div>
-              <div class="empty-state" th:if="${colPosts.total == 0}">No posts</div>
+              <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
             </div>
           </div>
         </section>
