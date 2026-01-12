@@ -1071,6 +1071,96 @@ html.nav-open .mobile-nav {
   margin-bottom: var(--space-3);
 }
 
+.category-projects .project-row.is-double {
+  --project-overlay-bg: rgba(15, 17, 21, 0.75);
+  --project-overlay-text: #ffffff;
+  --project-overlay-title-size: var(--text-lg);
+  --project-overlay-desc-size: var(--text-sm);
+  --project-overlay-lines: 2;
+  --project-overlay-lines-hover: 8;
+}
+
+.category-projects .project-card--double {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / var(--project-height-factor, 1.2);
+}
+
+.category-projects .project-card--double .project-card-cover {
+  position: absolute;
+  inset: 0;
+  border-bottom: none;
+}
+
+.category-projects .project-card--double .project-card-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  max-height: 22%;
+  min-height: 68px;
+  padding: 8px 14px;
+  display: grid;
+  gap: 4px;
+  background: var(--project-overlay-bg);
+  color: var(--project-overlay-text);
+  transition: max-height 0.25s ease;
+  align-content: start;
+}
+
+.category-projects .project-card--double .project-card-overlay-title {
+  font-size: var(--project-overlay-title-size);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.category-projects .project-card--double .project-card-overlay-desc {
+  font-size: var(--project-overlay-desc-size);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: var(--project-overlay-lines);
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.category-projects .project-card--double .project-card-overlay-desc p {
+  margin: 0;
+  display: inline;
+}
+
+.category-projects .project-card--double .project-card-overlay-desc p + p::before {
+  content: "\A";
+  white-space: pre-wrap;
+}
+
+.category-projects .project-card--double .project-card-desc-heading {
+  display: inline;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.category-projects .project-card--double .project-card-desc-heading::after {
+  content: "\A";
+  white-space: pre-wrap;
+}
+
+.category-projects .project-card--double .project-card-overlay-desc strong {
+  color: #ffffff;
+}
+
+.category-projects .project-card--double:hover .project-card-overlay {
+  height: auto;
+  max-height: 80%;
+  min-height: 0;
+}
+
+.category-projects .project-card--double:hover .project-card-overlay-desc {
+  -webkit-line-clamp: var(--project-overlay-lines-hover);
+}
+
 .category-projects .project-card-action {
   margin-top: auto;
   display: flex;

@@ -862,7 +862,7 @@
   const renderCategoryIntro = () => {
     const blocks = document.querySelectorAll("[data-md-block]");
     if (!blocks.length) {
-      return;
+      return false;
     }
 
     const escapeHtml = (value) =>
@@ -906,12 +906,12 @@
       block.innerHTML = htmlParts.join("");
       block.dataset.mdRendered = "true";
     });
+    return true;
   };
 
   const initCategoryIntro = () => {
     if (document.querySelector("[data-md-block]")) {
-      renderCategoryIntro();
-      return true;
+      return renderCategoryIntro();
     }
     return false;
   };

@@ -22,11 +22,12 @@
                    cardCount=${cardCountRaw instanceof T(java.lang.Number) ? cardCountRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(cardCountRaw))},
                    heightFactor=${row.height_factor != null ? row.height_factor : 1.2},
                    isSingle=${cardCount == 1},
+                   isDouble=${cardCount == 2},
                    selected=${row.categories},
                    total=${selected != null ? #lists.size(selected) : 0},
                    visibleCount=${total > cardCount ? cardCount : total},
                    placeholderCount=${cardCount - visibleCount}"
-          th:classappend="${isSingle} ? ' is-single' : ''"
+          th:classappend="|${isSingle ? ' is-single' : ''}${isDouble ? ' is-double' : ''}|"
           th:style="|--project-columns: ${cardCount}; --project-height-factor: ${heightFactor};|"
         >
           <th:block
@@ -64,7 +65,29 @@
                   </div>
                 </div>
               </div>
-              <a class="project-card" th:unless="${isSingle}" th:href="@{${category.status.permalink}}">
+              <a
+                class="project-card project-card--double"
+                th:if="${isDouble}"
+                th:href="@{${category.status.permalink}}"
+              >
+                <div
+                  class="project-card-cover"
+                  th:if="${not #strings.isEmpty(category.spec.cover)}"
+                  th:style="|background-image: url('${category.spec.cover}');|"
+                ></div>
+                <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
+                <div class="project-card-overlay">
+                  <div class="project-card-overlay-title" th:text="${category.spec.displayName}"></div>
+                  <div
+                    class="project-card-overlay-desc"
+                    data-md-block="true"
+                    th:if="${not #strings.isEmpty(introText)}"
+                  >
+                    <div class="project-card-desc-raw" data-md-raw="true" th:text="${introText}"></div>
+                  </div>
+                </div>
+              </a>
+              <a class="project-card" th:unless="${isSingle or isDouble}" th:href="@{${category.status.permalink}}">
                 <div
                   class="project-card-cover"
                   th:if="${not #strings.isEmpty(category.spec.cover)}"
