@@ -21,35 +21,63 @@
           th:with="cardCountRaw=${row.card_count != null ? row.card_count : 3},
                    cardCount=${cardCountRaw instanceof T(java.lang.Number) ? cardCountRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(cardCountRaw))},
                    heightFactor=${row.height_factor != null ? row.height_factor : 1.2},
+                   isSingle=${cardCount == 1},
                    selected=${row.categories},
                    total=${selected != null ? #lists.size(selected) : 0},
                    visibleCount=${total > cardCount ? cardCount : total},
                    placeholderCount=${cardCount - visibleCount}"
+          th:classappend="${isSingle} ? ' is-single' : ''"
           th:style="|--project-columns: ${cardCount}; --project-height-factor: ${heightFactor};|"
         >
-          <a
-            class="project-card"
+          <th:block
             th:each="item, iterStat : ${selected}"
             th:with="itemIsMap=${item instanceof T(java.util.Map)},
                      categoryValue=${itemIsMap ? item['category'] : item},
+                     itemCtaText=${itemIsMap ? item['cta_text'] : null},
                      categoryCandidate=${categoryValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || categoryValue instanceof T(java.util.Map) ? categoryValue : null},
                      categoryName=${categoryCandidate != null && categoryCandidate.metadata != null ? categoryCandidate.metadata.name : categoryValue},
                      categoryList=${categoryCandidate == null && categoryName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(categoryName))) : null},
-                     category=${categoryCandidate != null ? categoryCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)}"
-            th:if="${iterStat.index < cardCount and category != null}"
-            th:href="@{${category.status.permalink}}"
+                     category=${categoryCandidate != null ? categoryCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)},
+                     ctaText=${#strings.isEmpty(itemCtaText) ? '查看详情' : itemCtaText},
+                     annotations=${category != null && category.metadata != null ? category.metadata.annotations : null},
+                     introRaw=${annotations != null ? annotations['categoryIntro'] : null},
+                     introText=${introRaw != null ? introRaw : ''}"
           >
-            <div
-              class="project-card-cover"
-              th:if="${not #strings.isEmpty(category.spec.cover)}"
-              th:style="|background-image: url('${category.spec.cover}');|"
-            ></div>
-            <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
-            <div class="project-card-body">
-              <div class="project-card-title" th:text="${category.spec.displayName}"></div>
-              <div class="project-card-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></div>
-            </div>
-          </a>
+            <th:block th:if="${iterStat.index < cardCount and category != null}">
+              <div class="project-card project-card--single" th:if="${isSingle}">
+                <div
+                  class="project-card-cover"
+                  th:if="${not #strings.isEmpty(category.spec.cover)}"
+                  th:style="|background-image: url('${category.spec.cover}');|"
+                ></div>
+                <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
+                <div class="project-card-body project-card-body--single">
+                  <div class="project-card-title" th:text="${category.spec.displayName}"></div>
+                  <div class="project-card-desc project-card-desc--md" data-md-block="true">
+                    <div class="project-card-desc-raw" data-md-raw="true" th:text="${introText}"></div>
+                  </div>
+                  <div class="project-card-action">
+                    <a class="project-card-cta" th:href="@{${category.status.permalink}}">
+                      <span class="project-card-cta-text" th:text="${ctaText}"></span>
+                      <span class="project-card-cta-icon" aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <a class="project-card" th:unless="${isSingle}" th:href="@{${category.status.permalink}}">
+                <div
+                  class="project-card-cover"
+                  th:if="${not #strings.isEmpty(category.spec.cover)}"
+                  th:style="|background-image: url('${category.spec.cover}');|"
+                ></div>
+                <div class="project-card-cover is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
+                <div class="project-card-body">
+                  <div class="project-card-title" th:text="${category.spec.displayName}"></div>
+                  <div class="project-card-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></div>
+                </div>
+              </a>
+            </th:block>
+          </th:block>
           <div
             class="project-card is-placeholder"
             th:if="${placeholderCount > 0}"

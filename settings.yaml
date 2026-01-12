@@ -96,17 +96,22 @@ spec:
               label: 行内分类
               help: 顺序决定卡片顺序；少于卡片数量则空白占位，多余则忽略
               value: []
-              itemType: string
+              itemType: object
               addLabel: 添加分类
               upControl: true
               downControl: true
               removeControl: true
               children:
                 - $formkit: categorySelect
-                  index: "$index"
+                  name: category
                   label: 分类
                   validation: required
                   validation-label: 分类
+                  value: ""
+                - $formkit: text
+                  name: cta_text
+                  label: 跳转按钮文案
+                  help: 仅单卡行右下角按钮使用
                   value: ""
     - group: news
       label: 动态分类页

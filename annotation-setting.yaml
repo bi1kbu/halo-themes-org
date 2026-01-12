@@ -19,3 +19,16 @@ spec:
       name: fileNumber
       label: 文件编号
       help: MS 文件类别文件序列号[.子文件序列号]-发表年份[/版本]
+---
+apiVersion: v1alpha1
+kind: AnnotationSetting
+metadata:
+  name: theme-organization-category-annotations
+spec:
+  targetRef:
+    group: content.halo.run
+    kind: Category
+  formSchema:
+    - $formkit: code
+      name: categoryIntro
+      label: 分类介绍
