@@ -4,11 +4,30 @@
   th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-category-project')}"
 >
   <th:block th:fragment="content">
-    <section class="content-block category-project">
+    <section
+      class="content-block category-project"
+      th:with="annotations=${category.metadata != null ? category.metadata.annotations : null},
+               introRaw=${annotations != null ? annotations['categoryIntro'] : null},
+               introText=${introRaw != null ? introRaw : ''}"
+    >
       <header class="content-header">
         <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
         <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
       </header>
+      <div
+        class="project-hero"
+        th:if="${not #strings.isEmpty(category.spec.cover) or not #strings.isEmpty(introText)}"
+      >
+        <div
+          class="project-hero-cover"
+          th:if="${not #strings.isEmpty(category.spec.cover)}"
+          th:style="|background-image: url('${category.spec.cover}');|"
+        ></div>
+        <div class="project-hero-cover is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
+        <div class="project-hero-intro" th:if="${not #strings.isEmpty(introText)}" data-md-block="true">
+          <div class="project-hero-intro-raw" data-md-raw="true" th:text="${introText}"></div>
+        </div>
+      </div>
       <div class="project-list" th:if="${posts.total gt 0}">
         <article class="project-item" th:each="post : ${posts.items}">
           <a class="project-item-cover" th:href="@{${post.status.permalink}}">
