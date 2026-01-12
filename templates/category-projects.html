@@ -23,11 +23,12 @@
                    heightFactor=${row.height_factor != null ? row.height_factor : 1.2},
                    isSingle=${cardCount == 1},
                    isDouble=${cardCount == 2},
+                   isTriple=${cardCount == 3},
                    selected=${row.categories},
                    total=${selected != null ? #lists.size(selected) : 0},
                    visibleCount=${total > cardCount ? cardCount : total},
                    placeholderCount=${cardCount - visibleCount}"
-          th:classappend="|${isSingle ? ' is-single' : ''}${isDouble ? ' is-double' : ''}|"
+          th:classappend="|${isSingle ? ' is-single' : ''}${isDouble ? ' is-double' : ''}${isTriple ? ' is-triple' : ''}|"
           th:style="|--project-columns: ${cardCount}; --project-height-factor: ${heightFactor};|"
         >
           <th:block
@@ -87,7 +88,25 @@
                   </div>
                 </div>
               </a>
-              <a class="project-card" th:unless="${isSingle or isDouble}" th:href="@{${category.status.permalink}}">
+              <a
+                class="project-card project-card--triple"
+                th:if="${isTriple}"
+                th:href="@{${category.status.permalink}}"
+              >
+                <div class="project-card-title project-card-title--triple" th:text="${category.spec.displayName}"></div>
+                <div class="project-card-stack">
+                  <div
+                    class="project-card-thumb"
+                    th:if="${not #strings.isEmpty(category.spec.cover)}"
+                    th:style="|background-image: url('${category.spec.cover}');|"
+                  ></div>
+                  <div class="project-card-thumb is-empty" th:if="${#strings.isEmpty(category.spec.cover)}"></div>
+                  <div class="project-card-desc project-card-desc--md project-card-desc--triple" data-md-block="true">
+                    <div class="project-card-desc-raw" data-md-raw="true" th:text="${introText}"></div>
+                  </div>
+                </div>
+              </a>
+              <a class="project-card" th:unless="${isSingle or isDouble or isTriple}" th:href="@{${category.status.permalink}}">
                 <div
                   class="project-card-cover"
                   th:if="${not #strings.isEmpty(category.spec.cover)}"

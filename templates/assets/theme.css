@@ -1151,6 +1151,55 @@ html.nav-open .mobile-nav {
   color: #ffffff;
 }
 
+.category-projects .project-row.is-triple {
+  --project-triple-desc-min: 40%;
+}
+
+.category-projects .project-card--triple {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.category-projects .project-card--triple .project-card-title--triple {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.category-projects .project-card--triple .project-card-stack {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(var(--project-triple-desc-min), 1fr);
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.category-projects .project-card--triple .project-card-thumb {
+  border-radius: var(--radius-md);
+  background-size: cover;
+  background-position: center;
+  min-height: 0;
+}
+
+.category-projects .project-card--triple .project-card-thumb.is-empty {
+  background: var(--accent-weak);
+}
+
+.category-projects .project-card--triple .project-card-desc--triple {
+  overflow: auto;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.category-projects .project-card--triple .project-card-desc--triple p {
+  margin: 0 0 var(--space-2);
+}
+
+.category-projects .project-card--triple .project-card-desc--triple p:last-child {
+  margin-bottom: 0;
+}
+
 .category-projects .project-card--double:hover .project-card-overlay {
   height: auto;
   max-height: 80%;
