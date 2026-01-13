@@ -10,18 +10,25 @@
         <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
       </header>
       <div class="news-modules" th:if="${modules != null and #lists.size(modules) > 0}">
-        <section
-          class="news-module"
+        <th:block
           th:each="module : ${modules}"
-          th:with="layout=${module['layout'] != null ? module['layout'] : '1'},
+          th:with="layoutRaw=${module['layout'] != null ? module['layout'] : ''},
+                   layout=${#strings.trim(T(java.lang.String).valueOf(layoutRaw))},
+                   isSingle=${layout == '1'},
+                   isDouble=${layout == '2' or layout == '3'},
+                   isTriple=${layout == '4'},
                    limitRaw=${module['limit'] != null ? module['limit'] : 6},
                    limit=${limitRaw instanceof T(java.lang.Number) ? limitRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(limitRaw))}"
-          th:classappend="|layout-${layout}|"
         >
+          <section
+            class="news-module"
+            th:if="${isSingle or isDouble or isTriple}"
+            th:classappend="|layout-${layout}|"
+          >
           <div class="news-columns">
             <div
               class="news-column news-column--single"
-              th:if="${layout == '1' or layout == '3'}"
+              th:if="${isSingle or isTriple}"
               th:with="colConfig=${module['col1_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
                        colValue=${colIsMap ? colConfig['category'] : colConfig},
@@ -44,7 +51,7 @@
                        showModuleTitle=${module['show_module_title'] == null ? false : module['show_module_title']},
                        showMore=${module['show_more'] == null ? true : module['show_more']}"
             >
-              <div class="news-column-head" th:if="${layout == '1' or layout == 1 ? showModuleTitle : true}">
+              <div class="news-column-head" th:if="${!isSingle or showModuleTitle}">
                 <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
                 <a class="news-column-more" th:if="${showMore and category != null}" th:href="@{${category.status.permalink}}">了解更多＞＞</a>
               </div>
@@ -91,7 +98,7 @@
             </div>
             <div
               class="news-column news-column--left"
-              th:if="${layout == '2'}"
+              th:if="${isDouble}"
               th:with="colConfig=${module['col1_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
                        colValue=${colIsMap ? colConfig['category'] : colConfig},
@@ -147,7 +154,7 @@
             </div>
             <div
               class="news-column news-column--right"
-              th:if="${layout == '2'}"
+              th:if="${isDouble}"
               th:with="colConfig=${module['col2_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
                        colValue=${colIsMap ? colConfig['category'] : colConfig},
@@ -204,7 +211,7 @@
                        pinnedPosts=${colPosts != null ? colPosts.items.?[spec.pinned == true] : null},
                        hasPinned=${pinnedPosts != null and #lists.size(pinnedPosts) > 0},
                        listPosts=${hasPinned ? colPosts.items.?[spec.pinned != true] : (colPosts != null ? colPosts.items : null)}"
-              th:if="${layout == '3'}"
+              th:if="${isTriple}"
             >
               <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
               <div class="news-pinned" th:if="${colPosts != null and hasPinned}">
@@ -254,10 +261,10 @@
                        colLimit=${limit},
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
-                       showCover=${layout == '1'},
-                       showExcerpt=${layout != '3'},
-                       showAuthor=${layout != '3'}"
-              th:if="${layout == '3'}"
+                       showCover=${isSingle},
+                       showExcerpt=${!isTriple},
+                       showAuthor=${!isTriple}"
+              th:if="${isTriple}"
             >
               <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
               <div class="news-items" th:if="${colPosts != null and colPosts.total gt 0}">
@@ -282,7 +289,8 @@
               <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
             </div>
           </div>
-        </section>
+          </section>
+        </th:block>
       </div>
       <div class="empty-state" th:if="${modules == null or #lists.size(modules) == 0}">
         No modules

@@ -1121,7 +1121,7 @@
   };
 
   const syncNewsLayout2Height = () => {
-    const modules = document.querySelectorAll(".news-module.layout-2");
+    const modules = document.querySelectorAll(".news-module.layout-2, .news-module.layout-3");
     modules.forEach((module) => {
       const rightItem = module.querySelector(".news-right-item");
       if (!rightItem) {

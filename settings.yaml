@@ -157,7 +157,7 @@ spec:
               value: []
               multiple: true
             - $formkit: categorySelect
-              if: "$value.layout == '' || $value.layout === '3' || $value.layout === 3 || $value.layout === '4' || $value.layout === 4"
+              if: "$value.layout == '' || $value.layout === '2' || $value.layout === 2 || $value.layout === '3' || $value.layout === 3 || $value.layout === '4' || $value.layout === 4"
               name: col2_category
               label: 第二栏分类
               value: ""
