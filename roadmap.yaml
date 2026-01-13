@@ -377,7 +377,7 @@ milestones:
 
   - id: M5
     name: 分类体系（projects/news 与单项目分类页）
-    是否完成: 进行中
+    是否完成: 已完成
     dependsOn: [M2]
     goal: 按站点结构提供不同信息密度的分类页模板。
     acceptance:
@@ -415,7 +415,7 @@ milestones:
           - "templates/category-project.html"
       - id: M5-T4
         title: 动态分类页模板（category-news，模块化多栏）
-        是否完成: 进行中
+        是否完成: 已完成
         details:
           - 通过 settings.yaml 配置 modules 数组：每个模块选择 layout（1/2/3），并为每一栏配置 category 与 limit。
           - 模块样式三套：单栏/双栏/三栏（信息密度递减）。
@@ -426,7 +426,7 @@ milestones:
           - "settings.yaml"
       - id: M5-T5
         title: 主题注册：分类模板映射
-        是否完成: 进行中
+        是否完成: 已完成
         details:
           - 将 category-default/category-projects/category-project/category-news 注册到 theme.yaml 的 category customTemplates。
         outputs:

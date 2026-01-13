@@ -7,7 +7,6 @@
     <section class="content-block category-news" th:with="newsConfig=${theme.config.news}, modules=${newsConfig != null ? newsConfig.modules : null}">
       <header class="content-header">
         <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
-        <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
       </header>
       <div class="news-modules" th:if="${modules != null and #lists.size(modules) > 0}">
         <th:block
