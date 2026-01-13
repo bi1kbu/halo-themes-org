@@ -30,7 +30,7 @@
           <div class="news-columns">
             <div
               class="news-column news-column--single"
-              th:if="${isSingle or isTriple}"
+              th:if="${isSingle}"
               th:with="colConfig=${module['col1_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
                        colValue=${colIsMap ? colConfig['category'] : colConfig},
@@ -322,101 +322,117 @@
               </div>
               <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
             </div>
-            <div
-              class="news-column news-column--double"
-              th:with="colConfig=${module['col2_category']},
-                       colIsMap=${colConfig instanceof T(java.util.Map)},
-                       colValue=${colIsMap ? colConfig['category'] : colConfig},
-                       colCandidate=${colValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || colValue instanceof T(java.util.Map) ? colValue : null},
-                       colName=${colCandidate != null && colCandidate.metadata != null ? colCandidate.metadata.name : colValue},
-                       categoryList=${colCandidate == null && colName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(colName))) : null},
-                       category=${colCandidate != null ? colCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)},
-                       colMeta=${category != null ? category.metadata : null},
-                       colSpec=${category != null ? category.spec : null},
-                       colTitle=${colSpec != null ? colSpec.displayName : ''},
-                       colLimit=${limit},
-                       categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
-                       colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
-                       pinnedPosts=${colPosts != null ? colPosts.items.?[spec.pinned == true] : null},
-                       hasPinned=${pinnedPosts != null and #lists.size(pinnedPosts) > 0},
-                       listPosts=${hasPinned ? colPosts.items.?[spec.pinned != true] : (colPosts != null ? colPosts.items : null)}"
+            <th:block
               th:if="${isTriple}"
+              th:with="leftConfig=${module['col1_category']},
+                       leftIsMap=${leftConfig instanceof T(java.util.Map)},
+                       leftValue=${leftIsMap ? leftConfig['category'] : leftConfig},
+                       leftCandidate=${leftValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || leftValue instanceof T(java.util.Map) ? leftValue : null},
+                       leftName=${leftCandidate != null && leftCandidate.metadata != null ? leftCandidate.metadata.name : leftValue},
+                       leftList=${leftCandidate == null && leftName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(leftName))) : null},
+                       leftCategory=${leftCandidate != null ? leftCandidate : (leftList != null and #lists.size(leftList) > 0 ? leftList.get(0) : null)},
+                       leftMeta=${leftCategory != null ? leftCategory.metadata : null},
+                       leftSpec=${leftCategory != null ? leftCategory.spec : null},
+                       leftTitle=${leftSpec != null ? leftSpec.displayName : ''},
+                       leftLimit=${limit},
+                       leftCategoryKey=${leftMeta != null && !#strings.isEmpty(leftMeta.name) ? leftMeta.name : leftName},
+                       leftPosts=${leftLimit > 0 && !#strings.isEmpty(leftCategoryKey) ? postFinder.listByCategory(1, leftLimit, leftCategoryKey) : null},
+                       leftVisibleCount=${leftPosts != null ? #lists.size(leftPosts.items) : 0}"
             >
-              <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-pinned" th:if="${colPosts != null and hasPinned}">
-                <a
-                  class="news-pinned-item"
-                  th:each="post, iterStat : ${pinnedPosts}"
-                  th:if="${iterStat.index < 2}"
-                  th:href="@{${post.status.permalink}}"
-                >
-                  <div
-                    class="news-pinned-cover"
-                    th:if="${not #strings.isEmpty(post.spec.cover)}"
-                    th:style="|background-image: url('${post.spec.cover}');|"
-                  ></div>
-                  <div class="news-pinned-cover is-empty" th:if="${#strings.isEmpty(post.spec.cover)}"></div>
-                  <div class="news-pinned-body">
-                    <div class="news-pinned-title" th:text="${post.spec.title}"></div>
-                    <div class="news-pinned-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
-                  </div>
-                </a>
+              <div class="news-column news-column--triple">
+                <div class="news-column-head">
+                  <div class="news-column-title" th:if="${not #strings.isEmpty(leftTitle)}" th:text="${leftTitle}"></div>
+                  <a class="news-column-more" th:if="${leftCategory != null}" th:href="@{${leftCategory.status.permalink}}">了解更多＞＞</a>
+                </div>
+                <div class="news-triple-list" th:if="${leftPosts != null and leftPosts.total gt 0}">
+                  <a
+                    class="news-triple-item"
+                    th:each="post, iterStat : ${leftPosts.items}"
+                    th:if="${iterStat.index < leftVisibleCount}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <span class="news-triple-title">
+                      <span class="news-triple-pin" th:if="${post.spec.pinned}">置顶</span>
+                      <span class="news-triple-text" th:text="${post.spec.title}"></span>
+                    </span>
+                    <span class="news-triple-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+                  </a>
+                </div>
+                <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
               </div>
-              <div class="news-list news-list--compact" th:if="${colPosts != null and listPosts != null and #lists.size(listPosts) > 0}">
-                <a
-                  class="news-list-item"
-                  th:each="post, iterStat : ${listPosts}"
-                  th:if="${iterStat.index < colLimit}"
-                  th:href="@{${post.status.permalink}}"
-                >
-                  <span class="news-list-title" th:text="${post.spec.title}"></span>
-                  <span class="news-list-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'MM-dd')}"></span>
-                </a>
+              <div
+                class="news-column news-column--triple"
+                th:with="rightConfig=${module['col2_category']},
+                         rightIsMap=${rightConfig instanceof T(java.util.Map)},
+                         rightValue=${rightIsMap ? rightConfig['category'] : rightConfig},
+                         rightCandidate=${rightValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || rightValue instanceof T(java.util.Map) ? rightValue : null},
+                         rightName=${rightCandidate != null && rightCandidate.metadata != null ? rightCandidate.metadata.name : rightValue},
+                         rightList=${rightCandidate == null && rightName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(rightName))) : null},
+                         rightCategory=${rightCandidate != null ? rightCandidate : (rightList != null and #lists.size(rightList) > 0 ? rightList.get(0) : null)},
+                         rightMeta=${rightCategory != null ? rightCategory.metadata : null},
+                         rightSpec=${rightCategory != null ? rightCategory.spec : null},
+                         rightTitle=${rightSpec != null ? rightSpec.displayName : ''},
+                         rightLimit=${leftVisibleCount},
+                         rightCategoryKey=${rightMeta != null && !#strings.isEmpty(rightMeta.name) ? rightMeta.name : rightName},
+                         rightPosts=${rightLimit > 0 && !#strings.isEmpty(rightCategoryKey) ? postFinder.listByCategory(1, rightLimit, rightCategoryKey) : null}"
+              >
+                <div class="news-column-head">
+                  <div class="news-column-title" th:if="${not #strings.isEmpty(rightTitle)}" th:text="${rightTitle}"></div>
+                  <a class="news-column-more" th:if="${rightCategory != null}" th:href="@{${rightCategory.status.permalink}}">了解更多＞＞</a>
+                </div>
+                <div class="news-triple-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
+                  <a
+                    class="news-triple-item"
+                    th:each="post, iterStat : ${rightPosts.items}"
+                    th:if="${iterStat.index < rightLimit}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <span class="news-triple-title">
+                      <span class="news-triple-pin" th:if="${post.spec.pinned}">置顶</span>
+                      <span class="news-triple-text" th:text="${post.spec.title}"></span>
+                    </span>
+                    <span class="news-triple-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+                  </a>
+                </div>
+                <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
               </div>
-              <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
-            </div>
-            <div
-              class="news-column"
-              th:with="colConfig=${module['col3_category']},
-                       colIsMap=${colConfig instanceof T(java.util.Map)},
-                       colValue=${colIsMap ? colConfig['category'] : colConfig},
-                       colCandidate=${colValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || colValue instanceof T(java.util.Map) ? colValue : null},
-                       colName=${colCandidate != null && colCandidate.metadata != null ? colCandidate.metadata.name : colValue},
-                       categoryList=${colCandidate == null && colName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(colName))) : null},
-                       category=${colCandidate != null ? colCandidate : (categoryList != null and #lists.size(categoryList) > 0 ? categoryList.get(0) : null)},
-                       colMeta=${category != null ? category.metadata : null},
-                       colSpec=${category != null ? category.spec : null},
-                       colTitle=${colSpec != null ? colSpec.displayName : ''},
-                       colLimit=${limit},
-                       categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
-                       colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
-                       showCover=${isSingle},
-                       showExcerpt=${!isTriple},
-                       showAuthor=${!isTriple}"
-              th:if="${isTriple}"
-            >
-              <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-items" th:if="${colPosts != null and colPosts.total gt 0}">
-                <a
-                  class="news-item"
-                  th:each="post : ${colPosts.items}"
-                  th:href="@{${post.status.permalink}}"
-                  th:classappend="${post.spec.pinned} ? ' is-pinned' : ''"
-                >
-                  <div class="news-item-cover" th:if="${showCover and not #strings.isEmpty(post.spec.cover)}" th:style="|background-image: url('${post.spec.cover}');|"></div>
-                  <div class="news-item-cover is-empty" th:if="${showCover and #strings.isEmpty(post.spec.cover)}"></div>
-                  <div class="news-item-body">
-                    <div class="news-item-title" th:text="${post.spec.title}"></div>
-                    <div class="news-item-desc" th:if="${showExcerpt and not #strings.isEmpty(post.status.excerpt)}" th:text="${post.status.excerpt}"></div>
-                    <div class="news-item-meta">
-                      <span th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
-                      <span th:if="${showAuthor and post.owner != null}" th:text="${post.owner.displayName}"></span>
-                    </div>
-                  </div>
-                </a>
+              <div
+                class="news-column news-column--triple"
+                th:with="thirdConfig=${module['col3_category']},
+                         thirdIsMap=${thirdConfig instanceof T(java.util.Map)},
+                         thirdValue=${thirdIsMap ? thirdConfig['category'] : thirdConfig},
+                         thirdCandidate=${thirdValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || thirdValue instanceof T(java.util.Map) ? thirdValue : null},
+                         thirdName=${thirdCandidate != null && thirdCandidate.metadata != null ? thirdCandidate.metadata.name : thirdValue},
+                         thirdList=${thirdCandidate == null && thirdName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(thirdName))) : null},
+                         thirdCategory=${thirdCandidate != null ? thirdCandidate : (thirdList != null and #lists.size(thirdList) > 0 ? thirdList.get(0) : null)},
+                         thirdMeta=${thirdCategory != null ? thirdCategory.metadata : null},
+                         thirdSpec=${thirdCategory != null ? thirdCategory.spec : null},
+                         thirdTitle=${thirdSpec != null ? thirdSpec.displayName : ''},
+                         thirdLimit=${leftVisibleCount},
+                         thirdCategoryKey=${thirdMeta != null && !#strings.isEmpty(thirdMeta.name) ? thirdMeta.name : thirdName},
+                         thirdPosts=${thirdLimit > 0 && !#strings.isEmpty(thirdCategoryKey) ? postFinder.listByCategory(1, thirdLimit, thirdCategoryKey) : null}"
+              >
+                <div class="news-column-head">
+                  <div class="news-column-title" th:if="${not #strings.isEmpty(thirdTitle)}" th:text="${thirdTitle}"></div>
+                  <a class="news-column-more" th:if="${thirdCategory != null}" th:href="@{${thirdCategory.status.permalink}}">了解更多＞＞</a>
+                </div>
+                <div class="news-triple-list" th:if="${thirdPosts != null and thirdPosts.total gt 0}">
+                  <a
+                    class="news-triple-item"
+                    th:each="post, iterStat : ${thirdPosts.items}"
+                    th:if="${iterStat.index < thirdLimit}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <span class="news-triple-title">
+                      <span class="news-triple-pin" th:if="${post.spec.pinned}">置顶</span>
+                      <span class="news-triple-text" th:text="${post.spec.title}"></span>
+                    </span>
+                    <span class="news-triple-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+                  </a>
+                </div>
+                <div class="empty-state" th:if="${thirdPosts != null and thirdPosts.total == 0}">No posts</div>
               </div>
-              <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
-            </div>
+            </th:block>
           </div>
           </section>
         </th:block>

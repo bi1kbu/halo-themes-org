@@ -1416,6 +1416,89 @@ html.nav-open .mobile-nav {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.category-news .news-module.layout-4 {
+  --news-triple-gap: var(--space-3);
+  --news-triple-item-min-h: 64px;
+}
+
+.category-news .news-module.layout-4 .news-column--triple {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.category-news .news-module.layout-4 .news-column-title {
+  font-size: var(--text-md);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-news .news-module.layout-4 .news-triple-list {
+  display: grid;
+  gap: var(--news-triple-gap);
+  align-content: start;
+}
+
+.category-news .news-module.layout-4 .news-triple-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  min-height: var(--news-triple-item-min-h);
+}
+
+.category-news .news-module.layout-4 .news-triple-item:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.category-news .news-module.layout-4 .news-triple-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.category-news .news-module.layout-4 .news-triple-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-news .news-module.layout-4 .news-triple-date {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-news .news-module.layout-4 .news-triple-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  color: var(--accent);
+  background: var(--accent-weak);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
 .category-news .news-column {
   display: grid;
   gap: var(--space-3);
