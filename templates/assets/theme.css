@@ -613,12 +613,15 @@ html.nav-open .mobile-nav {
 .page-announcement .post-body {
   margin: 24px 8% 0;
   font-size: 21.3px;
-  --announcement-line-height: 1.6;
-  line-height: var(--announcement-line-height);
+  line-height: 39.3px;
 }
 
 .page-announcement .post-body p {
-  margin: 0 0 calc(var(--announcement-line-height) * 1em);
+  margin: 0;
+}
+
+.page-announcement .post-body p:empty::before {
+  content: "\00a0";
 }
 
 .page-announcement .post-body p:last-child {
