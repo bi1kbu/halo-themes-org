@@ -434,7 +434,7 @@ milestones:
 
   - id: M6
     name: 文章模板体系（默认/公告）
-    是否完成: 待开始
+    是否完成: 进行中
     dependsOn: [M1, M2]
     goal: 落地 2 种文章模板：默认文章（右侧目录）与公告文章（无目录、文件编号解析、H1 居中）。
     acceptance:
@@ -443,7 +443,7 @@ milestones:
     tasks:
       - id: M6-T1
         title: 默认文章模板（post-default，左正文右目录）
-        是否完成: 待开始
+        是否完成: 进行中
         details:
           - 标题、元信息（作者/日期/分类/标签）、正文（prose）、上一篇/下一篇。
           - 可选侧栏：目录/相关文章（按需求再开）。
@@ -451,7 +451,7 @@ milestones:
           - "templates/post.html"
       - id: M6-T2
         title: 公告文章模板（post-announcement，无目录）
-        是否完成: 待开始
+        是否完成: 进行中
         details:
           - 不展示目录；H1 居中。
           - 顶部元信息：文章所属分类、发布日期、作者、文件编号。
@@ -463,7 +463,7 @@ milestones:
           - "static/assets/theme.js"
       - id: M6-T3
         title: 主题注册：文章模板映射
-        是否完成: 待开始
+        是否完成: 进行中
         details:
           - 将 post-default/post-announcement 注册到 theme.yaml 的 post customTemplates。
         outputs:

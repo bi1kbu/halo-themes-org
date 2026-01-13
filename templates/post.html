@@ -4,15 +4,84 @@
   th:replace="~{modules/layout :: layout(title = ${post.spec.title} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-post')}"
 >
   <th:block th:fragment="content">
-    <article class="content-block">
-      <header class="content-header">
-        <h1 class="content-title" th:text="${post.spec.title}"></h1>
-        <div class="content-meta">
-          <span th:if="${post.owner != null}" th:text="${post.owner.displayName}"></span>
-          <span th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+    <article
+      class="content-block post-page"
+      th:with="annotations=${post.metadata != null ? post.metadata.annotations : null},
+               fileNumber=${annotations != null ? annotations['fileNumber'] : null},
+               categories=${post.categories},
+               tags=${post.tags},
+               firstCategory=${categories != null and #lists.size(categories) > 0 ? categories.get(0) : null},
+               breadcrumbs=${firstCategory != null && firstCategory.metadata != null ? categoryFinder.getBreadcrumbs(firstCategory.metadata.name) : null},
+               contentVo=${postFinder.content(post.metadata.name)},
+               contentVoContent=${contentVo != null ? contentVo.content : null},
+               contentVoRaw=${contentVo != null ? contentVo.raw : null},
+               contentVoContentLen=${contentVoContent != null ? #strings.length(contentVoContent) : 0},
+               contentVoRawLen=${contentVoRaw != null ? #strings.length(contentVoRaw) : 0},
+               preferContentVoRaw=${contentVoRawLen > 0 and (contentVoContentLen == 0 or contentVoContentLen * 2 < contentVoRawLen)},
+               postContent=${preferContentVoRaw ? contentVoRaw
+                  : (contentVoContentLen > 0 ? contentVoContent
+                  : (post.content != null and !#strings.isEmpty(post.content.content) ? post.content.content
+                  : (post.content != null and !#strings.isEmpty(post.content.raw) ? post.content.raw : '')))}"
+    >
+      <div class="post-layout">
+        <div class="post-main">
+          <header class="post-header">
+            <h1 class="post-title" th:text="${post.spec.title}"></h1>
+            <div class="post-meta">
+              <span class="post-meta-item" th:if="${post.owner != null}">
+                <span class="post-meta-label">作者：</span>
+                <span class="post-meta-value" th:text="${post.owner.displayName}"></span>
+              </span>
+              <span class="post-meta-item" th:if="${post.spec.publishTime != null}">
+                <span class="post-meta-label">发布日期：</span>
+                <span class="post-meta-value" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+              </span>
+              <span class="post-meta-item" th:if="${not #strings.isEmpty(fileNumber)}">
+                <span class="post-meta-label">文件编号：</span>
+                <span class="post-meta-value" th:text="${fileNumber}"></span>
+              </span>
+            </div>
+            <div class="post-meta-line post-category" th:if="${firstCategory != null}">
+              <span class="post-meta-label">分类：</span>
+              <span class="post-meta-links">
+                <th:block th:if="${breadcrumbs != null and #lists.size(breadcrumbs) > 0}">
+                  <th:block th:each="crumb, stat : ${breadcrumbs}">
+                    <a
+                      class="post-meta-link"
+                      th:href="@{${crumb.status.permalink}}"
+                      th:text="${crumb.spec.displayName}"
+                    ></a>
+                    <span class="post-meta-sep" th:if="${!stat.last}">></span>
+                  </th:block>
+                </th:block>
+                <a
+                  class="post-meta-link"
+                  th:if="${breadcrumbs == null or #lists.size(breadcrumbs) == 0}"
+                  th:href="@{${firstCategory.status.permalink}}"
+                  th:text="${firstCategory.spec.displayName}"
+                ></a>
+              </span>
+            </div>
+            <div class="post-meta-line post-tags" th:if="${tags != null and #lists.size(tags) > 0}">
+              <span class="post-meta-label">标签：</span>
+              <span class="post-meta-links">
+                <a
+                  class="post-meta-link"
+                  th:each="tag : ${tags}"
+                  th:href="@{${tag.status.permalink}}"
+                  th:text="${tag.spec.displayName}"
+                ></a>
+              </span>
+            </div>
+          </header>
+          <div class="content-body post-body" data-post-content th:utext="${postContent}"></div>
         </div>
-      </header>
-      <div class="content-body" th:utext="${post.content.content}"></div>
+        <aside class="post-aside">
+          <nav class="post-toc" data-post-toc>
+            <ul class="post-toc-list" data-post-toc-list></ul>
+          </nav>
+        </aside>
+      </div>
     </article>
   </th:block>
 </html>

@@ -18,12 +18,6 @@ spec:
   configMapName: halo-theme-config
   customTemplates:
     post:
-      - name: 默认文章
-        description: 左正文右目录，适配绝大多数场景
-        file: post.html
-      - name: 文档
-        description: 兼容旧模板名称（暂用默认文章）
-        file: post.html
       - name: 公告
         description: 无目录，含文件编号解析与公告元信息区
         file: post-announcement.html
