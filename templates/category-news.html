@@ -15,7 +15,9 @@
           th:with="layoutRaw=${module['layout'] != null ? module['layout'] : ''},
                    layout=${#strings.trim(T(java.lang.String).valueOf(layoutRaw))},
                    isSingle=${layout == '1'},
-                   isDouble=${layout == '2' or layout == '3'},
+                   isDoubleEqual=${layout == '2'},
+                   isDoubleWide=${layout == '3'},
+                   isDouble=${isDoubleEqual or isDoubleWide},
                    isTriple=${layout == '4'},
                    limitRaw=${module['limit'] != null ? module['limit'] : 6},
                    limit=${limitRaw instanceof T(java.lang.Number) ? limitRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(limitRaw))}"
@@ -96,9 +98,136 @@
               </div>
               <div class="empty-state" th:if="${colPosts != null and colPosts.total == 0}">No posts</div>
             </div>
+            <th:block
+              th:if="${isDoubleEqual}"
+              th:with="leftConfig=${module['col1_category']},
+                       leftIsMap=${leftConfig instanceof T(java.util.Map)},
+                       leftValue=${leftIsMap ? leftConfig['category'] : leftConfig},
+                       leftCandidate=${leftValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || leftValue instanceof T(java.util.Map) ? leftValue : null},
+                       leftName=${leftCandidate != null && leftCandidate.metadata != null ? leftCandidate.metadata.name : leftValue},
+                       leftList=${leftCandidate == null && leftName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(leftName))) : null},
+                       leftCategory=${leftCandidate != null ? leftCandidate : (leftList != null and #lists.size(leftList) > 0 ? leftList.get(0) : null)},
+                       leftMeta=${leftCategory != null ? leftCategory.metadata : null},
+                       leftSpec=${leftCategory != null ? leftCategory.spec : null},
+                       leftTitle=${leftSpec != null ? leftSpec.displayName : ''},
+                       leftLimit=${limit},
+                       leftCategoryKey=${leftMeta != null && !#strings.isEmpty(leftMeta.name) ? leftMeta.name : leftName},
+                       leftPosts=${leftLimit > 0 && !#strings.isEmpty(leftCategoryKey) ? postFinder.listByCategory(1, leftLimit, leftCategoryKey) : null},
+                       leftPinnedPosts=${leftPosts != null ? leftPosts.items.?[spec.pinned == true] : null},
+                       leftPinnedCount=${leftPinnedPosts != null ? #lists.size(leftPinnedPosts) : 0},
+                       leftNormalPosts=${leftPosts != null ? leftPosts.items.?[spec.pinned != true] : null},
+                       leftRemaining=${leftLimit > leftPinnedCount ? leftLimit - leftPinnedCount : 0}"
+            >
+              <div class="news-column news-column--equal">
+                <div class="news-column-head">
+                  <div class="news-column-title" th:if="${not #strings.isEmpty(leftTitle)}" th:text="${leftTitle}"></div>
+                  <a class="news-column-more" th:if="${leftCategory != null}" th:href="@{${leftCategory.status.permalink}}">了解更多＞＞</a>
+                </div>
+                <div class="news-eq-list" th:if="${leftPosts != null and leftPosts.total gt 0}">
+                  <a
+                    class="news-eq-item is-pinned"
+                    th:each="post, iterStat : ${leftPinnedPosts}"
+                    th:if="${iterStat.index < leftLimit}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <div
+                      class="news-eq-cover"
+                      th:if="${not #strings.isEmpty(post.spec.cover)}"
+                      th:style="|background-image: url('${post.spec.cover}');|"
+                    ></div>
+                    <div class="news-eq-cover is-empty" th:if="${#strings.isEmpty(post.spec.cover)}"></div>
+                    <div class="news-eq-body">
+                      <div class="news-eq-title">
+                        <span class="news-eq-pin">置顶</span>
+                        <span class="news-eq-text" th:text="${post.spec.title}"></span>
+                      </div>
+                      <div class="news-eq-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
+                    </div>
+                  </a>
+                  <a
+                    class="news-eq-item"
+                    th:each="post, iterStat : ${leftNormalPosts}"
+                    th:if="${leftRemaining > 0 and iterStat.index < leftRemaining}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <div class="news-eq-body">
+                      <div class="news-eq-title">
+                        <span class="news-eq-text" th:text="${post.spec.title}"></span>
+                      </div>
+                      <div class="news-eq-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
+                    </div>
+                  </a>
+                </div>
+                <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
+              </div>
+              <div
+                class="news-column news-column--equal"
+                th:with="rightConfig=${module['col2_category']},
+                         rightIsMap=${rightConfig instanceof T(java.util.Map)},
+                         rightValue=${rightIsMap ? rightConfig['category'] : rightConfig},
+                         rightCandidate=${rightValue instanceof T(run.halo.app.theme.finders.vo.CategoryVo) || rightValue instanceof T(java.util.Map) ? rightValue : null},
+                         rightName=${rightCandidate != null && rightCandidate.metadata != null ? rightCandidate.metadata.name : rightValue},
+                         rightList=${rightCandidate == null && rightName != null ? categoryFinder.getByNames(T(java.util.List).of(T(java.lang.String).valueOf(rightName))) : null},
+                         rightCategory=${rightCandidate != null ? rightCandidate : (rightList != null and #lists.size(rightList) > 0 ? rightList.get(0) : null)},
+                         rightMeta=${rightCategory != null ? rightCategory.metadata : null},
+                         rightSpec=${rightCategory != null ? rightCategory.spec : null},
+                         rightTitle=${rightSpec != null ? rightSpec.displayName : ''},
+                         rightFetchLimitRaw=${limit + leftPinnedCount},
+                         rightFetchLimit=${rightFetchLimitRaw > 0 ? rightFetchLimitRaw : 0},
+                         rightCategoryKey=${rightMeta != null && !#strings.isEmpty(rightMeta.name) ? rightMeta.name : rightName},
+                         rightPosts=${rightFetchLimit > 0 && !#strings.isEmpty(rightCategoryKey) ? postFinder.listByCategory(1, rightFetchLimit, rightCategoryKey) : null},
+                         rightPinnedPosts=${rightPosts != null ? rightPosts.items.?[spec.pinned == true] : null},
+                         rightPinnedCount=${rightPinnedPosts != null ? #lists.size(rightPinnedPosts) : 0},
+                         rightNormalPosts=${rightPosts != null ? rightPosts.items.?[spec.pinned != true] : null},
+                         rightLimitRaw=${limit + leftPinnedCount - rightPinnedCount},
+                         rightLimit=${rightLimitRaw > 0 ? rightLimitRaw : 0},
+                         rightRemaining=${rightLimit > rightPinnedCount ? rightLimit - rightPinnedCount : 0}"
+              >
+                <div class="news-column-head">
+                  <div class="news-column-title" th:if="${not #strings.isEmpty(rightTitle)}" th:text="${rightTitle}"></div>
+                  <a class="news-column-more" th:if="${rightCategory != null}" th:href="@{${rightCategory.status.permalink}}">了解更多＞＞</a>
+                </div>
+                <div class="news-eq-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
+                  <a
+                    class="news-eq-item is-pinned"
+                    th:each="post, iterStat : ${rightPinnedPosts}"
+                    th:if="${iterStat.index < rightLimit}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <div
+                      class="news-eq-cover"
+                      th:if="${not #strings.isEmpty(post.spec.cover)}"
+                      th:style="|background-image: url('${post.spec.cover}');|"
+                    ></div>
+                    <div class="news-eq-cover is-empty" th:if="${#strings.isEmpty(post.spec.cover)}"></div>
+                    <div class="news-eq-body">
+                      <div class="news-eq-title">
+                        <span class="news-eq-pin">置顶</span>
+                        <span class="news-eq-text" th:text="${post.spec.title}"></span>
+                      </div>
+                      <div class="news-eq-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
+                    </div>
+                  </a>
+                  <a
+                    class="news-eq-item"
+                    th:each="post, iterStat : ${rightNormalPosts}"
+                    th:if="${rightRemaining > 0 and iterStat.index < rightRemaining}"
+                    th:href="@{${post.status.permalink}}"
+                  >
+                    <div class="news-eq-body">
+                      <div class="news-eq-title">
+                        <span class="news-eq-text" th:text="${post.spec.title}"></span>
+                      </div>
+                      <div class="news-eq-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
+                    </div>
+                  </a>
+                </div>
+                <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
+              </div>
+            </th:block>
             <div
               class="news-column news-column--left"
-              th:if="${isDouble}"
+              th:if="${isDoubleWide}"
               th:with="colConfig=${module['col1_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
                        colValue=${colIsMap ? colConfig['category'] : colConfig},
@@ -154,7 +283,7 @@
             </div>
             <div
               class="news-column news-column--right"
-              th:if="${isDouble}"
+              th:if="${isDoubleWide}"
               th:with="colConfig=${module['col2_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
                        colValue=${colIsMap ? colConfig['category'] : colConfig},
