@@ -14,8 +14,8 @@
           class="news-module"
           th:each="module : ${modules}"
           th:with="layout=${module['layout'] != null ? module['layout'] : '1'},
-                   layoutLimitRaw=${layout == '2' ? (module['layout_limit'] != null ? module['layout_limit'] : (module['col2_limit'] != null ? module['col2_limit'] : 6)) : 0},
-                   layoutLimit=${layout == '2' ? (layoutLimitRaw instanceof T(java.lang.Number) ? layoutLimitRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(layoutLimitRaw))) : 0}"
+                   limitRaw=${module['limit'] != null ? module['limit'] : 6},
+                   limit=${limitRaw instanceof T(java.lang.Number) ? limitRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(limitRaw))}"
           th:classappend="|layout-${layout}|"
         >
           <div class="news-columns">
@@ -32,8 +32,7 @@
                        colMeta=${category != null ? category.metadata : null},
                        colSpec=${category != null ? category.spec : null},
                        colTitle=${colSpec != null ? colSpec.displayName : ''},
-                       colLimitRaw=${module['col1_limit'] != null ? module['col1_limit'] : 6},
-                       colLimit=${colLimitRaw instanceof T(java.lang.Number) ? colLimitRaw.intValue() : T(java.lang.Integer).parseInt(T(java.lang.String).valueOf(colLimitRaw))},
+                       colLimit=${limit},
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
                        carouselItems=${module['carousel_posts']},
@@ -42,9 +41,10 @@
                        pinnedCount=${pinnedPosts != null ? #lists.size(pinnedPosts) : 0},
                        normalPosts=${colPosts != null ? colPosts.items.?[spec.pinned != true] : null},
                        remainingCount=${colLimit > pinnedCount ? colLimit - pinnedCount : 0},
+                       showModuleTitle=${module['show_module_title'] == null ? false : module['show_module_title']},
                        showMore=${module['show_more'] == null ? true : module['show_more']}"
             >
-              <div class="news-column-head">
+              <div class="news-column-head" th:if="${layout == '1' or layout == 1 ? showModuleTitle : true}">
                 <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
                 <a class="news-column-more" th:if="${showMore and category != null}" th:href="@{${category.status.permalink}}">了解更多＞＞</a>
               </div>
@@ -102,7 +102,7 @@
                        colMeta=${category != null ? category.metadata : null},
                        colSpec=${category != null ? category.spec : null},
                        colTitle=${colSpec != null ? colSpec.displayName : ''},
-                       leftLimit=${layoutLimit > 0 ? (layoutLimit * 3 - 1) * 2 : 0},
+                       leftLimit=${limit > 0 ? (limit * 3 - 1) * 2 : 0},
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        leftPosts=${leftLimit > 0 && !#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, leftLimit, categoryKey) : null}"
             >
@@ -159,14 +159,14 @@
                        colSpec=${category != null ? category.spec : null},
                        colTitle=${colSpec != null ? colSpec.displayName : ''},
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
-                       rightPosts=${layoutLimit > 0 && !#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, layoutLimit, categoryKey) : null}"
+                       rightPosts=${limit > 0 && !#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, limit, categoryKey) : null}"
             >
               <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
               <div class="news-right-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
                 <a
                   class="news-right-item"
                   th:each="post, iterStat : ${rightPosts.items}"
-                  th:if="${iterStat.index < layoutLimit}"
+                  th:if="${iterStat.index < limit}"
                   th:href="@{${post.status.permalink}}"
                 >
                   <div
@@ -198,7 +198,7 @@
                        colMeta=${category != null ? category.metadata : null},
                        colSpec=${category != null ? category.spec : null},
                        colTitle=${colSpec != null ? colSpec.displayName : ''},
-                       colLimit=${module['col2_limit'] != null ? module['col2_limit'] : 6},
+                       colLimit=${limit},
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
                        pinnedPosts=${colPosts != null ? colPosts.items.?[spec.pinned == true] : null},
@@ -251,7 +251,7 @@
                        colMeta=${category != null ? category.metadata : null},
                        colSpec=${category != null ? category.spec : null},
                        colTitle=${colSpec != null ? colSpec.displayName : ''},
-                       colLimit=${module['col3_limit'] != null ? module['col3_limit'] : 6},
+                       colLimit=${limit},
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        colPosts=${!#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, colLimit, categoryKey) : null},
                        showCover=${layout == '1'},

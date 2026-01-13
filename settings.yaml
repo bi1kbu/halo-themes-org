@@ -127,66 +127,53 @@ spec:
             - $formkit: select
               name: layout
               label: 模块布局
-              value: "1"
+              help: 如果需要切换布局，切换后请先保存再重新打开进行修改。
+              value: ""
               options:
                 - label: 单栏
                   value: "1"
-                - label: 双栏
+                - label: 双栏（1:1）
                   value: "2"
-                - label: 三栏
+                - label: 双栏（2:1）
                   value: "3"
+                - label: 三栏
+                  value: "4"
+            - $formkit: number
+              name: limit
+              label: 文章显示数量
+              help: 建议单栏设置为6~10，双栏2:1设置为2~3，其他配置建议设置大于6
+              value: 6
+              min: 1
+              max: 30
             - $formkit: categorySelect
               name: col1_category
               label: 第一栏分类
               value: ""
             - $formkit: postSelect
-              if: "$value.layout === '1'"
+              if: "$value.layout == '' || $value.layout === '1' || $value.layout === 1"
               name: carousel_posts
               label: 轮播文章
-              help: 仅单栏使用，按配置顺序展示
+              help: 仅在单栏布局生效，其他布局可忽略；按配置顺序展示
               value: []
               multiple: true
-            - $formkit: number
-              if: "$value.layout === '2'"
-              name: layout_limit
-              label: 数量
-              help: 控制右侧栏数量，并用于计算左侧展示数量
-              value: 6
-              min: 1
-              max: 30
-            - $formkit: number
-              if: "$value.layout === '1' || $value.layout === '3'"
-              name: col1_limit
-              label: 第一栏数量
-              value: 6
-              min: 1
-              max: 30
-            - $formkit: checkbox
-              if: "$value.layout === '1'"
-              name: show_more
-              label: 显示了解更多按钮
-              value: true
             - $formkit: categorySelect
-              if: "$value.layout === '2' || $value.layout === '3'"
+              if: "$value.layout == '' || $value.layout === '3' || $value.layout === 3 || $value.layout === '4' || $value.layout === 4"
               name: col2_category
               label: 第二栏分类
               value: ""
-            - $formkit: number
-              if: "$value.layout === '3'"
-              name: col2_limit
-              label: 第二栏数量
-              value: 6
-              min: 1
-              max: 30
             - $formkit: categorySelect
-              if: "$value.layout === '3'"
+              if: "$value.layout == '' || $value.layout === '4' || $value.layout === 4"
               name: col3_category
               label: 第三栏分类
               value: ""
-            - $formkit: number
-              if: "$value.layout === '3'"
-              name: col3_limit
-              label: 第三栏数量
-              value: 6
-              min: 1
-              max: 30
+            - $formkit: checkbox
+              if: "$value.layout == '' || $value.layout === '1' || $value.layout === 1"
+              name: show_module_title
+              label: 显示模块名称
+              help: 仅在单栏布局生效，用于控制标题栏显示
+              value: false
+            - $formkit: checkbox
+              if: "$value.layout == '' || $value.layout === '1' || $value.layout === 1"
+              name: show_more
+              label: 显示了解更多按钮
+              value: true
