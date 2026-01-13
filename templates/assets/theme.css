@@ -497,10 +497,11 @@ html.nav-open .mobile-nav {
 
 .page-announcement .post-title {
   text-align: center;
+  font-size: 29.3px;
 }
 
 .page-announcement .announcement-title {
-  margin-top: 15%;
+  margin-top: 6%;
 }
 
 .page-post .post-meta {
@@ -561,7 +562,7 @@ html.nav-open .mobile-nav {
   border: 1px solid var(--border);
   padding: var(--space-5);
   background: var(--surface);
-  margin: 0 10%;
+  margin: 0 8%;
 }
 
 .page-announcement .announcement-meta-grid {
@@ -610,8 +611,18 @@ html.nav-open .mobile-nav {
 }
 
 .page-announcement .post-body {
-  margin: 24px 17.5% 0;
-  font-size: 150%;
+  margin: 24px 8% 0;
+  font-size: 21.3px;
+  --announcement-line-height: 1.6;
+  line-height: var(--announcement-line-height);
+}
+
+.page-announcement .post-body p {
+  margin: 0 0 calc(var(--announcement-line-height) * 1em);
+}
+
+.page-announcement .post-body p:last-child {
+  margin-bottom: 0;
 }
 
 .page-announcement .post-body img {
@@ -620,11 +631,11 @@ html.nav-open .mobile-nav {
 }
 
 .page-announcement .announcement-signature {
-  margin: auto 17.5% 15%;
+  margin: 2lh 15% 15%;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) max-content;
   row-gap: var(--space-2);
-  font-size: 150%;
+  font-size: 21.3px;
   color: var(--text);
 }
 
@@ -632,6 +643,7 @@ html.nav-open .mobile-nav {
   grid-column: 3;
   justify-self: center;
   text-align: center;
+  white-space: nowrap;
 }
 
 .page-post .post-aside {

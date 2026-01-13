@@ -68,7 +68,7 @@
         <div class="announcement-signature-name">机魂融创联盟</div>
         <div
           class="announcement-signature-date"
-          th:text="${post.spec.publishTime != null ? #temporals.format(post.spec.publishTime, 'yyyy-MM-dd') : ''}"
+          th:text="${post.spec.publishTime != null ? #temporals.format(post.spec.publishTime, 'yyyy年MM月dd日') : ''}"
         ></div>
       </div>
     </article>
