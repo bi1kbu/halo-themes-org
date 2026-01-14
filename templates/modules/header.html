@@ -89,15 +89,14 @@
       >
         Theme
       </button>
-      <button
+      <a
         th:if="${theme.config.global.show_login_button}"
-        type="button"
         class="btn-ghost"
-        aria-disabled="true"
-        title="Login (placeholder)"
+        href="/login"
+        title="Login"
       >
         Login
-      </button>
+      </a>
     </div>
   </div>
   <div
