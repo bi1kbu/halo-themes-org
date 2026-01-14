@@ -471,7 +471,7 @@ milestones:
 
   - id: M7
     name: 插件适配（按优先级逐个接入）
-    是否完成: 待开始
+    是否完成: 进行中
     dependsOn: [M2]
     goal: 安装插件即增强体验，未安装也不崩溃；样式与主题令牌统一。
     acceptance:
@@ -507,7 +507,7 @@ milestones:
           - "static/assets/theme.css"
       - id: M7-T4
         title: Docsme（/docs 与文档库内部页面）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 适配 /docs（文档库列表）。
           - 适配 文档库内部页面（文档列表、文件夹、面包屑、目录等按插件规范）。

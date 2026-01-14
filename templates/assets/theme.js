@@ -140,6 +140,59 @@
 
   highlightNav();
 
+  const moveDocsmeHeader = () => {
+    if (!document.body || !document.body.classList.contains("page-docsme")) {
+      return;
+    }
+    const header = document.querySelector(".dm-header");
+    const sidebarContent = document.querySelector(".dm-sidebar__content");
+    if (!header || !sidebarContent) {
+      return;
+    }
+    const logo = header.querySelector(".dm-header__logo");
+    const nav = header.querySelector(".dm-header__nav");
+    const versionSwitcher =
+      header.querySelector('.dm-header__switcher[dm-id*="version-switcher"]') ||
+      header.querySelector(".dm-header__switcher");
+    if (logo && !sidebarContent.contains(logo)) {
+      sidebarContent.insertBefore(logo, sidebarContent.firstChild);
+    }
+    if (versionSwitcher) {
+      const existing = document.querySelector(".dm-toc__switcher");
+      if (existing) {
+        existing.remove();
+      }
+      let switcherWrap = sidebarContent.querySelector(".dm-sidebar__switcher");
+      if (!switcherWrap) {
+        switcherWrap = document.createElement("div");
+        switcherWrap.className = "dm-sidebar__switcher";
+        const switcherLabel = document.createElement("div");
+        switcherLabel.className = "dm-sidebar__switcher-label";
+        switcherLabel.textContent = "版本";
+        switcherWrap.appendChild(switcherLabel);
+      }
+      if (!switcherWrap.contains(versionSwitcher)) {
+        switcherWrap.appendChild(versionSwitcher);
+      }
+      if (!sidebarContent.contains(switcherWrap)) {
+        sidebarContent.insertBefore(switcherWrap, sidebarContent.firstChild);
+      }
+      if (logo && logo.parentElement === sidebarContent) {
+        sidebarContent.insertBefore(switcherWrap, logo.nextSibling);
+      }
+    }
+    if (nav) {
+      nav.remove();
+    }
+    header.remove();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", moveDocsmeHeader);
+  } else {
+    moveDocsmeHeader();
+  }
+
   const scheduleSection = document.querySelector("[data-schedule-section]");
   if (scheduleSection) {
     const scheduleTag = scheduleSection.dataset.scheduleTag || "";

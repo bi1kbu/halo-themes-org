@@ -1,0 +1,17 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = ${site.title} + ' - 文档', content = ~{::content}, head = ~{::head}, bodyClass = 'page-docs page-docsme')}"
+>
+  <th:block th:fragment="head">
+    <th:block th:replace="~{plugin:plugin-docsme:modules/style}" />
+    <th:block th:replace="~{plugin:plugin-docsme:modules/script}" />
+  </th:block>
+  <th:block th:fragment="content">
+    <div class="dm-container dm-container--embedded">
+      <th:block
+        th:replace="~{plugin:plugin-docsme:modules/docs :: docs(footer = null, showHeader = false, showThemeSwitcher = false)}"
+      />
+    </div>
+  </th:block>
+</html>
