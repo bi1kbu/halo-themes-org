@@ -29,6 +29,15 @@
   --color-outline-active-dark: #f3b2a7;
   --color-outline-panel-dark: #14263b;
   --color-outline-layer-dark: #2a2f3a;
+  --search-pill-bg-light: #eef1f5;
+  --search-pill-text-light: #98a2b3;
+  --search-pill-icon-light: #8f99aa;
+  --search-layer-light: rgba(15, 23, 42, 0.45);
+
+  --search-pill-bg-dark: #1c2332;
+  --search-pill-text-dark: #a5afc0;
+  --search-pill-icon-dark: #95a1b3;
+  --search-layer-dark: rgba(2, 6, 23, 0.72);
 
   --bg: var(--color-bg-light);
   --surface: var(--color-surface-light);
@@ -44,6 +53,10 @@
   --outline-active: var(--color-outline-active-light);
   --outline-panel: var(--color-outline-panel-light);
   --outline-layer: var(--color-outline-layer-light);
+  --search-pill-bg: var(--search-pill-bg-light);
+  --search-pill-text: var(--search-pill-text-light);
+  --search-pill-icon: var(--search-pill-icon-light);
+  --search-layer: var(--search-layer-light);
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -71,6 +84,20 @@
   --space-6: 24px;
   --space-7: 32px;
   --space-8: 40px;
+
+  --halo-search-widget-base-font-size: var(--text-sm);
+  --halo-search-widget-base-font-family: var(--font-sans);
+  --halo-search-widget-base-rounded: var(--radius-md);
+  --halo-search-widget-base-bg-color: var(--surface);
+  --halo-search-widget-primary-color: var(--accent);
+  --halo-search-widget-muted-color: var(--muted);
+  --halo-search-widget-content-color: var(--text);
+  --halo-search-widget-modal-bg-color: var(--surface);
+  --halo-search-widget-modal-layer-color: var(--search-layer);
+  --halo-search-widget-hit-bg-color: var(--accent-weak);
+  --halo-search-widget-divider-color: var(--border);
+  --halo-search-widget-kbd-border-color: var(--border);
+  --halo-search-widget-kbd-shadow: 0 1px 0 0 var(--border);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -90,6 +117,10 @@
     --outline-active: var(--color-outline-active-dark);
     --outline-panel: var(--color-outline-panel-dark);
     --outline-layer: var(--color-outline-layer-dark);
+    --search-pill-bg: var(--search-pill-bg-dark);
+    --search-pill-text: var(--search-pill-text-dark);
+    --search-pill-icon: var(--search-pill-icon-dark);
+    --search-layer: var(--search-layer-dark);
   }
 }
 
@@ -109,6 +140,10 @@ html[data-theme="light"] {
   --outline-active: var(--color-outline-active-light);
   --outline-panel: var(--color-outline-panel-light);
   --outline-layer: var(--color-outline-layer-light);
+  --search-pill-bg: var(--search-pill-bg-light);
+  --search-pill-text: var(--search-pill-text-light);
+  --search-pill-icon: var(--search-pill-icon-light);
+  --search-layer: var(--search-layer-light);
 }
 
 html[data-theme="dark"] {
@@ -127,6 +162,10 @@ html[data-theme="dark"] {
   --outline-active: var(--color-outline-active-dark);
   --outline-panel: var(--color-outline-panel-dark);
   --outline-layer: var(--color-outline-layer-dark);
+  --search-pill-bg: var(--search-pill-bg-dark);
+  --search-pill-text: var(--search-pill-text-dark);
+  --search-pill-icon: var(--search-pill-icon-dark);
+  --search-layer: var(--search-layer-dark);
 }
 
 * {
@@ -398,6 +437,51 @@ html.nav-open .mobile-nav {
   background: transparent;
   color: var(--muted);
   padding: 6px 10px;
+}
+
+.search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  background: var(--search-pill-bg);
+  color: var(--search-pill-text);
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.search-trigger-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--search-pill-icon);
+}
+
+.search-trigger-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.search-trigger:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.search-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  color: var(--text);
+}
+
+.search-trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .btn-ghost[aria-disabled="true"] {

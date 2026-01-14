@@ -49,13 +49,35 @@
         Menu
       </button>
       <button
-        th:if="${theme.config.global.show_search_button}"
+        th:if="${theme.config.global.show_search_button} and ${pluginFinder.available('PluginSearchWidget')}"
         type="button"
-        class="btn-ghost"
+        class="search-trigger"
+        data-search-trigger
+        title="Search"
+        aria-label="Search"
+      >
+        <span class="search-trigger-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="search-trigger-text">Search</span>
+      </button>
+      <button
+        th:if="${theme.config.global.show_search_button} and ${not pluginFinder.available('PluginSearchWidget')}"
+        type="button"
+        class="search-trigger"
         aria-disabled="true"
         title="Search (placeholder)"
       >
-        Search
+        <span class="search-trigger-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="search-trigger-text">Search</span>
       </button>
       <button
         th:if="${theme.config.global.show_color_toggle}"

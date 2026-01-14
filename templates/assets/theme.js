@@ -140,6 +140,21 @@
 
   highlightNav();
 
+  const searchTrigger = document.querySelector("[data-search-trigger]");
+  if (searchTrigger) {
+    const openSearch = () => {
+      if (window.SearchWidget && typeof window.SearchWidget.open === "function") {
+        window.SearchWidget.open();
+        return true;
+      }
+      return false;
+    };
+    searchTrigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      openSearch();
+    });
+  }
+
   const moveDocsmeHeader = () => {
     if (!document.body || !document.body.classList.contains("page-docsme")) {
       return;
