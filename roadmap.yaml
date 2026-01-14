@@ -480,7 +480,7 @@ milestones:
     tasks:
       - id: M7-T1
         title: 搜索组件（JS API 唤起 + 样式对齐）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - pluginFinder.available(...) 判断。
           - 仅通过公开 API（如 SearchWidget.open()）唤起。
@@ -499,7 +499,7 @@ milestones:
           - "static/assets/theme.css"
       - id: M7-T3
         title: 链接管理（/links 页面样式适配）
-        是否完成: 待开始
+        是否完成: 已完成
         details:
           - 按插件文档提供的方式注入自定义样式。
           - 卡片/列表风格与主题一致。
