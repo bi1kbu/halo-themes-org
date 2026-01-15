@@ -117,12 +117,18 @@
                        leftNormalPosts=${leftPosts != null ? leftPosts.items.?[spec.pinned != true] : null},
                        leftRemaining=${leftLimit > leftPinnedCount ? leftLimit - leftPinnedCount : 0}"
             >
-              <div class="news-column news-column--equal">
+              <div class="news-column news-column--equal" data-news-collapsible>
                 <div class="news-column-head">
                   <div class="news-column-title" th:if="${not #strings.isEmpty(leftTitle)}" th:text="${leftTitle}"></div>
-                  <a class="news-column-more" th:if="${leftCategory != null}" th:href="@{${leftCategory.status.permalink}}">了解更多＞＞</a>
+                  <div class="news-column-actions">
+                    <a class="news-column-more" th:if="${leftCategory != null}" th:href="@{${leftCategory.status.permalink}}">了解更多＞＞</a>
+                    <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                      <span class="news-column-toggle-text">展开</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="news-eq-list" th:if="${leftPosts != null and leftPosts.total gt 0}">
+                <div class="news-column-body" data-news-panel>
+                  <div class="news-eq-list" th:if="${leftPosts != null and leftPosts.total gt 0}">
                   <a
                     class="news-eq-item is-pinned"
                     th:each="post, iterStat : ${leftPinnedPosts}"
@@ -156,11 +162,13 @@
                       <div class="news-eq-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
                     </div>
                   </a>
+                  </div>
+                  <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
                 </div>
-                <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
               </div>
               <div
                 class="news-column news-column--equal"
+                data-news-collapsible
                 th:with="rightConfig=${module['col2_category']},
                          rightIsMap=${rightConfig instanceof T(java.util.Map)},
                          rightValue=${rightIsMap ? rightConfig['category'] : rightConfig},
@@ -184,9 +192,15 @@
               >
                 <div class="news-column-head">
                   <div class="news-column-title" th:if="${not #strings.isEmpty(rightTitle)}" th:text="${rightTitle}"></div>
-                  <a class="news-column-more" th:if="${rightCategory != null}" th:href="@{${rightCategory.status.permalink}}">了解更多＞＞</a>
+                  <div class="news-column-actions">
+                    <a class="news-column-more" th:if="${rightCategory != null}" th:href="@{${rightCategory.status.permalink}}">了解更多＞＞</a>
+                    <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                      <span class="news-column-toggle-text">展开</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="news-eq-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
+                <div class="news-column-body" data-news-panel>
+                  <div class="news-eq-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
                   <a
                     class="news-eq-item is-pinned"
                     th:each="post, iterStat : ${rightPinnedPosts}"
@@ -220,12 +234,14 @@
                       <div class="news-eq-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></div>
                     </div>
                   </a>
+                  </div>
+                  <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
                 </div>
-                <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
               </div>
             </th:block>
             <div
               class="news-column news-column--left"
+              data-news-collapsible
               th:if="${isDoubleWide}"
               th:with="colConfig=${module['col1_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
@@ -241,8 +257,17 @@
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        leftPosts=${leftLimit > 0 && !#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, leftLimit, categoryKey) : null}"
             >
-              <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-left-grid" th:if="${leftPosts != null and leftPosts.total gt 0}">
+              <div class="news-column-head news-column-head--compact">
+                <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
+                <div class="news-column-actions">
+                  <a class="news-column-more" th:if="${category != null}" th:href="@{${category.status.permalink}}">了解更多＞＞</a>
+                  <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                    <span class="news-column-toggle-text">展开</span>
+                  </button>
+                </div>
+              </div>
+              <div class="news-column-body" data-news-panel>
+                <div class="news-left-grid" th:if="${leftPosts != null and leftPosts.total gt 0}">
                 <a
                   class="news-left-item news-left-item--feature"
                   th:each="post, iterStat : ${leftPosts.items}"
@@ -277,11 +302,13 @@
                     <span class="news-left-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
                   </div>
                 </a>
+                </div>
+                <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
               </div>
-              <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
             </div>
             <div
               class="news-column news-column--right"
+              data-news-collapsible
               th:if="${isDoubleWide}"
               th:with="colConfig=${module['col2_category']},
                        colIsMap=${colConfig instanceof T(java.util.Map)},
@@ -296,8 +323,17 @@
                        categoryKey=${colMeta != null && !#strings.isEmpty(colMeta.name) ? colMeta.name : colName},
                        rightPosts=${limit > 0 && !#strings.isEmpty(categoryKey) ? postFinder.listByCategory(1, limit, categoryKey) : null}"
             >
-              <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
-              <div class="news-right-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
+              <div class="news-column-head news-column-head--compact">
+                <div class="news-column-title" th:if="${not #strings.isEmpty(colTitle)}" th:text="${colTitle}"></div>
+                <div class="news-column-actions">
+                  <a class="news-column-more" th:if="${category != null}" th:href="@{${category.status.permalink}}">了解更多＞＞</a>
+                  <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                    <span class="news-column-toggle-text">展开</span>
+                  </button>
+                </div>
+              </div>
+              <div class="news-column-body" data-news-panel>
+                <div class="news-right-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
                 <a
                   class="news-right-item"
                   th:each="post, iterStat : ${rightPosts.items}"
@@ -318,8 +354,9 @@
                     </div>
                   </div>
                 </a>
+                </div>
+                <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
               </div>
-              <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
             </div>
             <th:block
               th:if="${isTriple}"
@@ -338,12 +375,18 @@
                        leftPosts=${leftLimit > 0 && !#strings.isEmpty(leftCategoryKey) ? postFinder.listByCategory(1, leftLimit, leftCategoryKey) : null},
                        leftVisibleCount=${leftPosts != null ? #lists.size(leftPosts.items) : 0}"
             >
-              <div class="news-column news-column--triple">
+              <div class="news-column news-column--triple" data-news-collapsible>
                 <div class="news-column-head">
                   <div class="news-column-title" th:if="${not #strings.isEmpty(leftTitle)}" th:text="${leftTitle}"></div>
-                  <a class="news-column-more" th:if="${leftCategory != null}" th:href="@{${leftCategory.status.permalink}}">了解更多＞＞</a>
+                  <div class="news-column-actions">
+                    <a class="news-column-more" th:if="${leftCategory != null}" th:href="@{${leftCategory.status.permalink}}">了解更多＞＞</a>
+                    <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                      <span class="news-column-toggle-text">展开</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="news-triple-list" th:if="${leftPosts != null and leftPosts.total gt 0}">
+                <div class="news-column-body" data-news-panel>
+                  <div class="news-triple-list" th:if="${leftPosts != null and leftPosts.total gt 0}">
                   <a
                     class="news-triple-item"
                     th:each="post, iterStat : ${leftPosts.items}"
@@ -356,11 +399,13 @@
                     </span>
                     <span class="news-triple-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
                   </a>
+                  </div>
+                  <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
                 </div>
-                <div class="empty-state" th:if="${leftPosts != null and leftPosts.total == 0}">No posts</div>
               </div>
               <div
                 class="news-column news-column--triple"
+                data-news-collapsible
                 th:with="rightConfig=${module['col2_category']},
                          rightIsMap=${rightConfig instanceof T(java.util.Map)},
                          rightValue=${rightIsMap ? rightConfig['category'] : rightConfig},
@@ -377,9 +422,15 @@
               >
                 <div class="news-column-head">
                   <div class="news-column-title" th:if="${not #strings.isEmpty(rightTitle)}" th:text="${rightTitle}"></div>
-                  <a class="news-column-more" th:if="${rightCategory != null}" th:href="@{${rightCategory.status.permalink}}">了解更多＞＞</a>
+                  <div class="news-column-actions">
+                    <a class="news-column-more" th:if="${rightCategory != null}" th:href="@{${rightCategory.status.permalink}}">了解更多＞＞</a>
+                    <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                      <span class="news-column-toggle-text">展开</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="news-triple-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
+                <div class="news-column-body" data-news-panel>
+                  <div class="news-triple-list" th:if="${rightPosts != null and rightPosts.total gt 0}">
                   <a
                     class="news-triple-item"
                     th:each="post, iterStat : ${rightPosts.items}"
@@ -392,11 +443,13 @@
                     </span>
                     <span class="news-triple-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
                   </a>
+                  </div>
+                  <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
                 </div>
-                <div class="empty-state" th:if="${rightPosts != null and rightPosts.total == 0}">No posts</div>
               </div>
               <div
                 class="news-column news-column--triple"
+                data-news-collapsible
                 th:with="thirdConfig=${module['col3_category']},
                          thirdIsMap=${thirdConfig instanceof T(java.util.Map)},
                          thirdValue=${thirdIsMap ? thirdConfig['category'] : thirdConfig},
@@ -413,9 +466,15 @@
               >
                 <div class="news-column-head">
                   <div class="news-column-title" th:if="${not #strings.isEmpty(thirdTitle)}" th:text="${thirdTitle}"></div>
-                  <a class="news-column-more" th:if="${thirdCategory != null}" th:href="@{${thirdCategory.status.permalink}}">了解更多＞＞</a>
+                  <div class="news-column-actions">
+                    <a class="news-column-more" th:if="${thirdCategory != null}" th:href="@{${thirdCategory.status.permalink}}">了解更多＞＞</a>
+                    <button class="news-column-toggle" type="button" data-news-toggle aria-expanded="false">
+                      <span class="news-column-toggle-text">展开</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="news-triple-list" th:if="${thirdPosts != null and thirdPosts.total gt 0}">
+                <div class="news-column-body" data-news-panel>
+                  <div class="news-triple-list" th:if="${thirdPosts != null and thirdPosts.total gt 0}">
                   <a
                     class="news-triple-item"
                     th:each="post, iterStat : ${thirdPosts.items}"
@@ -428,8 +487,9 @@
                     </span>
                     <span class="news-triple-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
                   </a>
+                  </div>
+                  <div class="empty-state" th:if="${thirdPosts != null and thirdPosts.total == 0}">No posts</div>
                 </div>
-                <div class="empty-state" th:if="${thirdPosts != null and thirdPosts.total == 0}">No posts</div>
               </div>
             </th:block>
           </div>

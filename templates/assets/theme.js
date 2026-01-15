@@ -1381,6 +1381,37 @@
     }
   };
 
+  const initNewsAccordion = () => {
+    const columns = Array.from(document.querySelectorAll(".category-news [data-news-collapsible]"));
+    if (!columns.length) {
+      return;
+    }
+    const entries = columns
+      .map((column) => ({
+        column,
+        toggle: column.querySelector("[data-news-toggle]"),
+        text: column.querySelector(".news-column-toggle-text"),
+      }))
+      .filter((entry) => entry.toggle);
+
+    const setOpen = (entry, open) => {
+      entry.column.classList.toggle("is-open", open);
+      entry.toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (entry.text) {
+        entry.text.textContent = open ? "收起" : "展开";
+      }
+    };
+
+    entries.forEach((entry) => {
+      setOpen(entry, false);
+      entry.toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        const nextOpen = !entry.column.classList.contains("is-open");
+        setOpen(entry, nextOpen);
+      });
+    });
+  };
+
   const syncNewsLayout1Height = () => {
     const modules = document.querySelectorAll(".news-module.layout-1");
     const allowSync = window.matchMedia("(min-width: 901px)").matches;
@@ -1459,9 +1490,11 @@
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
+      initNewsAccordion();
       initNewsCarousel().then(syncNewsLayouts);
     });
   } else {
+    initNewsAccordion();
     initNewsCarousel().then(syncNewsLayouts);
   }
   window.addEventListener("resize", () => {
