@@ -242,20 +242,39 @@
 
   highlightNav();
 
+  const openSearch = () => {
+    if (window.SearchWidget && typeof window.SearchWidget.open === "function") {
+      window.SearchWidget.open();
+      return true;
+    }
+    return false;
+  };
+
   const searchTriggers = Array.from(document.querySelectorAll("[data-search-trigger]"));
   if (searchTriggers.length) {
-    const openSearch = () => {
-      if (window.SearchWidget && typeof window.SearchWidget.open === "function") {
-        window.SearchWidget.open();
-        return true;
-      }
-      return false;
-    };
     searchTriggers.forEach((trigger) => {
       trigger.addEventListener("click", (event) => {
         event.preventDefault();
         if (openSearch() && root.classList.contains("nav-open")) {
           setNavOpen(false);
+        }
+      });
+    });
+  }
+
+  const footerActions = Array.from(document.querySelectorAll("[data-footer-action]"));
+  if (footerActions.length) {
+    footerActions.forEach((action) => {
+      action.addEventListener("click", (event) => {
+        const type = action.dataset.footerAction || "";
+        if (type === "search") {
+          event.preventDefault();
+          openSearch();
+          return;
+        }
+        if (type === "top") {
+          event.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }
       });
     });

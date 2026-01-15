@@ -1,14 +1,58 @@
 <footer class="site-footer">
+  <div
+    class="footer-menu"
+    th:if="${theme.config.footer != null} and ${not #lists.isEmpty(theme.config.footer.mobile_menu)}"
+  >
+    <div class="container footer-menu-inner">
+      <div class="footer-menu-list">
+        <th:block th:each="item : ${theme.config.footer.mobile_menu}">
+          <th:block th:switch="${item.action}">
+            <a
+              th:case="'custom'"
+              class="footer-menu-btn"
+              th:href="${#strings.isEmpty(item.url) ? 'javascript:void(0)' : item.url}"
+              th:text="${item.name}"
+            ></a>
+            <button
+              th:case="'search'"
+              th:if="${pluginFinder.available('PluginSearchWidget')}"
+              class="footer-menu-btn"
+              type="button"
+              data-footer-action="search"
+              th:text="${item.name}"
+            ></button>
+            <button
+              th:case="'top'"
+              class="footer-menu-btn"
+              type="button"
+              data-footer-action="top"
+              th:text="${item.name}"
+            ></button>
+            <span th:case="*" class="footer-menu-btn" th:text="${item.name}"></span>
+          </th:block>
+        </th:block>
+      </div>
+    </div>
+  </div>
   <div class="container footer-inner">
     <div class="footer-brand">
       <div class="footer-title" th:text="${site.title}"></div>
       <div
         class="footer-desc"
-        th:text="${#strings.isEmpty(theme.config.global.footer_text) ? '' : theme.config.global.footer_text}"
+        th:text="${theme.config.footer == null || #strings.isEmpty(theme.config.footer.footer_text) ? '' : theme.config.footer.footer_text}"
       ></div>
     </div>
-    <div class="footer-meta">
-      <span th:text="|© ${#dates.format(#dates.createNow(), 'yyyy')} ${site.title}|"></span>
+    <div
+      class="footer-meta"
+      th:if="${theme.config.footer != null} and ${not #strings.isEmpty(theme.config.footer.footer_record)}"
+    >
+      <a
+        class="footer-record"
+        href="https://beian.miit.gov.cn/"
+        target="_blank"
+        rel="noopener"
+        th:text="${theme.config.footer.footer_record}"
+      ></a>
     </div>
   </div>
 </footer>

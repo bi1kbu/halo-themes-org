@@ -16,10 +16,6 @@ spec:
               value: text
             - label: 图片
               value: image
-        - $formkit: text
-          name: footer_text
-          label: 页脚描述
-          value: ""
         - $formkit: checkbox
           name: show_search_button
           label: 显示搜索按钮（占位）
@@ -32,6 +28,47 @@ spec:
           name: show_login_button
           label: 显示登录按钮（占位）
           value: true
+    - group: footer
+      label: 页脚
+      formSchema:
+        - $formkit: text
+          name: footer_text
+          label: 页脚描述
+          value: "© 2026 机魂社"
+        - $formkit: text
+          name: footer_record
+          label: 备案信息
+          value: "京ICP备00000000号-00"
+        - $formkit: array
+          name: mobile_menu
+          label: 移动端底部菜单
+          value: []
+          itemLabels:
+            - type: text
+              label: $value.name
+          children:
+            - $formkit: text
+              name: name
+              label: 按钮名称
+              validation: required
+              validation-label: 按钮名称
+              value: ""
+            - $formkit: select
+              name: action
+              label: 功能选择
+              validation: required
+              validation-label: 功能选择
+              value: custom
+              options:
+                - label: 自定义链接
+                  value: custom
+                - label: 搜索
+                  value: search
+            - $formkit: text
+              name: url
+              label: URL
+              help: 仅选择自定义链接时有效
+              value: ""
     - group: style
       label: 样式
       formSchema:
