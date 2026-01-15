@@ -389,6 +389,8 @@ img {
   display: flex;
   flex-direction: column;
   z-index: 20;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-nav-header {
@@ -468,6 +470,10 @@ img {
   gap: var(--space-1);
 }
 
+.mobile-sublist[hidden] {
+  display: none;
+}
+
 .mobile-sublist.is-open {
   display: grid;
 }
@@ -477,6 +483,7 @@ img {
   border-top: 1px solid var(--border);
   display: grid;
   gap: var(--space-2);
+  margin-bottom: 64px;
 }
 
 .mobile-nav-actions .search-trigger,
@@ -503,6 +510,12 @@ html.nav-open .nav-overlay {
 
 html.nav-open .mobile-nav {
   transform: translateX(0);
+}
+
+html.nav-open,
+html.nav-open body {
+  height: 100%;
+  overflow: hidden;
 }
 
 .btn,

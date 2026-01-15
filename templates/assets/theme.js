@@ -171,8 +171,8 @@
     if (navToggle) {
       navToggle.setAttribute("aria-expanded", open ? "true" : "false");
     }
+    collapseSubnavs();
     if (!open) {
-      collapseSubnavs();
       closeAllThemeMenus();
     }
   };
