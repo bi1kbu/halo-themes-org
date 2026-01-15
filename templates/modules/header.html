@@ -1,5 +1,21 @@
 <header class="site-header" th:with="menu=${menuFinder.getPrimary()}">
   <div class="container header-inner">
+    <button
+      class="nav-toggle"
+      type="button"
+      data-nav-toggle
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Menu"
+      title="Menu"
+      th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}"
+    >
+      <span class="nav-toggle-icon" aria-hidden="true">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </span>
+    </button>
     <a class="brand" href="/">
       <img
         th:if="${theme.config.global.logo_type == 'image'} and ${not #strings.isEmpty(site.logo)}"
@@ -38,16 +54,6 @@
       </ul>
     </nav>
     <div class="header-actions">
-      <button
-        class="nav-toggle"
-        type="button"
-        data-nav-toggle
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-        title="Menu"
-      >
-        Menu
-      </button>
       <button
         th:if="${theme.config.global.show_search_button} and ${pluginFinder.available('PluginSearchWidget')}"
         type="button"
@@ -138,15 +144,31 @@
     </div>
     <nav>
       <ul class="mobile-nav-list">
-        <li class="mobile-nav-item" th:each="menuItem : ${menu.menuItems}">
-          <a
-            class="mobile-nav-link"
-            data-nav-link
-            th:href="@{${menuItem.status.href}}"
-            th:text="${menuItem.status.displayName}"
-            th:target="${menuItem.spec.target?.value}"
-          ></a>
-          <ul class="mobile-sublist" th:if="${not #lists.isEmpty(menuItem.children)}">
+        <li
+          class="mobile-nav-item"
+          th:each="menuItem : ${menu.menuItems}"
+          th:with="hasChildren=${not #lists.isEmpty(menuItem.children)}"
+        >
+          <div class="mobile-nav-row">
+            <a
+              class="mobile-nav-link"
+              data-nav-link
+              th:href="@{${menuItem.status.href}}"
+              th:text="${menuItem.status.displayName}"
+              th:target="${menuItem.spec.target?.value}"
+            ></a>
+            <button
+              th:if="${hasChildren}"
+              class="mobile-subtoggle"
+              type="button"
+              data-subnav-toggle
+              aria-expanded="false"
+              aria-label="Toggle submenu"
+            >
+              +
+            </button>
+          </div>
+          <ul class="mobile-sublist" data-subnav th:if="${hasChildren}" hidden>
             <li class="mobile-subitem" th:each="childMenuItem : ${menuItem.children}">
               <a
                 class="mobile-sublink"
@@ -160,5 +182,76 @@
         </li>
       </ul>
     </nav>
+    <div class="mobile-nav-actions">
+      <button
+        th:if="${theme.config.global.show_search_button} and ${pluginFinder.available('PluginSearchWidget')}"
+        type="button"
+        class="search-trigger"
+        data-search-trigger
+        title="Search"
+        aria-label="Search"
+      >
+        <span class="search-trigger-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="search-trigger-text">Search</span>
+      </button>
+      <button
+        th:if="${theme.config.global.show_search_button} and ${not pluginFinder.available('PluginSearchWidget')}"
+        type="button"
+        class="search-trigger"
+        aria-disabled="true"
+        title="Search (placeholder)"
+      >
+        <span class="search-trigger-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </span>
+        <span class="search-trigger-text">Search</span>
+      </button>
+      <div
+        th:if="${theme.config.global.show_color_toggle}"
+        class="theme-switch theme-switch--mobile"
+        data-theme-switch
+        th:classappend="${theme.config.style.enable_change_color_scheme} ? '' : 'is-disabled'"
+      >
+        <button
+          type="button"
+          class="btn-ghost theme-switch-trigger"
+          data-theme-toggle
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          th:attr="disabled=${theme.config.style.enable_change_color_scheme} ? null : 'disabled',
+                   aria-disabled=${theme.config.style.enable_change_color_scheme} ? 'false' : 'true',
+                   title=${theme.config.style.enable_change_color_scheme} ? 'Theme' : 'Theme (placeholder)'"
+        >
+          Theme <span class="theme-switch-caret" aria-hidden="true">v</span>
+        </button>
+        <div class="theme-switch-menu" data-theme-menu role="listbox">
+          <button class="theme-switch-option" type="button" data-theme-option="system" role="option">
+            Auto
+          </button>
+          <button class="theme-switch-option" type="button" data-theme-option="light" role="option">
+            Light
+          </button>
+          <button class="theme-switch-option" type="button" data-theme-option="dark" role="option">
+            Dark
+          </button>
+        </div>
+      </div>
+      <a
+        th:if="${theme.config.global.show_login_button}"
+        class="btn-ghost"
+        href="/login"
+        title="Login"
+      >
+        Login
+      </a>
+    </div>
   </aside>
 </header>

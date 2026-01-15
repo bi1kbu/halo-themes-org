@@ -6,30 +6,45 @@
   const configScheme = root.dataset.scheme || "system";
   const stored = allowSwitch ? localStorage.getItem(storageKey) : null;
   let currentScheme = stored || configScheme;
-  const themeSwitch = document.querySelector("[data-theme-switch]");
-  const themeToggle = document.querySelector("[data-theme-toggle]");
-  const themeMenu = document.querySelector("[data-theme-menu]");
-  const themeOptions = Array.from(document.querySelectorAll("[data-theme-option]"));
+  const themeSwitches = Array.from(document.querySelectorAll("[data-theme-switch]"))
+    .map((switchEl) => ({
+      root: switchEl,
+      toggle: switchEl.querySelector("[data-theme-toggle]"),
+      menu: switchEl.querySelector("[data-theme-menu]"),
+      options: Array.from(switchEl.querySelectorAll("[data-theme-option]")),
+    }))
+    .filter((entry) => entry.toggle && entry.menu);
 
-  const updateThemeMenu = () => {
-    if (!themeMenu || !themeOptions.length) {
+  const updateThemeMenus = () => {
+    if (!themeSwitches.length) {
       return;
     }
     const current = currentScheme || "system";
-    themeOptions.forEach((option) => {
-      const value = option.dataset.themeOption;
-      const active = value === current;
-      option.classList.toggle("is-active", active);
-      option.setAttribute("aria-selected", active ? "true" : "false");
+    themeSwitches.forEach((entry) => {
+      entry.options.forEach((option) => {
+        const value = option.dataset.themeOption;
+        const active = value === current;
+        option.classList.toggle("is-active", active);
+        option.setAttribute("aria-selected", active ? "true" : "false");
+      });
     });
   };
 
-  const setThemeMenuOpen = (open) => {
-    if (!themeMenu || !themeToggle) {
+  const setThemeMenuOpen = (entry, open) => {
+    if (!entry || !entry.menu || !entry.toggle) {
       return;
     }
-    themeMenu.classList.toggle("is-open", open);
-    themeToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    entry.menu.classList.toggle("is-open", open);
+    entry.toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  const closeAllThemeMenus = (except) => {
+    themeSwitches.forEach((entry) => {
+      if (except && entry === except) {
+        return;
+      }
+      setThemeMenuOpen(entry, false);
+    });
   };
 
   const applyScheme = (scheme) => {
@@ -37,12 +52,12 @@
     if (scheme === "system") {
       root.removeAttribute("data-theme");
       root.style.colorScheme = "";
-      updateThemeMenu();
+      updateThemeMenus();
       return;
     }
     root.setAttribute("data-theme", scheme);
     root.style.colorScheme = scheme;
-    updateThemeMenu();
+    updateThemeMenus();
   };
 
   applyScheme(currentScheme);
@@ -78,58 +93,87 @@
 
   window.themeOrganization = Object.assign(window.themeOrganization || {}, api);
 
-  if (themeToggle) {
-    if (!allowSwitch) {
-      themeToggle.setAttribute("aria-disabled", "true");
-    }
-    themeToggle.addEventListener("click", () => {
+  if (themeSwitches.length) {
+    themeSwitches.forEach((entry) => {
       if (!allowSwitch) {
+        entry.toggle.setAttribute("aria-disabled", "true");
         return;
       }
-      setThemeMenuOpen(!themeMenu || !themeMenu.classList.contains("is-open"));
-    });
-  }
-
-  if (themeOptions.length && allowSwitch) {
-    themeOptions.forEach((option) => {
-      option.addEventListener("click", () => {
-        const next = option.dataset.themeOption || "system";
-        api.setColorScheme(next, true);
-        setThemeMenuOpen(false);
+      entry.toggle.addEventListener("click", () => {
+        if (!allowSwitch) {
+          return;
+        }
+        const nextOpen = !entry.menu.classList.contains("is-open");
+        closeAllThemeMenus(entry);
+        setThemeMenuOpen(entry, nextOpen);
+      });
+      entry.options.forEach((option) => {
+        option.addEventListener("click", () => {
+          const next = option.dataset.themeOption || "system";
+          api.setColorScheme(next, true);
+          setThemeMenuOpen(entry, false);
+        });
       });
     });
   }
 
   document.addEventListener("click", (event) => {
-    if (!themeMenu || !themeSwitch || !themeToggle) {
+    if (!themeSwitches.length) {
       return;
     }
-    if (!themeMenu.classList.contains("is-open")) {
-      return;
-    }
-    if (!themeSwitch.contains(event.target)) {
-      setThemeMenuOpen(false);
-    }
+    themeSwitches.forEach((entry) => {
+      if (!entry.menu.classList.contains("is-open")) {
+        return;
+      }
+      if (!entry.root.contains(event.target)) {
+        setThemeMenuOpen(entry, false);
+      }
+    });
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      setThemeMenuOpen(false);
+      closeAllThemeMenus();
     }
   });
 
-  updateThemeMenu();
-  setThemeMenuOpen(false);
+  updateThemeMenus();
+  closeAllThemeMenus();
 
   const navToggle = document.querySelector("[data-nav-toggle]");
   const navOverlay = document.querySelector("[data-nav-overlay]");
   const navClose = document.querySelector("[data-nav-close]");
   const navPanel = document.querySelector("[data-nav-panel]");
+  const subnavToggles = Array.from(document.querySelectorAll("[data-subnav-toggle]"));
+
+  const setSubnavOpen = (toggle, open) => {
+    if (!toggle) {
+      return;
+    }
+    const item = toggle.closest(".mobile-nav-item");
+    const subnav = item ? item.querySelector("[data-subnav]") : null;
+    if (!subnav) {
+      return;
+    }
+    subnav.classList.toggle("is-open", open);
+    subnav.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  const collapseSubnavs = () => {
+    subnavToggles.forEach((toggle) => {
+      setSubnavOpen(toggle, false);
+    });
+  };
 
   const setNavOpen = (open) => {
     root.classList.toggle("nav-open", open);
     if (navToggle) {
       navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    if (!open) {
+      collapseSubnavs();
+      closeAllThemeMenus();
     }
   };
 
@@ -160,6 +204,17 @@
     });
   }
 
+  subnavToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const item = toggle.closest(".mobile-nav-item");
+      const subnav = item ? item.querySelector("[data-subnav]") : null;
+      if (!subnav) {
+        return;
+      }
+      setSubnavOpen(toggle, !subnav.classList.contains("is-open"));
+    });
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       setNavOpen(false);
@@ -187,8 +242,8 @@
 
   highlightNav();
 
-  const searchTrigger = document.querySelector("[data-search-trigger]");
-  if (searchTrigger) {
+  const searchTriggers = Array.from(document.querySelectorAll("[data-search-trigger]"));
+  if (searchTriggers.length) {
     const openSearch = () => {
       if (window.SearchWidget && typeof window.SearchWidget.open === "function") {
         window.SearchWidget.open();
@@ -196,9 +251,13 @@
       }
       return false;
     };
-    searchTrigger.addEventListener("click", (event) => {
-      event.preventDefault();
-      openSearch();
+    searchTriggers.forEach((trigger) => {
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (openSearch() && root.classList.contains("nav-open")) {
+          setNavOpen(false);
+        }
+      });
     });
   }
 
@@ -636,6 +695,14 @@
           const authorEl = document.createElement("span");
           authorEl.textContent = event.author;
           metaEl.appendChild(authorEl);
+        }
+        const dateLabel =
+          event.isUndated ? "未定义" : formatDateLabel(selectedDateKey || toDateKey(event.startDay));
+        if (dateLabel) {
+          const dateEl = document.createElement("span");
+          dateEl.className = "schedule-item-date";
+          dateEl.textContent = dateLabel;
+          metaEl.appendChild(dateEl);
         }
         itemEl.appendChild(metaEl);
 
