@@ -149,7 +149,7 @@ milestones:
         title: 规划目录结构
         是否完成: 已完成
         details:
-          - 创建 templates/ 与 static/ 的基础结构（含 modules/、assets/ 等）。
+          - 创建 templates/ 的基础结构（含 modules/、templates/assets/ 等）。
           - 明确公共模块拆分策略（base/layout/header/footer）。
         outputs:
           - "templates/"
@@ -176,7 +176,7 @@ milestones:
         outputs:
           - "templates/modules/header.html"
           - "templates/modules/footer.html"
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
       - id: M0-T4
         title: 新增主题设置表单 settings.yaml
         是否完成: 已完成
@@ -189,10 +189,10 @@ milestones:
         title: 约定静态资源入口与版本策略
         是否完成: 已完成
         details:
-          - 约定 CSS/JS 的路径与命名（例如 static/assets/theme.css / theme.js）。
+          - 约定 CSS/JS 的路径与命名（例如 templates/assets/theme.css / theme.js）。
           - 约定 vendor 资源存放位置（例如 static/vendor/）。
         outputs:
-          - "static/assets/"
+          - "templates/assets/"
           - "static/vendor/"
       - id: M0-T6
         title: 注册自定义模板到 theme.yaml（占位）
@@ -220,7 +220,7 @@ milestones:
           - 定义颜色（背景/前景/边框/强调/状态）、字体（族/字号/行高）、圆角、阴影、间距、容器宽度、断点。
           - 明确“功能优先”的视觉取舍：低饱和、低装饰、信息层级清晰。
         outputs:
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
       - id: M1-T2
         title: 明暗模式（跟随系统 + 主题设置切换 + 持久化）
         是否完成: 已完成
@@ -229,7 +229,7 @@ milestones:
           - 主题设置提供：跟随系统/强制亮/强制暗；选择结果持久化。
           - 不依赖构建工具，使用原生 JS/少量 Alpine.js 即可。
         outputs:
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
           - "settings.yaml"
       - id: M1-T3
         title: 基础排版与通用组件（按钮/卡片/表单）
@@ -238,7 +238,7 @@ milestones:
           - 定义正文排版样式（.prose 或等价约定）。
           - 定义按钮、卡片、标签、输入框、分割线等基础组件类。
         outputs:
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
 
   - id: M2
     name: 公共布局与导航（站点结构落地）
@@ -275,7 +275,7 @@ milestones:
           - 若搜索插件可用，再在 M7 中接入公开 API。
         outputs:
           - "templates/modules/header.html"
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
 
   - id: M3
     name: 首页日程表模块（核心特色功能）
@@ -306,7 +306,7 @@ milestones:
           - 周起始按约定（周一/周日）实现并在设置中可选（如需要）。
         outputs:
           - "templates/index.html"
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
       - id: M3-T2
         title: 右侧日程列表（默认从今天开始）
         是否完成: 已完成
@@ -317,7 +317,7 @@ milestones:
           - 条目展示字段固定：日程名称（文章标题）、时间（发布时间时分）、发布人（作者）；鼠标悬停显示简介（摘要/自定义摘要）。
         outputs:
           - "templates/index.html"
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
       - id: M3-T3
         title: 一年窗口与性能边界
         是否完成: 已完成
@@ -325,7 +325,7 @@ milestones:
           - 未来 1 年窗口：以“今天 + 365 天”为界。
           - 数据量边界：给出合理上限（例如 1000 条以内），超出做截断与提示。
         outputs:
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
 
   - id: M4
     name: 单页模板体系（默认/概括/历史）
@@ -355,7 +355,7 @@ milestones:
           - 锚点：为每个 H2 生成稳定 id（slug），支持复制链接分享。
         outputs:
           - "templates/page-outline.html"
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
       - id: M4-T3
         title: 历史单页模板（page-history，适配时间轴插件）
         是否完成: 已完成
@@ -366,7 +366,7 @@ milestones:
           - 若后续发现插件内部显式写死字号导致继承无效，再补充“插件支持的 CSS 变量/parts”适配（需要你提供插件文档或代码片段）。
         outputs:
           - "templates/page-history.html"
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
       - id: M4-T4
         title: 主题注册：单页模板映射
         是否完成: 已完成
@@ -460,7 +460,7 @@ milestones:
           - 公告样式参考：实现阶段向你索要参考站点截图，对齐字号、行距、信息区块布局。
         outputs:
           - "templates/post-announcement.html"
-          - "static/assets/theme.js"
+          - "templates/assets/theme.js"
       - id: M6-T3
         title: 主题注册：文章模板映射
         是否完成: 已完成
@@ -486,8 +486,8 @@ milestones:
           - 仅通过公开 API（如 SearchWidget.open()）唤起。
           - 自定义样式对齐主题变量（字体、圆角、前景/背景、层级阴影）。
         outputs:
-          - "static/assets/theme.js"
-          - "static/assets/theme.css"
+          - "templates/assets/theme.js"
+          - "templates/assets/theme.css"
       - id: M7-T2
         title: 评论组件（暗色/主题色/移动端折叠）
         是否完成: 待开始
@@ -495,8 +495,8 @@ milestones:
           - 暗色与主题色对齐，移动端默认折叠（减少首屏干扰）。
           - 折叠规则：仅在小屏启用；保留“展开评论”按钮。
         outputs:
-          - "static/assets/theme.js"
-          - "static/assets/theme.css"
+          - "templates/assets/theme.js"
+          - "templates/assets/theme.css"
       - id: M7-T3
         title: 链接管理（/links 页面样式适配）
         是否完成: 已完成
@@ -504,7 +504,7 @@ milestones:
           - 按插件文档提供的方式注入自定义样式。
           - 卡片/列表风格与主题一致。
         outputs:
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
       - id: M7-T4
         title: Docsme（/docs 与文档库内部页面）
         是否完成: 已完成
@@ -514,14 +514,14 @@ milestones:
           - 严格按官方主题开发说明进行对接。
         outputs:
           - "templates/docs.html (按 Docsme 规范)"
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
       - id: M7-T5
         title: 联系表单（自定义样式入口）
         是否完成: 待开始
         details:
           - 按文档 custom-styles 接入，确保表单控件与主题表单一致。
         outputs:
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
       - id: M7-T6
         title: Shiki/超链接卡片/时间轴/文本绘图（按需）
         是否完成: 待开始
@@ -530,7 +530,7 @@ milestones:
           - 时间轴：若出现样式冲突或字号过大，在 page-history 模板作用域内兜底。
           - 文本绘图/时间轴：默认认为无需适配；出现样式冲突再补。
         outputs:
-          - "static/assets/theme.css"
+          - "templates/assets/theme.css"
 
   - id: M8
     name: 文档与交付（可复现、可维护）
@@ -564,3 +564,4 @@ milestones:
           - 对 plugins.md 中每个插件：入口、API、样式注入点、未安装时行为。
         outputs:
           - "docs/plugins-integration.md"
+

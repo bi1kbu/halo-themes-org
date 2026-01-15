@@ -6,17 +6,43 @@
   const configScheme = root.dataset.scheme || "system";
   const stored = allowSwitch ? localStorage.getItem(storageKey) : null;
   let currentScheme = stored || configScheme;
-  const colorToggle = document.querySelector("[data-color-toggle]");
+  const themeSwitch = document.querySelector("[data-theme-switch]");
+  const themeToggle = document.querySelector("[data-theme-toggle]");
+  const themeMenu = document.querySelector("[data-theme-menu]");
+  const themeOptions = Array.from(document.querySelectorAll("[data-theme-option]"));
+
+  const updateThemeMenu = () => {
+    if (!themeMenu || !themeOptions.length) {
+      return;
+    }
+    const current = currentScheme || "system";
+    themeOptions.forEach((option) => {
+      const value = option.dataset.themeOption;
+      const active = value === current;
+      option.classList.toggle("is-active", active);
+      option.setAttribute("aria-selected", active ? "true" : "false");
+    });
+  };
+
+  const setThemeMenuOpen = (open) => {
+    if (!themeMenu || !themeToggle) {
+      return;
+    }
+    themeMenu.classList.toggle("is-open", open);
+    themeToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
 
   const applyScheme = (scheme) => {
     currentScheme = scheme;
     if (scheme === "system") {
       root.removeAttribute("data-theme");
       root.style.colorScheme = "";
+      updateThemeMenu();
       return;
     }
     root.setAttribute("data-theme", scheme);
     root.style.colorScheme = scheme;
+    updateThemeMenu();
   };
 
   applyScheme(currentScheme);
@@ -52,27 +78,48 @@
 
   window.themeOrganization = Object.assign(window.themeOrganization || {}, api);
 
-  if (colorToggle && allowSwitch) {
-    const labels = {
-      system: "Auto",
-      light: "Light",
-      dark: "Dark",
-    };
-    const updateLabel = () => {
-      const label = labels[currentScheme] || "Auto";
-      colorToggle.textContent = `Theme:${label}`;
-      colorToggle.setAttribute("aria-pressed", currentScheme !== "system" ? "true" : "false");
-      colorToggle.setAttribute("aria-disabled", "false");
-    };
-    updateLabel();
-    colorToggle.addEventListener("click", () => {
-      const order = ["system", "light", "dark"];
-      const index = order.indexOf(currentScheme);
-      const next = order[(index + 1) % order.length];
-      api.setColorScheme(next, true);
-      updateLabel();
+  if (themeToggle) {
+    if (!allowSwitch) {
+      themeToggle.setAttribute("aria-disabled", "true");
+    }
+    themeToggle.addEventListener("click", () => {
+      if (!allowSwitch) {
+        return;
+      }
+      setThemeMenuOpen(!themeMenu || !themeMenu.classList.contains("is-open"));
     });
   }
+
+  if (themeOptions.length && allowSwitch) {
+    themeOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        const next = option.dataset.themeOption || "system";
+        api.setColorScheme(next, true);
+        setThemeMenuOpen(false);
+      });
+    });
+  }
+
+  document.addEventListener("click", (event) => {
+    if (!themeMenu || !themeSwitch || !themeToggle) {
+      return;
+    }
+    if (!themeMenu.classList.contains("is-open")) {
+      return;
+    }
+    if (!themeSwitch.contains(event.target)) {
+      setThemeMenuOpen(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setThemeMenuOpen(false);
+    }
+  });
+
+  updateThemeMenu();
+  setThemeMenuOpen(false);
 
   const navToggle = document.querySelector("[data-nav-toggle]");
   const navOverlay = document.querySelector("[data-nav-overlay]");

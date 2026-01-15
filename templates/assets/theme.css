@@ -458,6 +458,66 @@ html.nav-open .mobile-nav {
   padding: 6px 10px;
 }
 
+.theme-switch {
+  position: relative;
+}
+
+.theme-switch-trigger {
+  min-width: 76px;
+  justify-content: center;
+}
+
+.theme-switch-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  line-height: 1;
+  margin-left: 4px;
+}
+
+.theme-switch-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 140px;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  display: none;
+  z-index: 30;
+}
+
+.theme-switch-menu.is-open {
+  display: grid;
+  gap: 4px;
+}
+
+.theme-switch-option {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.theme-switch-option:hover,
+.theme-switch-option.is-active {
+  background: var(--accent-weak);
+  color: var(--accent);
+  border-color: var(--border);
+}
+
+.theme-switch.is-disabled .theme-switch-trigger {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .search-trigger {
   display: inline-flex;
   align-items: center;
@@ -752,7 +812,7 @@ html.nav-open .mobile-nav {
   border: none;
   border-radius: 0;
   padding: 0;
-  background: #ffffff;
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   aspect-ratio: 1 / 1.4;
@@ -1090,6 +1150,40 @@ html.nav-open .mobile-nav {
   border: none;
   border-top: 1px solid var(--border);
   margin: var(--space-6) 0;
+}
+
+html[data-theme="dark"]
+  :is(.content-body, .post-body, .dm-content__body)
+  [style*="background-color: rgb(255, 255, 255)"],
+html[data-theme="dark"]
+  :is(.content-body, .post-body, .dm-content__body)
+  [style*="background-color: rgb(255,255,255)"],
+html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style*="background-color: #ffffff"],
+html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style*="background-color: #fff"],
+html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style*="background-color: white"] {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"])
+    :is(.content-body, .post-body, .dm-content__body)
+    [style*="background-color: rgb(255, 255, 255)"],
+  html:not([data-theme="light"])
+    :is(.content-body, .post-body, .dm-content__body)
+    [style*="background-color: rgb(255,255,255)"],
+  html:not([data-theme="light"])
+    :is(.content-body, .post-body, .dm-content__body)
+    [style*="background-color: #ffffff"],
+  html:not([data-theme="light"])
+    :is(.content-body, .post-body, .dm-content__body)
+    [style*="background-color: #fff"],
+  html:not([data-theme="light"])
+    :is(.content-body, .post-body, .dm-content__body)
+    [style*="background-color: white"] {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
 }
 
 .content-placeholder {

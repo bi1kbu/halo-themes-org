@@ -79,16 +79,36 @@
         </span>
         <span class="search-trigger-text">Search</span>
       </button>
-      <button
+      <div
         th:if="${theme.config.global.show_color_toggle}"
-        type="button"
-        class="btn-ghost"
-        data-color-toggle
-        th:attr="aria-disabled=${theme.config.style.enable_change_color_scheme} ? 'false' : 'true'"
-        th:title="${theme.config.style.enable_change_color_scheme} ? 'Theme' : 'Theme (placeholder)'"
+        class="theme-switch"
+        data-theme-switch
+        th:classappend="${theme.config.style.enable_change_color_scheme} ? '' : 'is-disabled'"
       >
-        Theme
-      </button>
+        <button
+          type="button"
+          class="btn-ghost theme-switch-trigger"
+          data-theme-toggle
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          th:attr="disabled=${theme.config.style.enable_change_color_scheme} ? null : 'disabled',
+                   aria-disabled=${theme.config.style.enable_change_color_scheme} ? 'false' : 'true',
+                   title=${theme.config.style.enable_change_color_scheme} ? 'Theme' : 'Theme (placeholder)'"
+        >
+          Theme <span class="theme-switch-caret" aria-hidden="true">v</span>
+        </button>
+        <div class="theme-switch-menu" data-theme-menu role="listbox">
+          <button class="theme-switch-option" type="button" data-theme-option="system" role="option">
+            Auto
+          </button>
+          <button class="theme-switch-option" type="button" data-theme-option="light" role="option">
+            Light
+          </button>
+          <button class="theme-switch-option" type="button" data-theme-option="dark" role="option">
+            Dark
+          </button>
+        </div>
+      </div>
       <a
         th:if="${theme.config.global.show_login_button}"
         class="btn-ghost"
