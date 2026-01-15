@@ -1,4 +1,8 @@
-<header class="site-header" th:with="menu=${menuFinder.getPrimary()}">
+<header
+  class="site-header"
+  th:with="menu=${menuFinder.getPrimary()},
+           currentUser=${contributorFinder.getContributor(#authentication.name)}"
+>
   <div class="container header-inner">
     <button
       class="nav-toggle"
@@ -119,9 +123,9 @@
         th:if="${theme.config.global.show_login_button}"
         class="btn-ghost"
         href="/login"
-        title="Login"
+        th:attr="title=${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
+        th:text="${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
       >
-        Login
       </a>
     </div>
   </div>
@@ -248,9 +252,9 @@
         th:if="${theme.config.global.show_login_button}"
         class="btn-ghost"
         href="/login"
-        title="Login"
+        th:attr="title=${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
+        th:text="${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
       >
-        Login
       </a>
     </div>
   </aside>
