@@ -327,10 +327,58 @@
     header.remove();
   };
 
+  const replaceDocsmeMenuLabel = () => {
+    if (!document.body || !document.body.classList.contains("page-docsme")) {
+      return;
+    }
+    const selector = 'button[dm-on\\:click*="sidebar.open"], button[dm-on\\:click*="$store.sidebar.open"]';
+    const button =
+      document.querySelector(selector) ||
+      Array.from(document.querySelectorAll("button")).find((item) => {
+        const text = item.textContent ? item.textContent.trim() : "";
+        return text === "文档列表";
+      });
+    if (!button) {
+      return;
+    }
+    const icon = document.createElement("span");
+    icon.className = "icon-[mingcute--book-2-line]";
+    button.replaceChildren(icon, document.createTextNode("文档列表"));
+  };
+
+  const initDocsmeTocToggle = () => {
+    if (!document.body || !document.body.classList.contains("page-docsme")) {
+      return;
+    }
+    if (!window.matchMedia("(max-width: 900px)").matches) {
+      return;
+    }
+    const button = Array.from(document.querySelectorAll("button")).find((item) => {
+      const text = item.textContent ? item.textContent.trim() : "";
+      return text === "本页目录";
+    });
+    const toc = document.querySelector(".dm-toc");
+    if (!button || !toc) {
+      return;
+    }
+    const update = () => {
+      const hasItems =
+        toc.querySelectorAll("a, li, [data-toc], [dm-data='toc'], .dm-toc__item").length > 0;
+      button.style.display = hasItems ? "" : "none";
+    };
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(toc, { childList: true, subtree: true });
+  };
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", moveDocsmeHeader);
+    document.addEventListener("DOMContentLoaded", replaceDocsmeMenuLabel);
+    document.addEventListener("DOMContentLoaded", initDocsmeTocToggle);
   } else {
     moveDocsmeHeader();
+    replaceDocsmeMenuLabel();
+    initDocsmeTocToggle();
   }
 
   const scheduleSection = document.querySelector("[data-schedule-section]");
