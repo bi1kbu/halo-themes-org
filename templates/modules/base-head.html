@@ -17,6 +17,6 @@
       }
     })();
   </script>
-  <link rel="stylesheet" th:href="${#theme.assets('/theme.css')}" />
-  <script th:src="${#theme.assets('/theme.js')}" defer></script>
+  <link rel="stylesheet" th:href="${#theme.assets('/build/main.css')}" />
+  <script type="module" th:src="${#theme.assets('/build/main.js')}"></script>
 </th:block>

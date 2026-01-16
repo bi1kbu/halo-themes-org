@@ -1,0 +1,12 @@
+{
+  "name": "theme-organization",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:watch": "vite build --watch"
+  },
+  "devDependencies": {
+    "vite": "^5.4.8"
+  }
+}

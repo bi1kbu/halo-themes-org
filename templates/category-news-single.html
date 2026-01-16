@@ -1,8 +1,11 @@
 <!doctype html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-category-news-single')}"
+  th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = ~{::head}, bodyClass = 'page-category-news-single')}"
 >
+  <th:block th:fragment="head">
+    <link rel="stylesheet" th:href="${#theme.assets('/build/page-category-news-single.css')}" />
+  </th:block>
   <th:block th:fragment="content">
     <section class="content-block category-news-single">
       <header class="content-header">

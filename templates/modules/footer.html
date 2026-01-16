@@ -28,7 +28,7 @@
               <span
                 class="footer-menu-icon"
                 th:if="${hasIcon}"
-                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+                th:attr="data-footer-icon=|https://api.iconify.design/${iconPath}.svg|"
               ></span>
               <span th:if="${!hasIcon}" th:text="${item.name}"></span>
             </a>
@@ -43,7 +43,7 @@
               <span
                 class="footer-menu-icon"
                 th:if="${hasIcon}"
-                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+                th:attr="data-footer-icon=|https://api.iconify.design/${iconPath}.svg|"
               ></span>
               <span th:if="${!hasIcon}" th:text="${item.name}"></span>
             </button>
@@ -57,7 +57,7 @@
               <span
                 class="footer-menu-icon"
                 th:if="${hasIcon}"
-                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+                th:attr="data-footer-icon=|https://api.iconify.design/${iconPath}.svg|"
               ></span>
               <span th:if="${!hasIcon}" th:text="${item.name}"></span>
             </button>
@@ -65,7 +65,7 @@
               <span
                 class="footer-menu-icon"
                 th:if="${hasIcon}"
-                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+                th:attr="data-footer-icon=|https://api.iconify.design/${iconPath}.svg|"
               ></span>
               <span th:if="${!hasIcon}" th:text="${item.name}"></span>
             </span>

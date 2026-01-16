@@ -1,8 +1,11 @@
 <!doctype html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: layout(title = ${tag.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-tag-archive')}"
+  th:replace="~{modules/layout :: layout(title = ${tag.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = ~{::head}, bodyClass = 'page-tag-archive')}"
 >
+  <th:block th:fragment="head">
+    <link rel="stylesheet" th:href="${#theme.assets('/build/page-tag.css')}" />
+  </th:block>
   <th:block th:fragment="content">
     <section class="content-block tag-archive">
       <header class="content-header">

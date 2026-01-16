@@ -4,6 +4,8 @@
   th:replace="~{modules/layout :: layout(title = ${docTree.spec.title} + ' - ' + ${site.title}, content = ~{::content}, head = ~{::head}, bodyClass = 'page-doc-catalog page-docsme')}"
 >
   <th:block th:fragment="head">
+    <link rel="stylesheet" th:href="${#theme.assets('/build/page-docsme.css')}" />
+    <script type="module" th:src="${#theme.assets('/build/page-docsme.js')}"></script>
     <th:block th:replace="~{plugin:plugin-docsme:modules/style}" />
     <th:block th:replace="~{plugin:plugin-docsme:modules/script}" />
     <th:block th:replace="~{plugin:plugin-docsme:modules/plugin-scripts}" />

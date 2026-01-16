@@ -1,0 +1,19 @@
+.page-history {
+  --org-timeline-font-size: 18px;
+  --org-timeline-line-height: 1.6;
+}
+
+.page-history timeline-view {
+  display: block;
+  font-size: var(--org-timeline-font-size);
+  line-height: var(--org-timeline-line-height);
+  font-family: var(--font-sans);
+}
+
+.page-history .content-title {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-align: center;
+}
