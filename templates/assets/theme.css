@@ -3405,6 +3405,18 @@ textarea {
   cursor: pointer;
 }
 
+.footer-menu-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  background-color: currentColor;
+  mask: var(--footer-menu-icon) no-repeat center / contain;
+  -webkit-mask: var(--footer-menu-icon) no-repeat center / contain;
+}
+
 .footer-menu-btn:hover {
   border-color: var(--accent);
   color: var(--accent);

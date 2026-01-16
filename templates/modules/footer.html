@@ -5,30 +5,70 @@
   >
     <div class="container footer-menu-inner">
       <div class="footer-menu-list">
-        <th:block th:each="item : ${theme.config.footer.mobile_menu}">
+        <th:block
+          th:each="item : ${theme.config.footer.mobile_menu}"
+          th:with="iconRaw=${item.foot_menu_icon},
+                   iconIsMap=${iconRaw instanceof T(java.util.Map)},
+                   iconIsString=${iconRaw instanceof T(java.lang.String)},
+                   iconNameValue=${iconIsMap ? iconRaw['name'] : (iconIsString ? iconRaw : (iconRaw != null ? T(java.lang.String).valueOf(iconRaw) : ''))},
+                   iconText=${iconNameValue != null ? T(java.lang.String).valueOf(iconNameValue) : ''},
+                   iconTextTrim=${#strings.trim(iconText)},
+                   iconTextParsed=${#strings.contains(iconTextTrim, '&quot;name&quot;') ? #strings.substringBefore(#strings.substringAfter(iconTextTrim, '&quot;name&quot;:&quot;'), '&quot;') : iconTextTrim},
+                   iconKey=${#strings.isEmpty(iconTextParsed) ? item.icon : iconTextParsed},
+                   hasIcon=${not #strings.isEmpty(iconKey)},
+                   iconPath=${hasIcon ? #strings.replace(T(java.lang.String).valueOf(iconKey), ':', '/') : ''}"
+        >
           <th:block th:switch="${item.action}">
             <a
               th:case="'custom'"
               class="footer-menu-btn"
               th:href="${#strings.isEmpty(item.url) ? 'javascript:void(0)' : item.url}"
-              th:text="${item.name}"
-            ></a>
+              th:attr="aria-label=${item.name}"
+            >
+              <span
+                class="footer-menu-icon"
+                th:if="${hasIcon}"
+                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+              ></span>
+              <span th:if="${!hasIcon}" th:text="${item.name}"></span>
+            </a>
             <button
               th:case="'search'"
               th:if="${pluginFinder.available('PluginSearchWidget')}"
               class="footer-menu-btn"
               type="button"
               data-footer-action="search"
-              th:text="${item.name}"
-            ></button>
+              th:attr="aria-label=${item.name}"
+            >
+              <span
+                class="footer-menu-icon"
+                th:if="${hasIcon}"
+                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+              ></span>
+              <span th:if="${!hasIcon}" th:text="${item.name}"></span>
+            </button>
             <button
               th:case="'top'"
               class="footer-menu-btn"
               type="button"
               data-footer-action="top"
-              th:text="${item.name}"
-            ></button>
-            <span th:case="*" class="footer-menu-btn" th:text="${item.name}"></span>
+              th:attr="aria-label=${item.name}"
+            >
+              <span
+                class="footer-menu-icon"
+                th:if="${hasIcon}"
+                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+              ></span>
+              <span th:if="${!hasIcon}" th:text="${item.name}"></span>
+            </button>
+            <span th:case="*" class="footer-menu-btn" th:attr="aria-label=${item.name}">
+              <span
+                class="footer-menu-icon"
+                th:if="${hasIcon}"
+                th:style="|--footer-menu-icon: url('https://api.iconify.design/${iconPath}.svg');|"
+              ></span>
+              <span th:if="${!hasIcon}" th:text="${item.name}"></span>
+            </span>
           </th:block>
         </th:block>
       </div>

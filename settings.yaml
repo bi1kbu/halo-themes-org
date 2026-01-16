@@ -53,6 +53,11 @@ spec:
               validation: required
               validation-label: 按钮名称
               value: ""
+            - $formkit: iconify
+              name: foot_menu_icon
+              label: 按钮图标
+              help: 选择后将使用图标替代按钮名称
+              value: ""
             - $formkit: select
               name: action
               label: 功能选择
