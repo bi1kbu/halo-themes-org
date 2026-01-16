@@ -31,6 +31,9 @@ spec:
       - name: 动态分类页
         description: 模块化多栏（单/双/三栏组合）
         file: category-news.html
+      - name: 单动态介绍页
+        description: 动态子分类完整列表（封面 + 置顶 + 分页）
+        file: category-news-single.html
     page:
       - name: 加入我们
         description: 加入我们页面（通用内容页）
@@ -44,6 +47,10 @@ spec:
       - name: 历史
         description: 适配时间轴插件字号与间距
         file: page-history.html
+    tag:
+      - name: 标签归档页
+        description: 标签文章列表（封面 + 置顶 + 分页）
+        file: tag.html
   version: 1.0.0
   requires: "2.0.0"
   license:

@@ -1,0 +1,52 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = ${tag.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-tag-archive')}"
+>
+  <th:block th:fragment="content">
+    <section class="content-block tag-archive">
+      <header class="content-header">
+        <h1 class="content-title" th:text="${'全部 ' + tag.spec.displayName}"></h1>
+      </header>
+      <div class="tag-archive-list" th:if="${posts.total gt 0}">
+        <article class="tag-archive-item" th:each="post : ${posts.items}">
+          <a
+            class="tag-archive-cover"
+            th:href="@{${post.status.permalink}}"
+            th:attr="aria-label=${post.spec.title}"
+          >
+            <img
+              th:if="${not #strings.isEmpty(post.spec.cover)}"
+              th:src="${post.spec.cover}"
+              th:alt="${post.spec.title}"
+            />
+          </a>
+          <div class="tag-archive-body">
+            <div class="tag-archive-title">
+              <span class="tag-archive-pin" th:if="${post.spec.pinned}">置顶</span>
+              <a class="tag-archive-link" th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+            </div>
+            <p
+              class="tag-archive-desc"
+              th:if="${not #strings.isEmpty(post.status.excerpt)}"
+              th:text="${post.status.excerpt}"
+            ></p>
+            <div class="tag-archive-meta">
+              <div class="tag-archive-meta-left">
+                <span class="tag-archive-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+                <span class="tag-archive-author" th:if="${post.owner != null}" th:text="${post.owner.displayName}"></span>
+              </div>
+              <div class="tag-archive-tags">
+                <span class="tag-archive-tag" th:text="${tag.spec.displayName}"></span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="empty-state" th:if="${posts.total == 0}">No posts</div>
+      <div
+        th:replace="~{modules/pagination :: pagination(context = |/tags/${tag.metadata.name}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+      ></div>
+    </section>
+  </th:block>
+</html>

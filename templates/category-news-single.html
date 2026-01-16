@@ -1,0 +1,58 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: layout(title = ${category.spec.displayName} + ' - ' + ${site.title}, content = ~{::content}, head = null, bodyClass = 'page-category-news-single')}"
+>
+  <th:block th:fragment="content">
+    <section class="content-block category-news-single">
+      <header class="content-header">
+        <h1 class="content-title" th:text="${category.spec.displayName}"></h1>
+        <p class="content-desc" th:if="${not #strings.isEmpty(category.spec.description)}" th:text="${category.spec.description}"></p>
+      </header>
+      <div class="news-single-list" th:if="${posts.total gt 0}">
+        <article class="news-single-item" th:each="post : ${posts.items}">
+          <a
+            class="news-single-cover"
+            th:href="@{${post.status.permalink}}"
+            th:attr="aria-label=${post.spec.title}"
+          >
+            <img
+              th:if="${not #strings.isEmpty(post.spec.cover)}"
+              th:src="${post.spec.cover}"
+              th:alt="${post.spec.title}"
+            />
+          </a>
+          <div class="news-single-body">
+            <div class="news-single-title">
+              <span class="news-single-pin" th:if="${post.spec.pinned}">置顶</span>
+              <a class="news-single-link" th:href="@{${post.status.permalink}}" th:text="${post.spec.title}"></a>
+            </div>
+            <p
+              class="news-single-desc"
+              th:if="${not #strings.isEmpty(post.status.excerpt)}"
+              th:text="${post.status.excerpt}"
+            ></p>
+            <div class="news-single-meta">
+              <div class="news-single-meta-left">
+                <span class="news-single-date" th:if="${post.spec.publishTime != null}" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+                <span class="news-single-author" th:if="${post.owner != null}" th:text="${post.owner.displayName}"></span>
+              </div>
+              <div class="news-single-tags" th:if="${post.tags != null and #lists.size(post.tags) > 0}">
+                <a
+                  class="news-single-tag"
+                  th:each="tag : ${post.tags}"
+                  th:href="@{${tag.status.permalink}}"
+                  th:text="${tag.spec.displayName}"
+                ></a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="empty-state" th:if="${posts.total == 0}">No posts</div>
+      <div
+        th:replace="~{modules/pagination :: pagination(context = |${category.status.permalink}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+      ></div>
+    </section>
+  </th:block>
+</html>
