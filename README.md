@@ -44,6 +44,18 @@ pnpm run build
 
 发布前请确保已执行构建（`templates/assets/build` 默认不提交）。
 
+## 打包为主题 ZIP
+
+```bash
+pnpm run package
+```
+
+默认输出 `theme-organization.zip`，如需跳过构建：
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/package.ps1 -SkipBuild
+```
+
 ## 主题配置入口
 
 - `settings.yaml`：主题设置表单（全局、样式、首页、分类页、页脚等）
