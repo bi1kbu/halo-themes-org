@@ -18,15 +18,15 @@ spec:
               value: image
         - $formkit: checkbox
           name: show_search_button
-          label: 显示搜索按钮（占位）
+          label: 显示搜索按钮
           value: true
         - $formkit: checkbox
           name: show_color_toggle
-          label: 显示明暗切换（占位）
+          label: 显示明暗切换
           value: true
         - $formkit: checkbox
           name: show_login_button
-          label: 显示登录按钮（占位）
+          label: 显示登录按钮
           value: true
     - group: footer
       label: 页脚
@@ -34,11 +34,13 @@ spec:
         - $formkit: text
           name: footer_text
           label: 页脚描述
-          value: "© 2026 机魂社"
+          help: 为空则不显示
+          value: ""
         - $formkit: text
           name: footer_record
           label: 备案信息
-          value: "京ICP备00000000号-00"
+          help: 为空则不显示
+          value: ""
         - $formkit: array
           name: mobile_menu
           label: 移动端底部菜单
@@ -69,6 +71,8 @@ spec:
                   value: custom
                 - label: 搜索
                   value: search
+                - label: 回到顶部
+                  value: top
             - $formkit: text
               name: url
               label: URL
@@ -91,7 +95,7 @@ spec:
         - $formkit: checkbox
           name: enable_change_color_scheme
           label: 允许访客切换配色
-          value: false
+          value: true
     - group: home
       label: 首页
       formSchema:

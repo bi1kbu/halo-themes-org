@@ -12,14 +12,15 @@
 .category-project .project-hero-cover {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
+  background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   aspect-ratio: 16 / 9;
-  background: var(--accent-weak);
+  background-color: var(--accent-weak);
 }
 
 .category-project .project-hero-cover.is-empty {
-  background: var(--accent-weak);
+  background-color: var(--accent-weak);
 }
 
 .category-project .project-hero-intro {

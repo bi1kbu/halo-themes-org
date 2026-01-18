@@ -6,18 +6,31 @@
   <th:block th:fragment="head">
     <link rel="stylesheet" th:href="${#theme.assets('/build/page-docsme.css')}" />
     <script type="module" th:src="${#theme.assets('/build/page-docsme.js')}"></script>
-    <th:block th:replace="~{plugin:plugin-docsme:modules/style}" />
-    <th:block th:replace="~{plugin:plugin-docsme:modules/script}" />
-    <th:block th:replace="~{plugin:plugin-docsme:modules/plugin-scripts}" />
+    <th:block th:if="${pluginFinder.available('PluginDocsme') or pluginFinder.available('plugin-docsme')}">
+      <th:block th:replace="~{plugin:plugin-docsme:modules/style}" />
+      <th:block th:replace="~{plugin:plugin-docsme:modules/script}" />
+      <th:block th:replace="~{plugin:plugin-docsme:modules/plugin-scripts}" />
+    </th:block>
   </th:block>
   <th:block th:fragment="content">
-    <div class="dm-container dm-container--embedded">
-      <th:block
-        th:replace="~{plugin:plugin-docsme:modules/header :: header(showThemeSwitcher = false)}"
-      />
-      <th:block
-        th:replace="~{plugin:plugin-docsme:modules/doc-catalog :: doc-catalog(footer = null)}"
-      />
-    </div>
+    <th:block th:if="${pluginFinder.available('PluginDocsme') or pluginFinder.available('plugin-docsme')}">
+      <div class="dm-container dm-container--embedded">
+        <th:block
+          th:replace="~{plugin:plugin-docsme:modules/header :: header(showThemeSwitcher = false)}"
+        />
+        <th:block
+          th:replace="~{plugin:plugin-docsme:modules/doc-catalog :: doc-catalog(footer = null)}"
+        />
+      </div>
+    </th:block>
+    <section
+      class="content-block"
+      th:if="${not (pluginFinder.available('PluginDocsme') or pluginFinder.available('plugin-docsme'))}"
+    >
+      <header class="content-header">
+        <h1 class="content-title">Docsme 插件未启用</h1>
+        <p class="content-desc">请安装并启用 Docsme 插件后再访问该页面。</p>
+      </header>
+    </section>
   </th:block>
 </html>

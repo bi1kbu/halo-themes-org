@@ -1,0 +1,47 @@
+services:
+  halo:
+    image: registry.fit2cloud.com/halo/halo-pro:2
+    restart: "no"
+    volumes:
+      - ./halo2:/root/.halo2
+    ports:
+      - "8090:8090"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/actuator/health/readiness"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      # JVM 参数，默认为 -Xmx256m -Xms256m，可以根据实际情况做调整
+      - JVM_OPTS=-Xmx256m -Xms256m
+      # Spring 配置，关闭 Thymeleaf 缓存以便开发调试
+      - SPRING_THYMELEAF_CACHE=false
+      # MySQL 数据库连接（R2DBC）
+      - SPRING_R2DBC_URL=r2dbc:pool:mysql://mysql:3306/halo
+      - SPRING_R2DBC_USERNAME=root
+      - SPRING_R2DBC_PASSWORD=openmysql
+      - SPRING_SQL_INIT_PLATFORM=mysql
+    command:
+      # 外部访问地址，请根据实际需要修改
+      - --halo.external-url=http://localhost:8090/
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    restart: "no"
+    environment:
+      - MYSQL_ROOT_PASSWORD=openmysql
+      - MYSQL_DATABASE=halo
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s

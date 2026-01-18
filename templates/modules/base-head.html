@@ -1,22 +1,43 @@
 <th:block th:fragment="base-head(title)">
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title th:text="${title}"></title>
-  <script>
-    (function () {
-      var root = document.documentElement;
-      var scheme = root.dataset.scheme || "system";
-      var allow = root.dataset.allowScheme === "true";
-      var key = "theme-organization-color-scheme";
-      var stored = allow ? localStorage.getItem(key) : null;
-      var value = stored || scheme;
-      if (value && value !== "system") {
-        root.setAttribute("data-theme", value);
-        root.style.colorScheme = value;
-      }
-    })();
-  </script>
-  <link rel="stylesheet" th:href="${#theme.assets('/build/main.css')}" />
-  <script type="module" th:src="${#theme.assets('/build/main.js')}"></script>
+  <th:block
+    th:with="metaDescription=${theme.config.footer != null && !#strings.isEmpty(theme.config.footer.footer_text) ? theme.config.footer.footer_text : site.title}"
+  >
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title th:text="${title}"></title>
+    <meta name="description" th:if="${not #strings.isEmpty(metaDescription)}" th:content="${metaDescription}" />
+    <meta property="og:title" th:content="${title}" />
+    <meta property="og:site_name" th:content="${site.title}" />
+    <meta
+      property="og:description"
+      th:if="${not #strings.isEmpty(metaDescription)}"
+      th:content="${metaDescription}"
+    />
+    <meta property="og:image" th:if="${not #strings.isEmpty(site.logo)}" th:content="${site.logo}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" th:content="${title}" />
+    <meta
+      name="twitter:description"
+      th:if="${not #strings.isEmpty(metaDescription)}"
+      th:content="${metaDescription}"
+    />
+    <meta name="twitter:image" th:if="${not #strings.isEmpty(site.logo)}" th:content="${site.logo}" />
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var scheme = root.dataset.scheme || "system";
+        var allow = root.dataset.allowScheme === "true";
+        var key = "theme-organization-color-scheme";
+        var stored = allow ? localStorage.getItem(key) : null;
+        var value = stored || scheme;
+        if (value && value !== "system") {
+          root.setAttribute("data-theme", value);
+          root.style.colorScheme = value;
+        }
+      })();
+    </script>
+    <link rel="stylesheet" th:href="${#theme.assets('/build/main.css')}" />
+    <script type="module" th:src="${#theme.assets('/build/main.js')}"></script>
+  </th:block>
 </th:block>
