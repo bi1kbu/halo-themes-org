@@ -8,7 +8,7 @@ spec:
     name: MSIEFA
     website: https://msiefa.org
   description: 本主题为社团组织等官网主题，由机魂社（MSIEFA.ORG）开发。
-  logo: /themes/theme-organization/assets/org.jpg
+  logo: https://msiefa.org/upload/org.jpg
   homepage: https://msiefa.org
   repo: https://github.com/bi1kbu/halo-themes-org
   issues: https://github.com/bi1kbu/halo-themes-org/issues
@@ -51,7 +51,7 @@ spec:
       - name: 标签归档页
         description: 标签文章列表（封面 + 置顶 + 分页）
         file: tag.html
-  version: 1.0.0
+  version: 1.0.2
   requires: "2.0.0"
   license:
     - name: MIT
