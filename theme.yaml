@@ -8,7 +8,7 @@ spec:
     name: MSIEFA
     website: https://msiefa.org
   description: 本主题为社团组织等官网主题，由机魂社（MSIEFA.ORG）开发。
-  logo: https://msiefa.org/logo.png
+  logo: /themes/theme-organization/assets/org.jpg
   homepage: https://msiefa.org
   repo: https://github.com/bi1kbu/halo-themes-org
   issues: https://github.com/bi1kbu/halo-themes-org/issues
