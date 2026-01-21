@@ -40,6 +40,23 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
   padding: 0;
 }
 
+.page-docsme {
+  --dm-c-bg: var(--bg);
+  --dm-c-bg-elv: var(--surface);
+  --dm-c-bg-alt: var(--bg);
+  --dm-c-bg-soft: var(--accent-weak);
+  --dm-c-text-1: var(--text);
+  --dm-c-text-2: var(--text);
+  --dm-c-text-3: var(--muted);
+  --dm-c-brand: var(--accent);
+  --dm-c-brand-hover: var(--accent);
+  --dm-c-brand-active: var(--accent);
+  --dm-c-brand-soft: var(--accent-weak);
+  --dm-c-brand-mute: var(--accent-weak);
+  --dm-c-border: var(--border);
+  --dm-c-divider: var(--border);
+}
+
 .page-docs .dm-container {
   max-width: var(--container);
   margin: 0 auto;
@@ -192,6 +209,59 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
   font-size: var(--text-md);
 }
 
+.page-docsme .prose-content,
+.page-docsme .dm-content__body.prose-content {
+  color: var(--text) !important;
+  --tw-prose-body: var(--text) !important;
+  --tw-prose-headings: var(--text) !important;
+  --tw-prose-lead: var(--text) !important;
+  --tw-prose-links: var(--accent) !important;
+  --tw-prose-bold: var(--text) !important;
+  --tw-prose-counters: var(--muted) !important;
+  --tw-prose-bullets: var(--muted) !important;
+  --tw-prose-hr: var(--border) !important;
+  --tw-prose-quotes: var(--text) !important;
+  --tw-prose-quote-borders: var(--border) !important;
+  --tw-prose-captions: var(--muted) !important;
+  --tw-prose-code: var(--code-text) !important;
+  --tw-prose-pre-code: var(--code-text) !important;
+  --tw-prose-pre-bg: var(--code-bg) !important;
+  --tw-prose-th-borders: var(--border) !important;
+  --tw-prose-td-borders: var(--border) !important;
+  --tw-prose-kbd: var(--text) !important;
+  --tw-prose-kbd-shadows: var(--border) !important;
+  --tw-prose-invert-body: var(--text) !important;
+  --tw-prose-invert-headings: var(--text) !important;
+  --tw-prose-invert-lead: var(--text) !important;
+  --tw-prose-invert-links: var(--accent) !important;
+  --tw-prose-invert-bold: var(--text) !important;
+  --tw-prose-invert-counters: var(--muted) !important;
+  --tw-prose-invert-bullets: var(--muted) !important;
+  --tw-prose-invert-hr: var(--border) !important;
+  --tw-prose-invert-quotes: var(--text) !important;
+  --tw-prose-invert-quote-borders: var(--border) !important;
+  --tw-prose-invert-captions: var(--muted) !important;
+  --tw-prose-invert-code: var(--code-text) !important;
+  --tw-prose-invert-pre-code: var(--code-text) !important;
+  --tw-prose-invert-pre-bg: var(--code-bg) !important;
+  --tw-prose-invert-th-borders: var(--border) !important;
+  --tw-prose-invert-td-borders: var(--border) !important;
+}
+
+.page-docsme .prose-content h1,
+.page-docsme .prose-content h2,
+.page-docsme .prose-content h3,
+.page-docsme .prose-content h4,
+.page-docsme .prose-content h5,
+.page-docsme .prose-content h6 {
+  color: var(--text) !important;
+}
+
+.page-docsme .prose-content a,
+.page-docsme .prose-content a:hover {
+  color: var(--accent) !important;
+}
+
 .page-docsme .dm-content__body pre,
 .page-docsme .dm-content__body code {
   font-family: var(--font-mono);
@@ -206,6 +276,33 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
 .page-docsme .dm-toc {
   background: var(--surface);
   border-left: 1px solid var(--border);
+  color: var(--text);
+}
+
+.page-docsme .dm-toc__header,
+.page-docsme .dm-toc__header h2,
+.page-docsme .dm-toc__title {
+  color: var(--text);
+}
+
+.page-docsme .dm-toc__body,
+.page-docsme .dm-toc__body .toc-list,
+.page-docsme .dm-toc__body .toc-list-item {
+  color: var(--muted);
+}
+
+.page-docsme .dm-toc .toc-link {
+  color: var(--muted);
+}
+
+.page-docsme .dm-toc .toc-link:hover {
+  color: var(--text);
+}
+
+.page-docsme .dm-toc .toc-link.is-active-link,
+.page-docsme .dm-toc .toc-list-item.is-active-li {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .page-docsme .dm-sidebar__switcher {

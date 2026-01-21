@@ -298,6 +298,14 @@
     padding-top: var(--space-5);
   }
 
+  .schedule-list[data-list-mode="day"] .schedule-items {
+    grid-auto-rows: auto;
+  }
+
+  .schedule-list[data-list-mode="day"] .schedule-item {
+    height: auto;
+  }
+
   .schedule-date {
     display: none;
   }
