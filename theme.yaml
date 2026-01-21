@@ -51,7 +51,7 @@ spec:
       - name: 标签归档页
         description: 标签文章列表（封面 + 置顶 + 分页）
         file: tag.html
-  version: 1.0.2
+  version: 1.0.5
   requires: "2.0.0"
   license:
     - name: MIT
