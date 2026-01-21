@@ -244,6 +244,34 @@ import "./styles/base.css";
 
   highlightNav();
 
+  const updateLoginLinks = () => {
+    const links = Array.from(document.querySelectorAll("[data-login-link]"));
+    if (!links.length) {
+      return;
+    }
+    const pathname = window.location.pathname || "/";
+    if (pathname.startsWith("/login")) {
+      return;
+    }
+    const redirect = `${pathname}${window.location.search || ""}${window.location.hash || ""}`;
+    const encoded = encodeURIComponent(redirect);
+    links.forEach((link) => {
+      const nextHref = `/login?redirect_uri=${encoded}`;
+      link.setAttribute("href", nextHref);
+      if (link.dataset.loginBound === "true") {
+        return;
+      }
+      link.dataset.loginBound = "true";
+      link.addEventListener("click", () => {
+        const freshRedirect = `${window.location.pathname || "/"}${window.location.search || ""}${window.location.hash || ""}`;
+        link.setAttribute("href", `/login?redirect_uri=${encodeURIComponent(freshRedirect)}`);
+      });
+    });
+  };
+
+  updateLoginLinks();
+  window.addEventListener("load", updateLoginLinks);
+
   const openSearch = () => {
     if (window.SearchWidget && typeof window.SearchWidget.open === "function") {
       window.SearchWidget.open();
