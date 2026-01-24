@@ -189,6 +189,8 @@
   margin: 0;
   display: grid;
   gap: var(--space-3);
+  align-content: start;
+  justify-content: start;
   flex: 1;
   min-height: 0;
   overflow: auto;
