@@ -42,3 +42,4 @@
 - 明暗模式：默认跟随系统，可在主题设置中切换并持久化。
 - 多端适配：通过判断屏幕分辨率与横纵比例实现多端样式切断。
 - 文案与导航结构：集中在主题设置或模板配置中，避免散落硬编码。
+- Release 流程：更新 `theme.yaml` 的 `spec.version` → 运行 `scripts/package.ps1` 生成 `theme-organization.zip` → 创建 Release 并上传 zip → 发布前向用户确认标题与说明。
