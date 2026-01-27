@@ -1,6 +1,37 @@
 <th:block th:fragment="base-head(title)">
   <th:block
-    th:with="metaDescription=${theme.config.footer != null && !#strings.isEmpty(theme.config.footer.footer_text) ? theme.config.footer.footer_text : site.title}"
+    th:with="postExcerpt=${post != null && post.status != null ? post.status.excerpt : ''},
+             postContentVo=${post != null && #strings.isEmpty(postExcerpt) ? postFinder.content(post.metadata.name) : null},
+             postContent=${postContentVo != null
+               ? (postContentVo.content != null && !#strings.isEmpty(postContentVo.content)
+                 ? postContentVo.content
+                 : (postContentVo.raw != null ? postContentVo.raw : ''))
+               : ''},
+             singleExcerpt=${singlePage != null && singlePage.status != null ? singlePage.status.excerpt : ''},
+             singleContent=${singlePage != null && #strings.isEmpty(singleExcerpt)
+               ? (singlePage.content != null
+                 ? (singlePage.content.content != null ? singlePage.content.content : singlePage.content.raw)
+                 : '')
+               : ''},
+             categoryDesc=${category != null && category.spec != null ? category.spec.description : ''},
+             tagDesc=${tag != null && tag.spec != null ? tag.spec.description : ''},
+             docDesc=${docTree != null && docTree.spec != null ? docTree.spec.description : ''},
+             rawDescription=${!#strings.isEmpty(postExcerpt)
+               ? postExcerpt
+               : (!#strings.isEmpty(singleExcerpt)
+                 ? singleExcerpt
+                 : (!#strings.isEmpty(categoryDesc)
+                   ? categoryDesc
+                   : (!#strings.isEmpty(tagDesc)
+                     ? tagDesc
+                     : (!#strings.isEmpty(docDesc)
+                       ? docDesc
+                       : (!#strings.isEmpty(singleContent) ? singleContent : postContent)))))},
+             metaDescription=${#strings.isEmpty(rawDescription)
+               ? site.title
+               : (#strings.length(rawDescription) > 200
+                 ? #strings.substring(rawDescription, 0, 200) + '...'
+                 : rawDescription)}"
   >
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
