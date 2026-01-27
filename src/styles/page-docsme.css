@@ -11,6 +11,10 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
   color: inherit !important;
 }
 
+html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body, .prose-content) [style*="color:"] {
+  color: var(--text) !important;
+}
+
 @media (prefers-color-scheme: dark) {
   html:not([data-theme="light"])
     :is(.content-body, .post-body, .dm-content__body)
@@ -29,6 +33,13 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
     [style*="background-color: white"] {
     background-color: transparent !important;
     color: inherit !important;
+  }}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"])
+    :is(.content-body, .post-body, .dm-content__body, .prose-content)
+    [style*="color:"] {
+    color: var(--text) !important;
   }}
 
 .page-docsme .site-main.container {

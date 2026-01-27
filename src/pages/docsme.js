@@ -92,13 +92,79 @@ import "../styles/page-docsme.css";
     observer.observe(toc, { childList: true, subtree: true });
   };
 
+  const syncDocsmeInlineColors = () => {
+    if (!document.body || !document.body.classList.contains("page-docsme")) {
+      return;
+    }
+    const container = document.querySelector(".dm-content__body");
+    if (!container) {
+      return;
+    }
+    const root = document.documentElement;
+    const scheme = root.getAttribute("data-theme");
+    const prefersDark =
+      window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = scheme === "dark" || (scheme !== "light" && prefersDark);
+    const nodes = container.querySelectorAll('[style*="color:"]');
+    nodes.forEach((el) => {
+      if (!el.dataset.inlineColorRaw) {
+        const value = el.style.getPropertyValue("color");
+        if (value) {
+          el.dataset.inlineColorRaw = value;
+          const priority = el.style.getPropertyPriority("color");
+          if (priority) {
+            el.dataset.inlineColorPriority = priority;
+          }
+        }
+      }
+      if (isDark) {
+        el.style.setProperty("color", "var(--text)", "important");
+        return;
+      }
+      if (el.dataset.inlineColorRaw) {
+        el.style.setProperty(
+          "color",
+          el.dataset.inlineColorRaw,
+          el.dataset.inlineColorPriority || ""
+        );
+      }
+    });
+  };
+
+  const initDocsmeInlineColorSync = () => {
+    if (!document.body || !document.body.classList.contains("page-docsme")) {
+      return;
+    }
+    const container = document.querySelector(".dm-content__body");
+    if (!container) {
+      return;
+    }
+    syncDocsmeInlineColors();
+    const observer = new MutationObserver(() => {
+      syncDocsmeInlineColors();
+    });
+    observer.observe(container, { childList: true, subtree: true, attributes: true });
+    const rootObserver = new MutationObserver(() => {
+      syncDocsmeInlineColors();
+    });
+    rootObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    if (window.matchMedia) {
+      const media = window.matchMedia("(prefers-color-scheme: dark)");
+      if (media && media.addEventListener) {
+        media.addEventListener("change", syncDocsmeInlineColors);
+      }
+    }
+  };
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", moveDocsmeHeader);
     document.addEventListener("DOMContentLoaded", replaceDocsmeMenuLabel);
     document.addEventListener("DOMContentLoaded", initDocsmeTocToggle);
+    document.addEventListener("DOMContentLoaded", initDocsmeInlineColorSync);
   } else {
     moveDocsmeHeader();
     replaceDocsmeMenuLabel();
     initDocsmeTocToggle();
+    initDocsmeInlineColorSync();
   }
 })();
