@@ -96,6 +96,10 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
   color: var(--text);
 }
 
+.page-docsme .dm-header__logo {
+  font-size: 18px;
+}
+
 .page-docsme .dm-header__button {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -133,7 +137,7 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
 
 .page-docsme .dm-sidebar__content .dm-header__logo img {
   width: auto;
-  height: 28px;
+  height: 32px;
 }
 
 .page-docsme .dm-sidebar__content .dm-header__nav {
@@ -207,6 +211,28 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body) [style
 .page-docsme .dm-content__body {
   color: var(--text);
   font-size: var(--text-md);
+}
+
+.page-docsme .dm-content__body h1,
+.page-docsme .prose-content h1 {
+  font-size: 26px;
+  line-height: 1.3;
+}
+
+.page-docsme .dm-content__body table,
+.page-docsme .prose-content table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page-docsme .dm-content__body th,
+.page-docsme .dm-content__body td,
+.page-docsme .prose-content th,
+.page-docsme .prose-content td {
+  white-space: nowrap;
 }
 
 .page-docsme .prose-content,
