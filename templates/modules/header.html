@@ -1,7 +1,10 @@
 <header
   class="site-header"
   th:with="menu=${menuFinder.getPrimary()},
-           currentUser=${contributorFinder.getContributor(#authentication.name)}"
+           currentUser=${contributorFinder.getContributor(#authentication.name)},
+           isLoggedIn=${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser')},
+           userMenuConfig=${theme.config.global.user_menus},
+           userMenuList=${userMenuConfig instanceof T(java.util.List) ? userMenuConfig : (userMenuConfig != null ? {userMenuConfig} : null)}"
 >
   <div class="container header-inner">
     <button
@@ -119,15 +122,57 @@
           </button>
         </div>
       </div>
-      <a
-        th:if="${theme.config.global.show_login_button}"
-        class="btn-ghost"
-        href="/login"
-        data-login-link
-        th:attr="title=${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
-        th:text="${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
-      >
-      </a>
+      <div th:if="${theme.config.global.show_login_button}" class="user-menu">
+        <a
+          th:if="${!isLoggedIn}"
+          class="btn-ghost"
+          href="/login"
+          data-login-link
+          th:attr="title=${'Login'}"
+          th:text="${'Login'}"
+        ></a>
+        <div th:if="${isLoggedIn}" class="user-menu-wrapper">
+          <button
+            class="btn-ghost user-menu-trigger"
+            type="button"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            th:attr="title=${currentUser.displayName}"
+            th:text="${currentUser.displayName}"
+          ></button>
+          <ul class="user-menu-list" role="menu">
+            <li class="user-menu-item">
+              <a class="user-menu-link" href="/uc" role="menuitem">用户主页</a>
+            </li>
+            <li class="user-menu-item">
+              <a class="user-menu-link" href="/logout" role="menuitem">退出登录</a>
+            </li>
+            <li
+              class="user-menu-divider"
+              th:if="${userMenuList != null and !#lists.isEmpty(userMenuList)}"
+              role="separator"
+            ></li>
+            <th:block th:if="${userMenuList != null and !#lists.isEmpty(userMenuList)}">
+              <th:block th:each="userMenuName : ${userMenuList}">
+                <th:block
+                  th:with="menuKey=${userMenuName instanceof T(run.halo.app.theme.finders.vo.MenuVo) ? userMenuName.metadata.name : userMenuName},
+                           extraMenu=${menuKey != null ? menuFinder.getByName(menuKey) : null}"
+                >
+                  <li class="user-menu-item" th:each="extraItem : ${extraMenu != null ? extraMenu.menuItems : null}">
+                    <a
+                      class="user-menu-link"
+                      th:href="@{${extraItem.status.href}}"
+                      th:text="${extraItem.status.displayName}"
+                      th:target="${extraItem.spec.target?.value}"
+                      role="menuitem"
+                    ></a>
+                  </li>
+                </th:block>
+              </th:block>
+            </th:block>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
   <div
@@ -249,15 +294,56 @@
           </button>
         </div>
       </div>
-      <a
-        th:if="${theme.config.global.show_login_button}"
-        class="btn-ghost"
-        href="/login"
-        data-login-link
-        th:attr="title=${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
-        th:text="${currentUser != null and !#strings.equals(currentUser.name, 'anonymousUser') ? currentUser.displayName : 'Login'}"
-      >
-      </a>
+      <div th:if="${theme.config.global.show_login_button}" class="mobile-user-menu">
+        <a
+          th:if="${!isLoggedIn}"
+          class="btn-ghost"
+          href="/login"
+          data-login-link
+          th:attr="title=${'Login'}"
+          th:text="${'Login'}"
+        ></a>
+        <div th:if="${isLoggedIn}" class="mobile-nav-item">
+          <div class="mobile-nav-row">
+            <span class="mobile-nav-link mobile-user-name" th:text="${currentUser.displayName}"></span>
+            <button
+              class="mobile-subtoggle"
+              type="button"
+              data-subnav-toggle
+              aria-expanded="false"
+              aria-label="Toggle submenu"
+            >
+              +
+            </button>
+          </div>
+          <ul class="mobile-sublist" data-subnav hidden>
+            <li class="mobile-subitem">
+              <a class="mobile-sublink" href="/uc">用户主页</a>
+            </li>
+            <li class="mobile-subitem">
+              <a class="mobile-sublink" href="/logout">退出登录</a>
+            </li>
+            <th:block th:if="${userMenuList != null and !#lists.isEmpty(userMenuList)}">
+              <li class="mobile-subdivider"></li>
+              <th:block th:each="userMenuName : ${userMenuList}">
+                <th:block
+                  th:with="menuKey=${userMenuName instanceof T(run.halo.app.theme.finders.vo.MenuVo) ? userMenuName.metadata.name : userMenuName},
+                           extraMenu=${menuKey != null ? menuFinder.getByName(menuKey) : null}"
+                >
+                  <li class="mobile-subitem" th:each="extraItem : ${extraMenu != null ? extraMenu.menuItems : null}">
+                    <a
+                      class="mobile-sublink"
+                      th:href="@{${extraItem.status.href}}"
+                      th:text="${extraItem.status.displayName}"
+                      th:target="${extraItem.spec.target?.value}"
+                    ></a>
+                  </li>
+                </th:block>
+              </th:block>
+            </th:block>
+          </ul>
+        </div>
+      </div>
     </div>
   </aside>
 </header>

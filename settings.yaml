@@ -28,6 +28,12 @@ spec:
           name: show_login_button
           label: 显示登录按钮
           value: true
+        - $formkit: menuSelect
+          name: user_menus
+          label: 个人菜单追加
+          help: 选择系统菜单作为登录后下拉菜单的追加项
+          multiple: true
+          value: []
     - group: footer
       label: 页脚
       formSchema:
