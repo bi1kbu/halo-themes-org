@@ -417,6 +417,7 @@ img {
 .user-menu-list {
   position: absolute;
   top: calc(100% + 6px);
+  left: auto;
   right: 0;
   min-width: 160px;
   padding: 8px 0;
@@ -1354,6 +1355,26 @@ textarea {
   .footer-record {
     display: inline-flex;
     justify-content: center;
+  }
+
+  .mobile-user-menu .mobile-nav-link.mobile-user-name {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .mobile-nav {

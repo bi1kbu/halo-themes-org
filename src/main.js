@@ -147,13 +147,14 @@ import "./styles/base.css";
   const navClose = document.querySelector("[data-nav-close]");
   const navPanel = document.querySelector("[data-nav-panel]");
   const subnavToggles = Array.from(document.querySelectorAll("[data-subnav-toggle]"));
+  const userSubnavToggles = Array.from(document.querySelectorAll("[data-user-subnav-toggle]"));
 
-  const setSubnavOpen = (toggle, open) => {
+  const setSubnavOpen = (toggle, open, subnavSelector = "[data-subnav]") => {
     if (!toggle) {
       return;
     }
     const item = toggle.closest(".mobile-nav-item");
-    const subnav = item ? item.querySelector("[data-subnav]") : null;
+    const subnav = item ? item.querySelector(subnavSelector) : null;
     if (!subnav) {
       return;
     }
@@ -164,7 +165,10 @@ import "./styles/base.css";
 
   const collapseSubnavs = () => {
     subnavToggles.forEach((toggle) => {
-      setSubnavOpen(toggle, false);
+      setSubnavOpen(toggle, false, "[data-subnav]");
+    });
+    userSubnavToggles.forEach((toggle) => {
+      setSubnavOpen(toggle, false, "[data-user-subnav]");
     });
   };
 
@@ -213,7 +217,18 @@ import "./styles/base.css";
       if (!subnav) {
         return;
       }
-      setSubnavOpen(toggle, !subnav.classList.contains("is-open"));
+      setSubnavOpen(toggle, !subnav.classList.contains("is-open"), "[data-subnav]");
+    });
+  });
+
+  userSubnavToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => {
+      const item = toggle.closest(".mobile-nav-item");
+      const subnav = item ? item.querySelector("[data-user-subnav]") : null;
+      if (!subnav) {
+        return;
+      }
+      setSubnavOpen(toggle, !subnav.classList.contains("is-open"), "[data-user-subnav]");
     });
   });
 

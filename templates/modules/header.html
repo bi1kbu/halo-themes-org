@@ -140,12 +140,12 @@
             th:attr="title=${currentUser.displayName}"
             th:text="${currentUser.displayName}"
           ></button>
-          <ul class="user-menu-list" role="menu">
-            <li class="user-menu-item">
-              <a class="user-menu-link" href="/uc" role="menuitem">用户主页</a>
+          <ul class="user-menu-list nav-sublist" role="menu">
+            <li class="user-menu-item nav-subitem">
+              <a class="user-menu-link nav-sublink" href="/uc" role="menuitem">用户主页</a>
             </li>
-            <li class="user-menu-item">
-              <a class="user-menu-link" href="/logout" role="menuitem">退出登录</a>
+            <li class="user-menu-item nav-subitem">
+              <a class="user-menu-link nav-sublink" href="/logout" role="menuitem">退出登录</a>
             </li>
             <li
               class="user-menu-divider"
@@ -158,9 +158,9 @@
                   th:with="menuKey=${userMenuName instanceof T(run.halo.app.theme.finders.vo.MenuVo) ? userMenuName.metadata.name : userMenuName},
                            extraMenu=${menuKey != null ? menuFinder.getByName(menuKey) : null}"
                 >
-                  <li class="user-menu-item" th:each="extraItem : ${extraMenu != null ? extraMenu.menuItems : null}">
+                  <li class="user-menu-item nav-subitem" th:each="extraItem : ${extraMenu != null ? extraMenu.menuItems : null}">
                     <a
-                      class="user-menu-link"
+                      class="user-menu-link nav-sublink"
                       th:href="@{${extraItem.status.href}}"
                       th:text="${extraItem.status.displayName}"
                       th:target="${extraItem.spec.target?.value}"
@@ -309,14 +309,14 @@
             <button
               class="mobile-subtoggle"
               type="button"
-              data-subnav-toggle
+              data-user-subnav-toggle
               aria-expanded="false"
               aria-label="Toggle submenu"
             >
               +
             </button>
           </div>
-          <ul class="mobile-sublist" data-subnav hidden>
+          <ul class="mobile-sublist mobile-user-sublist" data-user-subnav hidden>
             <li class="mobile-subitem">
               <a class="mobile-sublink" href="/uc">用户主页</a>
             </li>
