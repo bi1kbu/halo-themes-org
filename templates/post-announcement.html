@@ -12,6 +12,7 @@
       class="content-block announcement-page"
       th:with="annotations=${post.metadata != null ? post.metadata.annotations : null},
                fileNumber=${annotations != null ? annotations['fileNumber'] : null},
+               issuingAuthority=${annotations != null ? annotations['issuingAuthority'] : null},
                categories=${post.categories},
                tags=${post.tags},
                firstCategory=${categories != null and #lists.size(categories) > 0 ? categories.get(0) : null},
@@ -31,9 +32,9 @@
         <h1 class="post-title announcement-title" th:text="${post.spec.title}"></h1>
         <div class="announcement-meta">
           <div class="announcement-meta-grid">
-            <div class="announcement-meta-item" th:if="${post.owner != null}">
+            <div class="announcement-meta-item">
               <span class="announcement-meta-label">[发文机关]</span>
-              <span class="announcement-meta-value" th:text="${post.owner.displayName}"></span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(issuingAuthority) ? '' : issuingAuthority}"></span>
             </div>
             <div class="announcement-meta-item">
               <span class="announcement-meta-label">[文件编号]</span>

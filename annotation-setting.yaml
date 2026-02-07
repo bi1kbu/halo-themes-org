@@ -16,6 +16,9 @@ spec:
       label: 日程结束时间
       help: 为空则显示为未定义
     - $formkit: text
+      name: issuingAuthority
+      label: 发文机关
+    - $formkit: text
       name: fileNumber
       label: 文件编号
       help: MS 文件类别文件序列号[.子文件序列号]-发表年份[/版本]
