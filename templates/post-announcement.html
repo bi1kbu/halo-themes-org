@@ -44,57 +44,83 @@
       <header class="post-header announcement-header">
         <h1 class="post-title announcement-title" th:text="${post.spec.title}"></h1>
         <div class="announcement-meta" th:if="${articleIdPluginAvailable}">
-          <div class="announcement-meta-grid">
-            <div class="announcement-meta-item" th:if="${firstCategory != null}">
-              <span class="announcement-meta-label">[主题分类]</span>
-              <span class="announcement-meta-value announcement-meta-links">
-                <th:block th:if="${breadcrumbs != null and #lists.size(breadcrumbs) > 0}">
-                  <th:block th:each="crumb, stat : ${breadcrumbs}">
-                    <a
-                      class="announcement-meta-link"
-                      th:href="@{${crumb.status.permalink}}"
-                      th:text="${crumb.spec.displayName}"
-                    ></a>
-                    <span class="announcement-meta-sep" th:if="${!stat.last}">></span>
-                  </th:block>
-                </th:block>
-                <a
-                  class="announcement-meta-link"
-                  th:if="${breadcrumbs == null or #lists.size(breadcrumbs) == 0}"
-                  th:href="@{${firstCategory.status.permalink}}"
-                  th:text="${firstCategory.spec.displayName}"
-                ></a>
-              </span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[文件编号]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdFullCode) ? '' : articleIdFullCode}"></span>
-            </div>
-            <div class="announcement-meta-item" th:if="${post.spec.publishTime != null}">
-              <span class="announcement-meta-label">[发布日期]</span>
-              <span class="announcement-meta-value" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[有 效 性]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdStatus) ? '' : articleIdStatus}"></span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[实施日期]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdEffectiveDate) ? '' : articleIdEffectiveDate}"></span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[废止日期]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdVoidDate) ? '' : articleIdVoidDate}"></span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[发文机构]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdIssuingAgency) ? '' : articleIdIssuingAgency}"></span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[接 口 人]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(contactPerson) ? '' : contactPerson}"></span>
-            </div>
-          </div>
+          <table class="announcement-meta-table" role="presentation">
+            <tbody>
+              <tr>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[主题分类]</span>
+                    <span class="announcement-meta-value announcement-meta-links" th:if="${firstCategory != null}">
+                      <th:block th:if="${breadcrumbs != null and #lists.size(breadcrumbs) > 0}">
+                        <th:block th:each="crumb, stat : ${breadcrumbs}">
+                          <a
+                            class="announcement-meta-link"
+                            th:href="@{${crumb.status.permalink}}"
+                            th:text="${crumb.spec.displayName}"
+                          ></a>
+                          <span class="announcement-meta-sep" th:if="${!stat.last}">></span>
+                        </th:block>
+                      </th:block>
+                      <a
+                        class="announcement-meta-link"
+                        th:if="${breadcrumbs == null or #lists.size(breadcrumbs) == 0}"
+                        th:href="@{${firstCategory.status.permalink}}"
+                        th:text="${firstCategory.spec.displayName}"
+                      ></a>
+                    </span>
+                  </div>
+                </td>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[文件编号]</span>
+                    <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdFullCode) ? '' : articleIdFullCode}"></span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[发布日期]</span>
+                    <span class="announcement-meta-value" th:text="${post.spec.publishTime != null ? #temporals.format(post.spec.publishTime, 'yyyy-MM-dd') : ''}"></span>
+                  </div>
+                </td>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[有效性]</span>
+                    <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdStatus) ? '' : articleIdStatus}"></span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[实施日期]</span>
+                    <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdEffectiveDate) ? '' : articleIdEffectiveDate}"></span>
+                  </div>
+                </td>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[废止日期]</span>
+                    <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdVoidDate) ? '' : articleIdVoidDate}"></span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[发文机构]</span>
+                    <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdIssuingAgency) ? '' : articleIdIssuingAgency}"></span>
+                  </div>
+                </td>
+                <td class="announcement-meta-cell">
+                  <div class="announcement-meta-item">
+                    <span class="announcement-meta-label">[接口人]</span>
+                    <span class="announcement-meta-value" th:text="${#strings.isEmpty(contactPerson) ? '' : contactPerson}"></span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </header>
       <div class="content-body post-body" th:utext="${postContent}"></div>
