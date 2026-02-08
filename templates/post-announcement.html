@@ -49,7 +49,14 @@
               <tr>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[主题分类]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">主</span>
+                      <span class="announcement-meta-label-char">题</span>
+                      <span class="announcement-meta-label-char">分</span>
+                      <span class="announcement-meta-label-char">类</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value announcement-meta-links" th:if="${firstCategory != null}">
                       <th:block th:if="${breadcrumbs != null and #lists.size(breadcrumbs) > 0}">
                         <th:block th:each="crumb, stat : ${breadcrumbs}">
@@ -72,7 +79,14 @@
                 </td>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[文件编号]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">文</span>
+                      <span class="announcement-meta-label-char">件</span>
+                      <span class="announcement-meta-label-char">编</span>
+                      <span class="announcement-meta-label-char">号</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdFullCode) ? '' : articleIdFullCode}"></span>
                   </div>
                 </td>
@@ -80,13 +94,26 @@
               <tr>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[发布日期]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">发</span>
+                      <span class="announcement-meta-label-char">布</span>
+                      <span class="announcement-meta-label-char">日</span>
+                      <span class="announcement-meta-label-char">期</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${post.spec.publishTime != null ? #temporals.format(post.spec.publishTime, 'yyyy-MM-dd') : ''}"></span>
                   </div>
                 </td>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[有效性]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">有</span>
+                      <span class="announcement-meta-label-char">效</span>
+                      <span class="announcement-meta-label-char">性</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdStatus) ? '' : articleIdStatus}"></span>
                   </div>
                 </td>
@@ -94,13 +121,27 @@
               <tr>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[实施日期]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">实</span>
+                      <span class="announcement-meta-label-char">施</span>
+                      <span class="announcement-meta-label-char">日</span>
+                      <span class="announcement-meta-label-char">期</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdEffectiveDate) ? '' : articleIdEffectiveDate}"></span>
                   </div>
                 </td>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[废止日期]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">废</span>
+                      <span class="announcement-meta-label-char">止</span>
+                      <span class="announcement-meta-label-char">日</span>
+                      <span class="announcement-meta-label-char">期</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdVoidDate) ? '' : articleIdVoidDate}"></span>
                   </div>
                 </td>
@@ -108,13 +149,26 @@
               <tr>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[发文机构]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">发</span>
+                      <span class="announcement-meta-label-char">文</span>
+                      <span class="announcement-meta-label-char">机</span>
+                      <span class="announcement-meta-label-char">构</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdIssuingAgency) ? '' : articleIdIssuingAgency}"></span>
                   </div>
                 </td>
                 <td class="announcement-meta-cell">
                   <div class="announcement-meta-item">
-                    <span class="announcement-meta-label">[接口人]</span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-left">[</span>
+                    <span class="announcement-meta-label">
+                      <span class="announcement-meta-label-char">接</span>
+                      <span class="announcement-meta-label-char">口</span>
+                      <span class="announcement-meta-label-char">人</span>
+                    </span>
+                    <span class="announcement-meta-bracket announcement-meta-bracket-right">]</span>
                     <span class="announcement-meta-value" th:text="${#strings.isEmpty(contactPerson) ? '' : contactPerson}"></span>
                   </div>
                 </td>
