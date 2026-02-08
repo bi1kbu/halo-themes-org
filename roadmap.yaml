@@ -1,11 +1,11 @@
-schemaVersion: 0.1
+schemaVersion: 0.2
 project:
   name: theme-organization
   type: halo2-theme
   style: 简约/学术/工程
-  buildTool: none
+  buildTool: vite
   uiFramework:
-    jsEnhance: Alpine.js (optional)
+    jsEnhance: 原生 JS（可选 Alpine.js）
   defaults:
     encoding: UTF-8
     completionField:
@@ -15,553 +15,298 @@ project:
         - 进行中
         - 已完成
 
+sourceOfTruth:
+  themeMeta: theme.yaml
+  themeSettings: settings.yaml
+  annotationSettings: annotation-setting.yaml
+  templatesRoot: templates
+  assetsSourceRoot: src
+  buildOutput: templates/assets/build
+
 templateSystem:
   pages:
     - id: page-default
-      name: 默认单页
-      purpose: 通用内容页（about/join 等默认使用）
+      file: templates/page.html
+      purpose: 通用内容页（about/join 等）
       behaviors:
-        - 正文使用统一排版（prose），不做复杂交互。
+        - 统一正文排版。
     - id: page-outline
-      name: 概括单页
-      purpose: 目录驱动的分节阅读（适合制度/手册/说明类）
+      file: templates/page-outline.html
+      purpose: 分节阅读页
       behaviors:
-        - 顶部展示页面名称与描述。
-        - 描述提取规则：第一个二级标题（H2）前的正文作为描述。
-        - 描述仅在顶部展示一次：从正文中移除该段内容，避免重复。
-        - 左侧目录仅基于 H2，点击后仅显示对应分节内容（默认显示第一个 H2 分节）。
-        - 每个 H2 必须有锚点（id），支持 URL hash 分享与直接定位。
-        - H3/H4 不进入目录。
+        - 左侧目录切换分节。
+        - URL hash 可定位。
     - id: page-history
-      name: 历史单页
-      purpose: 适配时间轴插件（通过模板/样式调整字体大小等视觉）
-      behaviors:
-        - 该模板提供对“时间轴插件输出 DOM”的样式兜底（字体大小、行高、间距）。
-        - 插件本身不可在后台调整字号时，以模板侧样式达成最佳视觉。
-        - 已知渲染 DOM（Web Component + Shadow DOM）：timeline-view > .timeline > .timeline-item/...（内部样式以继承字体为主时可通过设置 host font-size 生效）。
+      file: templates/page-history.html
+      purpose: 时间轴内容页样式适配
   posts:
     - id: post-default
-      name: 默认文章
-      purpose: 绝大多数文章场景
+      file: templates/post.html
+      purpose: 默认文章
       behaviors:
-        - 左侧正文为主（宽），右侧目录（TOC）为辅。
-        - TOC 基于正文标题生成（优先 H2/H3）。
+        - 左正文右 TOC。
+        - 元信息展示作者、日期、分类、标签。
     - id: post-announcement
-      name: 公告文章
-      purpose: 公告/制度类正式发布（更强调元信息与版式）
+      file: templates/post-announcement.html
+      purpose: 公告/制度类文章
       behaviors:
-        - 不展示目录。
-        - 顶部展示：文章所属分类、发布日期、作者、文件编号。
-        - 文件编号来源：文章自定义字段（不从正文解析，避免内容约束与二次渲染差异）。
-        - H1 固定居中显示。
+        - 不展示 TOC。
+        - H1 居中。
+        - 公告元信息仅在 article-id-management 插件可用时显示。
+        - 编号/状态/日期等字段来自插件注解（article-id-management/*）。
   categories:
-    - id: category-default
-      name: 默认分类
-      purpose: 通用分类列表
-      behaviors:
-        - 显示分类名称。
-        - 若存在次一级分类，需要展示子分类入口/列表。
-        - 文章列表按条目展示标题（优先简洁）。
     - id: category-projects
-      name: 项目聚合页
-      purpose: 项目入口聚合（卡片式）
-      behaviors:
-        - 卡片式展示项目（默认来自子分类）。
-        - 支持配置每行 1~3 个卡片、卡片封面比例（用于自适应高度）。
-        - 默认卡片封面比例：4:3。
-        - 点击进入单项目介绍页。
-        - 项目卡片封面默认取分类封面图（分类自身可配置）。
+      file: templates/category-projects.html
+      purpose: 项目聚合页
     - id: category-project
-      name: 单项目介绍页
-      purpose: 单个项目的文章归档展示（每行一个条目）
-      behaviors:
-        - 每行一个条目：左侧文章头图，右侧标题/简介/时间。
+      file: templates/category-project.html
+      purpose: 单项目归档介绍页
     - id: category-news
-      name: 动态分类页（模块化多栏）
-      purpose: 可配置的动态聚合展示（单/双/三栏模块组合）
-      behaviors:
-        - 页面由多个“模块”组成，每个模块选择布局：单栏/双栏/三栏。
-        - 每个模块内每一栏可指定一个文章分类，并配置该栏显示条目数。
-        - 单栏：头图+标题+简介+时间+作者（并支持置顶/突出显示）。
-        - 双栏：标题+简介+时间+作者（并支持置顶/突出显示）。
-        - 三栏：标题+时间（并支持置顶/突出显示）。
+      file: templates/category-news.html
+      purpose: 动态分类模块化聚合页
+    - id: category-news-single
+      file: templates/category-news-single.html
+      purpose: 单动态分类列表页
+  tags:
+    - id: tag-archive
+      file: templates/tag.html
+      purpose: 标签归档页
+  pluginPages:
+    - id: links
+      file: templates/links.html
+      plugin: PluginLinks
+    - id: docs
+      file: templates/docs.html
+      plugin: PluginDocsme 或 plugin-docsme
+    - id: doc
+      file: templates/doc.html
+      plugin: PluginDocsme 或 plugin-docsme
+    - id: doc-catalog
+      file: templates/doc-catalog.html
+      plugin: PluginDocsme 或 plugin-docsme
 
-scheduleSystem:
-  source:
-    type: tagged-posts-with-custom-field
-    note: 日程从“指定标签”的文章中产生，但日期/范围以文章自定义字段为准（不依赖文章发布日期是否可设为未来）。
-  settings:
-    scheduleTag:
-      purpose: 用于筛选“日程文章”的标签（slug 或名称，按 Halo 可查询方式实现）。
-      required: true
-    scheduleFieldKeys:
-      purpose: 日程自定义字段键名（写死后保持兼容，避免后续改字段导致数据失效）。
-      fixed:
-        start: eventStart
-        end: eventEnd
-      format:
-        - "YYYY-MM-DD（日期）"
-        - "YYYY-MM-DDTHH:mm（本地时间，24h）"
-      rules:
-        - end 可为空：表示单日/单点日程。
-        - end 不为空：表示日期范围；选中日期命中范围内时应显示该日程。
-        - start/end 至少提供 start，否则该条日程忽略。
-    announcementFieldKeys:
-      purpose: 公告类文章自定义字段键名（用于文件编号等正式文书元信息）。
-      fixed:
-        fileNumber: fileNumber
-  homepageDisplay:
+annotationModel:
+  post:
+    file: annotation-setting.yaml
     fields:
-      - name: 日程名称
-        source: 文章标题
-      - name: 时间
-        source: eventStart（若包含时分则显示时分；仅日期则显示“全天/无具体时间”按 UI 约定）
-      - name: 发布人
-        source: 文章作者
-      - name: 简介
-        source: 文章摘要
-        show: 鼠标悬停提示
-  window:
-    maxFutureDays: 365
-    note: 默认列表仅展示 [今天, 今天+365天] 范围内命中的日程（含范围日程）。
+      - eventStart
+      - eventEnd
+    note: 发文机关/文件编号已移除，公告元信息改由插件注解提供。
+  category:
+    file: annotation-setting.yaml
+    fields:
+      - categoryIntro
 
-globalRules:
-  - 所有静态资源与模板使用 UTF-8 编码。
-  - 不做前后端分离，不引入 Vue/React 全家桶，不做复杂 SPA。
-  - 样式统一走设计令牌（CSS Variables），禁止在组件里硬编码主题色。
-  - 明暗模式默认跟随系统，可在主题设置中切换并持久化。
-  - 移动端优先；以 320/768/1024/1440 为主要验收断点。
-  - 文案与导航结构集中在主题设置或集中模板配置中，避免散落硬编码。
-  - 插件适配必须先用 pluginFinder.available(...) 判断，不可假设插件已安装。
-  - 插件调用只走公开 API，不改插件内部代码。
-  - 插件样式优先使用其提供的 CSS 变量，与主题令牌对齐。
+pluginIntegration:
+  rules:
+    - 插件入口必须先使用 pluginFinder.available(...) 判定。
+    - 只调用插件公开 API，不修改插件内部代码。
+    - 样式优先对齐插件变量与主题设计令牌。
+  status:
+    search-widget:
+      progress: 已完成
+      evidence:
+        - templates/modules/header.html
+        - src/main.js
+    links:
+      progress: 已完成
+      evidence:
+        - templates/links.html
+        - src/styles/page-links.css
+    docsme:
+      progress: 已完成
+      evidence:
+        - templates/docs.html
+        - templates/doc.html
+        - templates/doc-catalog.html
+        - src/pages/docsme.js
+    article-id-management:
+      progress: 已完成（公告模板联动）
+      evidence:
+        - templates/post-announcement.html
+    comment-widget:
+      progress: 待开始
+      evidence:
+        - src/styles/base.css（已预置变量）
+    contact-form:
+      progress: 待开始
+      evidence:
+        - src/styles/base.css（已预置变量）
+    shiki-hyperlink-card:
+      progress: 部分完成
+      evidence:
+        - src/styles/base.css（已预置变量）
+
+buildAndRelease:
+  build:
+    commands:
+      - pnpm install
+      - pnpm run build
+    notes:
+      - Vite 构建输出到 templates/assets/build。
+  package:
+    command: pnpm run package
+    script: scripts/package.ps1
+    output: theme-organization.zip
+  releaseRule:
+    - 发布前更新 theme.yaml 的 spec.version。
+    - 生成 zip 后再创建 Release。
 
 milestones:
   - id: M0
-    name: 仓库骨架可运行
+    name: 骨架与结构
     是否完成: 已完成
-    goal: 交付“可打开但可留空”的最小主题骨架（含 Header/Footer/菜单），不要求首页功能。
-    acceptance:
-      - 主题切换后访问首页/文章/分类/自定义页均能打开（允许空白内容区，但禁止空白页/报错）。
-      - 控制台无致命错误（允许少量占位告警）。
     tasks:
       - id: M0-T1
-        title: 规划目录结构
+        title: 目录与模块拆分
         是否完成: 已完成
-        details:
-          - 创建 templates/ 的基础结构（含 modules/、templates/assets/ 等）。
-          - 明确公共模块拆分策略（base/layout/header/footer）。
         outputs:
-          - "templates/"
-          - "static/"
+          - templates/modules/layout.html
+          - templates/modules/header.html
+          - templates/modules/footer.html
       - id: M0-T2
-        title: 落地最小模板（index/post/category/page）
+        title: 基础模板可渲染
         是否完成: 已完成
-        details:
-          - 新增首页模板 index.html，内容区可留空（仅占位）。
-          - 实现 post.html/category.html/page.html 的最小可渲染版本。
-          - 统一引入公共布局与基础样式（先占位，不追求完整设计）。
         outputs:
-          - "templates/index.html"
-          - "templates/post.html"
-          - "templates/category.html"
-          - "templates/page.html"
-      - id: M0-T3
-        title: Header/Footer/菜单栏与按钮占位（不接功能）
-        是否完成: 已完成
-        details:
-          - Header 接入菜单栏（按 Halo 默认菜单能力），保证主导航可用。
-          - 预留按钮但无需功能：搜索、明暗切换、登录（仅 UI 占位/禁用态）。
-          - Footer 提供基础信息区与外链区占位。
-        outputs:
-          - "templates/modules/header.html"
-          - "templates/modules/footer.html"
-          - "templates/assets/theme.css"
-      - id: M0-T4
-        title: 新增主题设置表单 settings.yaml
-        是否完成: 已完成
-        details:
-          - 新增 settings.yaml，metadata.name 必须为 halo-theme-settings（与 theme.yaml 对齐）。
-          - 增加基础字段占位：站点名称、Logo、主题色、暗色模式、导航开关等。
-        outputs:
-          - "settings.yaml"
-      - id: M0-T5
-        title: 约定静态资源入口与版本策略
-        是否完成: 已完成
-        details:
-          - 约定 CSS/JS 的路径与命名（例如 templates/assets/theme.css / theme.js）。
-          - 约定 vendor 资源存放位置（例如 static/vendor/）。
-        outputs:
-          - "templates/assets/"
-          - "static/vendor/"
-      - id: M0-T6
-        title: 注册自定义模板到 theme.yaml（占位）
-        是否完成: 已完成
-        details:
-          - 在 theme.yaml 的 customTemplates 中补齐将要实现的模板（先注册，文件可在后续里程碑落地）。
-          - 页面：默认/概括/历史；文章：默认/公告；分类：默认/项目聚合/单项目/动态模块化。
-        outputs:
-          - "theme.yaml"
+          - templates/index.html
+          - templates/post.html
+          - templates/page.html
 
   - id: M1
-    name: 设计令牌与基础排版（全站统一基线）
+    name: 样式令牌与基础交互
     是否完成: 已完成
-    dependsOn: [M0]
-    goal: 建立颜色/字体/间距/圆角/阴影/断点/排版基线，后续页面只拼组件。
-    acceptance:
-      - 亮/暗两套主题变量齐全，切换无明显冲突。
-      - 文章/单页正文排版一致（标题、列表、引用、表格、代码块、图片）。
-      - 320/768/1024/1440 下无明显溢出与错位。
     tasks:
       - id: M1-T1
-        title: 定义设计令牌（CSS Variables）
+        title: 设计令牌
         是否完成: 已完成
-        details:
-          - 定义颜色（背景/前景/边框/强调/状态）、字体（族/字号/行高）、圆角、阴影、间距、容器宽度、断点。
-          - 明确“功能优先”的视觉取舍：低饱和、低装饰、信息层级清晰。
         outputs:
-          - "templates/assets/theme.css"
+          - src/styles/base.css
       - id: M1-T2
-        title: 明暗模式（跟随系统 + 主题设置切换 + 持久化）
+        title: 明暗模式与持久化
         是否完成: 已完成
-        details:
-          - 默认跟随 prefers-color-scheme。
-          - 主题设置提供：跟随系统/强制亮/强制暗；选择结果持久化。
-          - 不依赖构建工具，使用原生 JS/少量 Alpine.js 即可。
         outputs:
-          - "templates/assets/theme.js"
-          - "settings.yaml"
-      - id: M1-T3
-        title: 基础排版与通用组件（按钮/卡片/表单）
-        是否完成: 已完成
-        details:
-          - 定义正文排版样式（.prose 或等价约定）。
-          - 定义按钮、卡片、标签、输入框、分割线等基础组件类。
-        outputs:
-          - "templates/assets/theme.css"
+          - src/main.js
+          - templates/modules/base-head.html
 
   - id: M2
-    name: 公共布局与导航（站点结构落地）
+    name: 站点导航与布局
     是否完成: 已完成
-    dependsOn: [M1]
-    goal: Header/Footer/导航一致，全站可达，移动端可用。
-    acceptance:
-      - Header 含 Logo、主菜单、移动端菜单、搜索入口占位；Footer 含社团信息与外链位。
-      - 菜单高亮/面包屑策略明确且稳定。
-      - 移动端菜单可键盘操作（至少可聚焦与关闭）。
     tasks:
       - id: M2-T1
-        title: Layout 模板拆分（base + modules）
+        title: 主导航与移动端抽屉
         是否完成: 已完成
-        details:
-          - 抽出 base/layout 模板，页面模板只关注内容区。
-          - 抽出 modules：header、footer、nav、breadcrumb、pagination 等。
         outputs:
-          - "templates/modules/"
+          - templates/modules/header.html
+          - src/main.js
       - id: M2-T2
-        title: 导航配置化（集中维护）
+        title: 页脚与移动底栏
         是否完成: 已完成
-        details:
-          - 优先通过主题设置/集中模板变量管理导航文案与链接。
-          - 避免在多个模板中硬编码菜单结构。
         outputs:
-          - "settings.yaml"
-          - "templates/modules/header.html"
-      - id: M2-T3
-        title: 搜索入口占位（不绑定插件）
-        是否完成: 已完成
-        details:
-          - Header 放置搜索按钮/输入入口（UI 先到位）。
-          - 若搜索插件可用，再在 M7 中接入公开 API。
-        outputs:
-          - "templates/modules/header.html"
-          - "templates/assets/theme.js"
+          - templates/modules/footer.html
+          - src/main.js
 
   - id: M3
-    name: 首页日程表模块（核心特色功能）
+    name: 首页日程模块
     是否完成: 已完成
-    dependsOn: [M2]
-    goal: 首页提供“左日历 + 右日程列表”联动；日程来自“指定标签的文章”，日期/范围来自文章自定义字段（支持单日与范围）。
-    acceptance:
-      - 点击日历某天后，右侧仅显示该日；支持“一键回到今天”。
-      - 默认右侧从“今天”开始按时间顺序罗列（时间=eventStart；发布人=文章作者；悬停显示简介）。
-      - 只展示未来 1 年内数据（超过范围不展示或明确提示）。
-      - 移动端布局可用（上日历下列表或可折叠切换）。
     tasks:
-      - id: M3-T0
-        title: 确定日程标签与数据可见性规则（决策点）
-        是否完成: 已完成
-        details:
-          - 在 settings.yaml 中配置“日程标签”（tag slug/name 二选一，以 Halo 可查询方式为准）。
-          - 在 settings.yaml 中配置自定义字段键名：eventStart/eventEnd（默认值按 scheduleSystem.recommended）。
-          - 明确字段格式：YYYY-MM-DD 或 YYYY-MM-DDTHH:mm；范围用 start/end 两字段表示。
-          - 明确排序与分组规则：同日按 eventStart 排序；范围日程按 start 排序；默认列表从今天到一年窗口内。
-        outputs:
-          - "settings.yaml"
       - id: M3-T1
-        title: 首页日历组件（纯前端交互）
+        title: 日历与列表联动
         是否完成: 已完成
-        details:
-          - 月视图：切换月份、点击日期、标记有日程的日期（点/底线即可，避免花哨）。
-          - 周起始按约定（周一/周日）实现并在设置中可选（如需要）。
         outputs:
-          - "templates/index.html"
-          - "templates/assets/theme.js"
-      - id: M3-T2
-        title: 右侧日程列表（默认从今天开始）
-        是否完成: 已完成
-        details:
-          - 默认展示：从今天开始的日程，逐日分组或连续列表（二选一，保持简约）。
-          - 切换日期：展示该日，支持回到默认模式。
-          - 空状态：无日程给出简洁提示与下一条建议动作（如查看社团动态）。
-          - 条目展示字段固定：日程名称（文章标题）、时间（发布时间时分）、发布人（作者）；鼠标悬停显示简介（摘要/自定义摘要）。
-        outputs:
-          - "templates/index.html"
-          - "templates/assets/theme.js"
-      - id: M3-T3
-        title: 一年窗口与性能边界
-        是否完成: 已完成
-        details:
-          - 未来 1 年窗口：以“今天 + 365 天”为界。
-          - 数据量边界：给出合理上限（例如 1000 条以内），超出做截断与提示。
-        outputs:
-          - "templates/assets/theme.js"
+          - templates/index.html
+          - src/pages/home.js
+          - src/styles/page-home.css
 
   - id: M4
-    name: 单页模板体系（默认/概括/历史）
+    name: 单页模板体系
     是否完成: 已完成
-    dependsOn: [M1, M2]
-    goal: 落地 3 种单页模板：默认单页、概括单页（目录分节切换 + H2 锚点）、历史单页（适配时间轴插件字体）。
-    acceptance:
-      - 默认单页：正文排版一致，适配 about/join 基础内容。
-      - 概括单页：自动提取描述；左目录(H2)点击后仅显示对应分节；支持 URL hash 直接定位分节。
-      - 历史单页：时间轴插件内容在该模板下字号/行高/间距达到“可读且不拥挤”的效果。
     tasks:
       - id: M4-T1
-        title: 默认单页模板（page-default）
+        title: 默认/概括/历史模板
         是否完成: 已完成
-        details:
-          - 标题区（标题/副标题/封面可选）、正文区（prose）、侧栏（可选）。
-          - 兼容长文与多媒体（图片/表格/引用/代码块）。
         outputs:
-          - "templates/page.html"
-      - id: M4-T2
-        title: 概括单页模板（page-outline）
-        是否完成: 已完成
-        details:
-          - 描述提取：取第一个 H2 前的正文（渲染在标题下方）。
-          - H2 分节拆分：每个 H2 到下一个 H2 之间为一个分节；默认仅展示第一个分节。
-          - 目录生成：仅使用 H2；点击目录切换分节；同时更新 URL hash。
-          - 锚点：为每个 H2 生成稳定 id（slug），支持复制链接分享。
-        outputs:
-          - "templates/page-outline.html"
-          - "templates/assets/theme.js"
-      - id: M4-T3
-        title: 历史单页模板（page-history，适配时间轴插件）
-        是否完成: 已完成
-        details:
-          - 适配目标 DOM：timeline-view（Web Component，含 Shadow DOM），内部结构包含 .timeline/.timeline-item/.timeline-date/.timeline-title 等。
-          - 优先通过设置 host（timeline-view）上的 font-size/line-height 影响 Shadow DOM 内继承字体，达到缩小字号目的。
-          - 在该模板作用域内提供专用 CSS 变量（例如 --org-timeline-font-size）并给出默认值与建议范围。
-          - 若后续发现插件内部显式写死字号导致继承无效，再补充“插件支持的 CSS 变量/parts”适配（需要你提供插件文档或代码片段）。
-        outputs:
-          - "templates/page-history.html"
-          - "templates/assets/theme.css"
-      - id: M4-T4
-        title: 主题注册：单页模板映射
-        是否完成: 已完成
-        details:
-          - 将 page-default/page-outline/page-history 注册到 theme.yaml 的 page customTemplates。
-        outputs:
-          - "theme.yaml"
+          - templates/page.html
+          - templates/page-outline.html
+          - templates/page-history.html
+          - src/pages/outline.js
 
   - id: M5
-    name: 分类体系（projects/news 与单项目分类页）
+    name: 分类与标签模板体系
     是否完成: 已完成
-    dependsOn: [M2]
-    goal: 按站点结构提供不同信息密度的分类页模板。
-    acceptance:
-      - /categories/projects 为“项目介绍聚合页”；/categories/news 为“动态列表页”。
-      - /categories/smart-lab 与 /categories/underwater 为“单项目归档介绍页”，含项目简介与归档列表。
-      - 分页、空状态、封面缺失等场景正常显示。
     tasks:
       - id: M5-T1
-        title: 默认分类模板（category-default）
+        title: 项目聚合与单项目页
         是否完成: 已完成
-        details:
-          - 显示分类名称与描述（如有）。
-          - 若有子分类：展示子分类列表/入口（简洁列表或小卡片）。
-          - 文章列表：按条目显示标题（可选显示日期）。
         outputs:
-          - "templates/category.html"
+          - templates/category-projects.html
+          - templates/category-project.html
       - id: M5-T2
-        title: 项目聚合页模板（category-projects，卡片式）
+        title: 动态分类页与单动态页
         是否完成: 已完成
-        details:
-          - 卡片式展示项目入口（通常为子分类）。
-          - 支持配置：每行 1~3 个卡片、卡片封面比例（用于自适应高度）。
-          - 卡片封面取分类封面图；缺失时使用占位样式（不拉伸、不跳动）。
-          - 比例选项建议：通过高度因子进行比例化调控。
-          - 多端策略：比例固定，宽度随栅格变化，高度自适应；移动端可降为 1 列。
         outputs:
-          - "templates/category-projects.html"
+          - templates/category-news.html
+          - templates/category-news-single.html
+          - src/pages/category-news.js
       - id: M5-T3
-        title: 单项目介绍页模板（category-project，每行一个条目）
+        title: 标签归档页
         是否完成: 已完成
-        details:
-          - 每行一个条目：左侧头图（缺失用占位），右侧标题/简介/时间。
-          - 文章列表来源：该项目分类下的文章（分页策略明确）。
         outputs:
-          - "templates/category-project.html"
-      - id: M5-T4
-        title: 动态分类页模板（category-news，模块化多栏）
-        是否完成: 已完成
-        details:
-          - 通过 settings.yaml 配置 modules 数组：每个模块选择 layout（1/2/3），并为每一栏配置 category 与 limit。
-          - 模块样式三套：单栏/双栏/三栏（信息密度递减）。
-          - 置顶文章：以 Halo 文章置顶字段为准；模块内排序为“置顶在前，其余按时间倒序”。
-          - 置顶突出：提供单独样式（边框/背景/标签），但保持克制。
-        outputs:
-          - "templates/category-news.html"
-          - "settings.yaml"
-      - id: M5-T5
-        title: 主题注册：分类模板映射
-        是否完成: 已完成
-        details:
-          - 将 category-default/category-projects/category-project/category-news 注册到 theme.yaml 的 category customTemplates。
-        outputs:
-          - "theme.yaml"
+          - templates/tag.html
 
   - id: M6
-    name: 文章模板体系（默认/公告）
+    name: 文章模板体系
     是否完成: 已完成
-    dependsOn: [M1, M2]
-    goal: 落地 2 种文章模板：默认文章（右侧目录）与公告文章（无目录、文件编号解析、H1 居中）。
-    acceptance:
-      - 默认文章：左正文右目录，目录可定位标题。
-      - 公告文章：顶部元信息齐全；文件编号解析正确；H1 居中；正文排版一致。
     tasks:
       - id: M6-T1
-        title: 默认文章模板（post-default，左正文右目录）
+        title: 默认文章模板
         是否完成: 已完成
-        details:
-          - 标题、元信息（作者/日期/分类/标签）、正文（prose）、上一篇/下一篇。
-          - 可选侧栏：目录/相关文章（按需求再开）。
         outputs:
-          - "templates/post.html"
+          - templates/post.html
+          - src/pages/post.js
       - id: M6-T2
-        title: 公告文章模板（post-announcement，无目录）
+        title: 公告文章模板插件化
         是否完成: 已完成
-        details:
-          - 不展示目录；H1 居中。
-          - 顶部元信息：文章所属分类、发布日期、作者、文件编号。
-          - 文件编号来源：文章自定义字段（键名固定为 fileNumber；在 scheduleSystem.settings.announcementFieldKeys 中声明）。
-          - 若未填写 fileNumber：该字段不显示，不做正文解析兜底（保持规则简单一致）。
-          - 公告样式参考：实现阶段向你索要参考站点截图，对齐字号、行距、信息区块布局。
         outputs:
-          - "templates/post-announcement.html"
-          - "templates/assets/theme.js"
-      - id: M6-T3
-        title: 主题注册：文章模板映射
-        是否完成: 已完成
-        details:
-          - 将 post-default/post-announcement 注册到 theme.yaml 的 post customTemplates。
-        outputs:
-          - "theme.yaml"
+          - templates/post-announcement.html
 
   - id: M7
-    name: 插件适配（按优先级逐个接入）
+    name: 插件适配
     是否完成: 进行中
-    dependsOn: [M2]
-    goal: 安装插件即增强体验，未安装也不崩溃；样式与主题令牌统一。
-    acceptance:
-      - 每个插件都具备“可用性判断 + 降级方案 + 样式对齐”。
-      - 不修改插件内部代码，只用公开 API 与自定义样式入口。
     tasks:
       - id: M7-T1
-        title: 搜索组件（JS API 唤起 + 样式对齐）
+        title: 搜索组件
         是否完成: 已完成
-        details:
-          - pluginFinder.available(...) 判断。
-          - 仅通过公开 API（如 SearchWidget.open()）唤起。
-          - 自定义样式对齐主题变量（字体、圆角、前景/背景、层级阴影）。
-        outputs:
-          - "templates/assets/theme.js"
-          - "templates/assets/theme.css"
       - id: M7-T2
-        title: 评论组件（暗色/主题色/移动端折叠）
-        是否完成: 待开始
-        details:
-          - 暗色与主题色对齐，移动端默认折叠（减少首屏干扰）。
-          - 折叠规则：仅在小屏启用；保留“展开评论”按钮。
-        outputs:
-          - "templates/assets/theme.js"
-          - "templates/assets/theme.css"
+        title: 链接管理
+        是否完成: 已完成
       - id: M7-T3
-        title: 链接管理（/links 页面样式适配）
+        title: Docsme
         是否完成: 已完成
-        details:
-          - 按插件文档提供的方式注入自定义样式。
-          - 卡片/列表风格与主题一致。
-        outputs:
-          - "templates/assets/theme.css"
       - id: M7-T4
-        title: Docsme（/docs 与文档库内部页面）
+        title: article-id-management
         是否完成: 已完成
-        details:
-          - 适配 /docs（文档库列表）。
-          - 适配 文档库内部页面（文档列表、文件夹、面包屑、目录等按插件规范）。
-          - 严格按官方主题开发说明进行对接。
-        outputs:
-          - "templates/docs.html (按 Docsme 规范)"
-          - "templates/assets/theme.css"
       - id: M7-T5
-        title: 联系表单（自定义样式入口）
+        title: 评论组件
         是否完成: 待开始
-        details:
-          - 按文档 custom-styles 接入，确保表单控件与主题表单一致。
-        outputs:
-          - "templates/assets/theme.css"
       - id: M7-T6
-        title: Shiki/超链接卡片/时间轴/文本绘图（按需）
+        title: 联系表单
         是否完成: 待开始
-        details:
-          - Shiki 与超链接卡片：重点处理明暗模式与主题色变量。
-          - 时间轴：若出现样式冲突或字号过大，在 page-history 模板作用域内兜底。
-          - 文本绘图/时间轴：默认认为无需适配；出现样式冲突再补。
-        outputs:
-          - "templates/assets/theme.css"
 
   - id: M8
-    name: 文档与交付（可复现、可维护）
-    是否完成: 待开始
-    dependsOn: [M0]
-    goal: 交接级文档齐全，新人按说明可跑起来并理解约束。
-    acceptance:
-      - README 说明清晰：安装、启用、配置、页面映射、插件适配点。
-      - 里程碑文件与设置字段说明能指导后续迭代。
+    name: 文档与发布规范
+    是否完成: 进行中
     tasks:
       - id: M8-T1
-        title: README（使用说明与页面映射）
-        是否完成: 待开始
-        details:
-          - 主题安装/启用步骤、最低 Halo 版本、目录结构说明。
-          - 站点结构映射（/about、/history、/join、/categories/...、/docs、/links）。
-          - 明确“不使用 Vite”的资源管理策略（静态资源路径与缓存建议）。
+        title: README 与插件说明同步
+        是否完成: 已完成
         outputs:
-          - "README.md"
+          - README.md
+          - plugins.md
       - id: M8-T2
-        title: 设置字段说明（settings.yaml 对照表）
-        是否完成: 待开始
-        details:
-          - 每个设置字段的用途、默认值、影响范围与示例。
+        title: roadmap 与实际实现同步
+        是否完成: 已完成
         outputs:
-          - "docs/settings.md"
+          - roadmap.yaml
       - id: M8-T3
-        title: 插件适配说明（可用性判断/降级/样式入口）
+        title: release 执行检查清单
         是否完成: 待开始
-        details:
-          - 对 plugins.md 中每个插件：入口、API、样式注入点、未安装时行为。
-        outputs:
-          - "docs/plugins-integration.md"
-

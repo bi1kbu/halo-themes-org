@@ -10,9 +10,7 @@
   <th:block th:fragment="content">
     <article
       class="content-block post-page"
-      th:with="annotations=${post.metadata != null ? post.metadata.annotations : null},
-               fileNumber=${annotations != null ? annotations['fileNumber'] : null},
-               categories=${post.categories},
+      th:with="categories=${post.categories},
                tags=${post.tags},
                firstCategory=${categories != null and #lists.size(categories) > 0 ? categories.get(0) : null},
                breadcrumbs=${firstCategory != null && firstCategory.metadata != null ? categoryFinder.getBreadcrumbs(firstCategory.metadata.name) : null},
@@ -39,10 +37,6 @@
               <span class="post-meta-item" th:if="${post.spec.publishTime != null}">
                 <span class="post-meta-label">发布日期：</span>
                 <span class="post-meta-value" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
-              </span>
-              <span class="post-meta-item" th:if="${not #strings.isEmpty(fileNumber)}">
-                <span class="post-meta-label">文件编号：</span>
-                <span class="post-meta-value" th:text="${fileNumber}"></span>
               </span>
             </div>
             <div class="post-meta-line post-category" th:if="${firstCategory != null}">

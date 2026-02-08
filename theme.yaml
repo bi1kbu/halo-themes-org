@@ -19,7 +19,7 @@ spec:
   customTemplates:
     post:
       - name: 公告
-        description: 无目录，含文件编号解析与公告元信息区
+        description: 无目录，公告元信息区由插件增强
         file: post-announcement.html
     category:
       - name: 项目聚合页

@@ -11,8 +11,21 @@
     <article
       class="content-block announcement-page"
       th:with="annotations=${post.metadata != null ? post.metadata.annotations : null},
-               fileNumber=${annotations != null ? annotations['fileNumber'] : null},
-               issuingAuthority=${annotations != null ? annotations['issuingAuthority'] : null},
+               articleIdPluginAvailable=${pluginFinder.available('article-id-management')},
+               articleIdFullCode=${annotations != null ? annotations['article-id-management/fullCode'] : null},
+               articleIdStatusRaw=${annotations != null ? annotations['article-id-management/status'] : null},
+               articleIdStatus=${#strings.equals(articleIdStatusRaw, 'REGISTERED') ? '已注册'
+                  : (#strings.equals(articleIdStatusRaw, 'BOUND') ? '已绑定'
+                  : (#strings.equals(articleIdStatusRaw, 'SUPERSEDED') ? '已替代'
+                  : (#strings.equals(articleIdStatusRaw, 'VOID') ? '已作废'
+                  : (#strings.equals(articleIdStatusRaw, 'DELETED') ? '已删除' : articleIdStatusRaw))))},
+               articleIdEffectiveDate=${annotations != null ? annotations['article-id-management/effectiveDate'] : null},
+               articleIdVoidDate=${annotations != null ? annotations['article-id-management/voidDate'] : null},
+               articleIdIssuingAgencyRaw=${annotations != null ? annotations['article-id-management/issuingAuthority'] : null},
+               articleIdIssuingAgencyAlt=${annotations != null ? annotations['article-id-management/issuingAgency'] : null},
+               articleIdIssuingAgency=${!#strings.isEmpty(articleIdIssuingAgencyRaw) ? articleIdIssuingAgencyRaw
+                  : articleIdIssuingAgencyAlt},
+               contactPerson=${post.owner != null ? post.owner.displayName : ''},
                categories=${post.categories},
                tags=${post.tags},
                firstCategory=${categories != null and #lists.size(categories) > 0 ? categories.get(0) : null},
@@ -30,20 +43,8 @@
     >
       <header class="post-header announcement-header">
         <h1 class="post-title announcement-title" th:text="${post.spec.title}"></h1>
-        <div class="announcement-meta">
+        <div class="announcement-meta" th:if="${articleIdPluginAvailable}">
           <div class="announcement-meta-grid">
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[发文机关]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(issuingAuthority) ? '' : issuingAuthority}"></span>
-            </div>
-            <div class="announcement-meta-item">
-              <span class="announcement-meta-label">[文件编号]</span>
-              <span class="announcement-meta-value" th:text="${#strings.isEmpty(fileNumber) ? '' : fileNumber}"></span>
-            </div>
-            <div class="announcement-meta-item" th:if="${post.spec.publishTime != null}">
-              <span class="announcement-meta-label">[发布日期]</span>
-              <span class="announcement-meta-value" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
-            </div>
             <div class="announcement-meta-item" th:if="${firstCategory != null}">
               <span class="announcement-meta-label">[主题分类]</span>
               <span class="announcement-meta-value announcement-meta-links">
@@ -64,6 +65,34 @@
                   th:text="${firstCategory.spec.displayName}"
                 ></a>
               </span>
+            </div>
+            <div class="announcement-meta-item">
+              <span class="announcement-meta-label">[文件编号]</span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdFullCode) ? '' : articleIdFullCode}"></span>
+            </div>
+            <div class="announcement-meta-item" th:if="${post.spec.publishTime != null}">
+              <span class="announcement-meta-label">[发布日期]</span>
+              <span class="announcement-meta-value" th:text="${#temporals.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+            </div>
+            <div class="announcement-meta-item">
+              <span class="announcement-meta-label">[有 效 性]</span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdStatus) ? '' : articleIdStatus}"></span>
+            </div>
+            <div class="announcement-meta-item">
+              <span class="announcement-meta-label">[实施日期]</span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdEffectiveDate) ? '' : articleIdEffectiveDate}"></span>
+            </div>
+            <div class="announcement-meta-item">
+              <span class="announcement-meta-label">[废止日期]</span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdVoidDate) ? '' : articleIdVoidDate}"></span>
+            </div>
+            <div class="announcement-meta-item">
+              <span class="announcement-meta-label">[发文机构]</span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(articleIdIssuingAgency) ? '' : articleIdIssuingAgency}"></span>
+            </div>
+            <div class="announcement-meta-item">
+              <span class="announcement-meta-label">[接 口 人]</span>
+              <span class="announcement-meta-value" th:text="${#strings.isEmpty(contactPerson) ? '' : contactPerson}"></span>
             </div>
           </div>
         </div>
