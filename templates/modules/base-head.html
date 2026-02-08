@@ -62,10 +62,15 @@
         var key = "theme-organization-color-scheme";
         var stored = allow ? localStorage.getItem(key) : null;
         var value = stored || scheme;
-        if (value && value !== "system") {
-          root.setAttribute("data-theme", value);
-          root.style.colorScheme = value;
+        var resolved = value;
+        if (!resolved || resolved === "system") {
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          resolved = prefersDark ? "dark" : "light";
         }
+        root.setAttribute("data-theme", resolved);
+        root.style.colorScheme = resolved;
       })();
     </script>
     <link rel="stylesheet" th:href="${#theme.assets('/build/main.css')}" />

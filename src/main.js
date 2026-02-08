@@ -52,8 +52,9 @@ import "./styles/base.css";
   const applyScheme = (scheme) => {
     currentScheme = scheme;
     if (scheme === "system") {
-      root.removeAttribute("data-theme");
-      root.style.colorScheme = "";
+      const resolved = systemMedia && systemMedia.matches ? "dark" : "light";
+      root.setAttribute("data-theme", resolved);
+      root.style.colorScheme = resolved;
       updateThemeMenus();
       return;
     }
