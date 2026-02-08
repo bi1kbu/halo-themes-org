@@ -14,12 +14,24 @@
   </th:block>
   <th:block th:fragment="content">
     <th:block th:if="${pluginFinder.available('PluginDocsme') or pluginFinder.available('plugin-docsme')}">
-      <div class="dm-container dm-container--embedded">
+      <div
+        class="dm-container dm-container--embedded"
+        th:with="annotations=${docTree != null and docTree.metadata != null ? docTree.metadata.annotations : null},
+                 articleIdPluginAvailable=${pluginFinder.available('article-id-management') or pluginFinder.available('plugin-article-id-management')},
+                 articleIdStatusRaw=${annotations != null ? annotations['article-id-management/status'] : null},
+                 articleIdStatus=${#strings.equals(articleIdStatusRaw, 'REGISTERED') ? '已注册'
+                    : (#strings.equals(articleIdStatusRaw, 'BOUND') ? '已绑定'
+                    : (#strings.equals(articleIdStatusRaw, 'SUPERSEDED') ? '已替代'
+                    : (#strings.equals(articleIdStatusRaw, 'VOID') ? '已作废'
+                    : (#strings.equals(articleIdStatusRaw, 'DELETED') ? '已删除' : articleIdStatusRaw))))},
+                 articleIdFullCode=${annotations != null ? annotations['article-id-management/fullCode'] : null},
+                 articleIdDisplay=${articleIdPluginAvailable and !#strings.isEmpty(articleIdStatus) and !#strings.isEmpty(articleIdFullCode) ? '[' + articleIdStatus + ']' + articleIdFullCode : ''}"
+      >
         <th:block
           th:replace="~{plugin:plugin-docsme:modules/header :: header(showThemeSwitcher = false)}"
         />
         <th:block
-          th:replace="~{plugin:plugin-docsme:modules/doc-catalog :: doc-catalog(footer = null)}"
+          th:replace="~{modules/docsme-local/doc-catalog :: doc-catalog(footer = null)}"
         />
       </div>
     </th:block>

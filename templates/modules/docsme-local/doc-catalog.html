@@ -1,0 +1,43 @@
+<th:block th:fragment="doc-catalog (footer)">
+  <div class="dm-layout">
+    <th:block th:replace="~{modules/docsme-local/sidebar}" />
+
+    <main class="dm-main">
+      <div class="dm-content">
+        <th:block th:replace="~{modules/docsme-local/content-header}" />
+
+        <article class="dm-content__body">
+          <div class="dm-directory-grid">
+            <a
+              th:each="node : ${sonNodes}"
+              th:href="${node.status.permalink}"
+              class="dm-directory-card"
+            >
+              <div
+                class="dm-directory-card__icon"
+                th:text="${node.spec.type == 'TREE' ? '📁' : '📝'}"
+              ></div>
+              <div class="dm-directory-card__content">
+                <h3
+                  class="dm-directory-card__title"
+                  th:text="${node.spec.title}"
+                ></h3>
+                <p
+                  th:if="${!#strings.isEmpty(node.spec.description)}"
+                  class="dm-directory-card__description"
+                  th:text="${node.spec.description}"
+                ></p>
+              </div>
+            </a>
+          </div>
+        </article>
+
+        <th:block th:replace="~{modules/docsme-local/navigation}" />
+
+        <th:block th:if="${footer != null}">
+          <th:block th:replace="${footer}" />
+        </th:block>
+      </div>
+    </main>
+  </div>
+</th:block>

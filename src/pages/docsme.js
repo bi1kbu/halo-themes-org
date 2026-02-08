@@ -156,15 +156,57 @@ import "../styles/page-docsme.css";
     }
   };
 
+  const initDocsmeArticleIdLookup = async () => {
+    if (!document.body || !document.body.classList.contains("page-docsme")) {
+      return;
+    }
+    const crumb = document.getElementById("article-id-crumb");
+    if (!crumb) {
+      return;
+    }
+    try {
+      const path = window.location.pathname || "";
+      if (!path) {
+        return;
+      }
+      const url = `/apis/api.article-id-management.halo.run/v1alpha1/lookup?link=${encodeURIComponent(path)}`;
+      const res = await fetch(url, { credentials: "same-origin" });
+      if (!res.ok) {
+        return;
+      }
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        return;
+      }
+      const data = await res.json();
+      const fullCode = typeof data?.fullCode === "string" ? data.fullCode.trim() : "";
+      if (!fullCode) {
+        return;
+      }
+      const statusDisplay =
+        typeof data?.statusDisplay === "string" ? data.statusDisplay.trim() : "";
+      if (crumb) {
+        crumb.textContent = statusDisplay ? `[${statusDisplay}]${fullCode}` : fullCode;
+        crumb.style.display = "";
+      }
+    } catch (_e) {
+      // 静默降级，不影响正文渲染
+    }
+  };
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", moveDocsmeHeader);
     document.addEventListener("DOMContentLoaded", replaceDocsmeMenuLabel);
     document.addEventListener("DOMContentLoaded", initDocsmeTocToggle);
     document.addEventListener("DOMContentLoaded", initDocsmeInlineColorSync);
+    document.addEventListener("DOMContentLoaded", () => {
+      initDocsmeArticleIdLookup();
+    });
   } else {
     moveDocsmeHeader();
     replaceDocsmeMenuLabel();
     initDocsmeTocToggle();
     initDocsmeInlineColorSync();
+    initDocsmeArticleIdLookup();
   }
 })();

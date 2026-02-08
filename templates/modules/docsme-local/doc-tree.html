@@ -1,0 +1,36 @@
+<details
+  th:attr="open=${#arrays.contains(crumbs, parentDocTree) || currentDocTree.metadata.name == docTree.metadata.name}"
+  th:id="${parentDocTree.metadata.name}"
+  th:fragment="next (parentDocTree,docTrees)"
+>
+  <summary class="dm-nav-tree__toggle">
+    <a
+      th:href="${parentDocTree.status.permalink}"
+      th:text="${parentDocTree.spec.title}"
+      class="dm-nav-tree__link"
+      th:classappend="${currentDocTree.metadata.name == docTree.metadata.name ? 'dm-nav-tree__link--active' : ''}"
+    ></a>
+  </summary>
+  <ul class="dm-nav-tree dm-nav-tree__nested">
+    <li
+      class="dm-nav-tree__item"
+      th:fragment="single (docTrees)"
+      th:each="currentDocTree : ${docTrees}"
+    >
+      <a
+        class="dm-nav-tree__link"
+        th:if="${currentDocTree.spec.type == 'DOC'}"
+        th:href="@{${currentDocTree.status.permalink}}"
+        th:title="${currentDocTree.spec.title}"
+        th:classappend="${currentDocTree.metadata.name == docTree.metadata.name ? 'dm-nav-tree__link--active' : ''}"
+        th:text="${currentDocTree.spec.title}"
+      >
+      </a>
+      <th:block th:if="${currentDocTree.spec.type == 'TREE'}">
+        <th:block
+          th:replace="~{modules/docsme-local/doc-tree :: next (parentDocTree=${currentDocTree},docTrees=${currentDocTree.children})}"
+        ></th:block>
+      </th:block>
+    </li>
+  </ul>
+</details>

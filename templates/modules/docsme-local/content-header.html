@@ -1,0 +1,31 @@
+<header class="dm-content__header">
+  <nav class="dm-content__breadcrumb">
+    <a th:href="${project.status.permalink}">首页</a>
+    <a
+      th:each="crumb : ${crumbs}"
+      th:href="${crumb.status.permalink}"
+      th:text="${crumb.spec.title}"
+    ></a>
+    <span
+      class="dm-content__doc-id"
+      id="article-id-crumb"
+      th:if="${articleIdPluginAvailable}"
+      th:style="${#strings.isEmpty(articleIdDisplay) ? 'display:none' : ''}"
+      th:text="${articleIdDisplay}"
+    ></span>
+  </nav>
+  <div class="dm-content__controls">
+    <button dm-data dm-on:click="$store.sidebar.open = !$store.sidebar.open">
+      <span class="icon-[mingcute--menu-line]"></span>
+      菜单
+    </button>
+    <button
+      dm-data
+      th:if="${docTree.spec.type == 'DOC'}"
+      dm-on:click="$store.toc.open = !$store.toc.open"
+    >
+      <span class="icon-[mingcute--list-ordered-line]"></span>
+      本页目录
+    </button>
+  </div>
+</header>

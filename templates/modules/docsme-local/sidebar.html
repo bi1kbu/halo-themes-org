@@ -1,0 +1,18 @@
+<aside
+  class="dm-sidebar"
+  dm-data
+  dm-bind:class="{'dm-sidebar--show' : $store.sidebar.open}"
+>
+  <div class="dm-sidebar__content">
+    <ul class="dm-nav-tree">
+      <li
+        th:replace="~{modules/docsme-local/doc-tree :: single(docTrees=${docTrees})}"
+      />
+    </ul>
+  </div>
+</aside>
+<div
+  class="dm-sidebar-backdrop"
+  dm-show="$store.sidebar.open"
+  dm-on:click="$store.sidebar.open = false"
+></div>

@@ -1,0 +1,27 @@
+<nav th:if="${linkNavigation}" class="dm-doc-nav">
+  <a
+    th:if="${linkNavigation.hasPrevious}"
+    th:href="${linkNavigation.previous.link}"
+    class="dm-doc-nav__item dm-doc-nav__item--prev"
+  >
+    <span class="dm-doc-nav__icon icon-[mingcute--right-line]"></span>
+    <div class="dm-doc-nav__content">
+      <div class="dm-doc-nav__label">上一篇</div>
+      <h3
+        class="dm-doc-nav__title"
+        th:text="${linkNavigation.previous.title}"
+      ></h3>
+    </div>
+  </a>
+  <a
+    th:if="${linkNavigation.hasNext}"
+    th:href="${linkNavigation.next.link}"
+    class="dm-doc-nav__item dm-doc-nav__item--next"
+  >
+    <span class="dm-doc-nav__icon icon-[mingcute--right-line]"></span>
+    <div class="dm-doc-nav__content">
+      <div class="dm-doc-nav__label">下一篇</div>
+      <h3 class="dm-doc-nav__title" th:text="${linkNavigation.next.title}"></h3>
+    </div>
+  </a>
+</nav>

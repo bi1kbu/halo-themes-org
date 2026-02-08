@@ -202,6 +202,22 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body, .prose
   color: var(--muted);
 }
 
+.page-docsme .dm-content__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.page-docsme .dm-content__doc-id {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  text-align: right;
+}
+
+
 .page-docsme .dm-content__breadcrumb a:hover {
   color: var(--text);
 }
@@ -382,4 +398,18 @@ html[data-theme="dark"] :is(.content-body, .post-body, .dm-content__body, .prose
 .page-docsme .dm-directory-card__icon,
 .page-docsme .dm-project-card__icon {
   background: var(--accent-weak);
+}
+
+@media (max-width: 640px) {
+  .page-docsme .dm-content__breadcrumb {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+
+  .page-docsme .dm-content__doc-id {
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+
 }

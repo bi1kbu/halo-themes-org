@@ -1,0 +1,52 @@
+<th:block th:fragment="doc (footer)">
+  <div class="dm-layout">
+    <th:block th:replace="~{modules/docsme-local/sidebar}" />
+
+    <main class="dm-main">
+      <div class="dm-content">
+        <th:block th:replace="~{modules/docsme-local/content-header}" />
+
+        <article
+          data-toc-content
+          class="dm-content__body prose-content"
+          th:utext="${docInfo.content.content}"
+        ></article>
+
+        <div
+          th:if="${haloCommentEnabled}"
+          id="comment"
+          class="dm-content__comment"
+        >
+          <halo:comment
+            group="doc.halo.run"
+            kind="DocTree"
+            th:attr="name=${docTree.metadata.name}"
+          />
+        </div>
+
+        <th:block th:replace="~{modules/docsme-local/navigation}" />
+
+        <th:block th:if="${footer != null}">
+          <th:block th:replace="${footer}" />
+        </th:block>
+      </div>
+
+      <aside
+        class="dm-toc"
+        data-toc-container
+        dm-data
+        dm-bind:class="{'dm-toc--show' : $store.toc.open}"
+      >
+        <div class="dm-toc__header">
+          <h2>目录</h2>
+        </div>
+        <div class="dm-toc__body" data-toc-list></div>
+      </aside>
+      <div
+        class="dm-toc-backdrop"
+        dm-show="$store.toc.open"
+        dm-on:click="$store.toc.open = false"
+      ></div>
+    </main>
+  </div>
+</th:block>
