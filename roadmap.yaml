@@ -86,12 +86,6 @@ templateSystem:
       plugin: PluginDocsme 或 plugin-docsme
 
 annotationModel:
-  post:
-    file: annotation-setting.yaml
-    fields:
-      - eventStart
-      - eventEnd
-    note: 发文机关/文件编号已移除，公告元信息改由插件注解提供。
   category:
     file: annotation-setting.yaml
     fields:
@@ -206,15 +200,14 @@ milestones:
           - src/main.js
 
   - id: M3
-    name: 首页日程模块
+    name: 首页基础模块
     是否完成: 已完成
     tasks:
       - id: M3-T1
-        title: 日历与列表联动
+        title: 首页基础展示
         是否完成: 已完成
         outputs:
           - templates/index.html
-          - src/pages/home.js
           - src/styles/page-home.css
 
   - id: M4

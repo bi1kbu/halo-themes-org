@@ -59,8 +59,8 @@ powershell -ExecutionPolicy Bypass -File scripts/package.ps1 -SkipBuild
 
 ## 主题配置入口
 
-- `settings.yaml`：主题设置表单（全局、样式、首页、分类页、页脚等）
-- `annotation-setting.yaml`：文章/分类自定义字段（如日程日期、分类介绍）
+- `settings.yaml`：主题设置表单（全局、样式、分类页、页脚等）
+- `annotation-setting.yaml`：分类自定义字段（如分类介绍）
 
 ## 插件适配
 

@@ -1,108 +1,33 @@
 <!doctype html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: layout(title = ${site.title}, content = ~{::content}, head = ~{::head}, bodyClass = 'page-home')}"
+  th:replace="~{modules/layout :: layout(title = ${site.title}, content = ~{::content}, head = ~{::head}, bodyClass = 'page-home page-single')}"
 >
   <th:block th:fragment="head">
     <link rel="stylesheet" th:href="${#theme.assets('/build/page-home.css')}" />
-    <script type="module" th:src="${#theme.assets('/build/page-home.js')}"></script>
+    <link rel="stylesheet" th:href="${#theme.assets('/build/page-single.css')}" />
   </th:block>
   <th:block th:fragment="content">
-    <section
-      class="content-block schedule-section"
-      data-schedule-section
-      th:with="scheduleTitle=${theme.config.home.schedule_title},
-               scheduleTagConfig=${theme.config.home.schedule_tag},
-               scheduleTag=${scheduleTagConfig instanceof T(run.halo.app.theme.finders.vo.TagVo) ? scheduleTagConfig.metadata.name : scheduleTagConfig},
-               hasTag=${!#strings.isEmpty(scheduleTag)}"
-      th:attr="data-schedule-tag=${scheduleTag}"
+    <th:block
+      th:with="homePage=${theme.config.global != null
+                 ? singlePageFinder.getByName(new com.fasterxml.jackson.databind.ObjectMapper().readTree(theme.config.global.toString()).path('home_page').asText('__EMPTY__'))
+                 : null}"
     >
-      <header class="content-header schedule-header">
-        <div>
-          <h1
-            class="content-title"
-            th:text="${#strings.isEmpty(scheduleTitle) ? 'Schedule' : scheduleTitle}"
-          ></h1>
-          <p
-            class="content-desc"
-            th:text="${#strings.isEmpty(scheduleTag) ? 'Schedule tag not set' : ''}"
-          ></p>
-        </div>
-        <div class="schedule-actions">
-          <button class="btn-ghost" type="button" data-cal-today>Today</button>
-          <button class="btn-ghost" type="button" data-cal-reset>Upcoming</button>
-        </div>
-      </header>
-
-      <div class="schedule-grid">
-        <div class="schedule-calendar" data-schedule-calendar>
-          <div class="schedule-cal-header">
-            <button class="btn-ghost" type="button" data-cal-prev>Prev</button>
-            <div class="schedule-cal-title-wrap">
-              <button
-                class="schedule-cal-title"
-                type="button"
-                data-cal-title
-                aria-haspopup="dialog"
-                aria-expanded="false"
-              ></button>
-              <div class="schedule-cal-picker" data-cal-picker>
-                <select class="input" data-cal-year></select>
-                <select class="input" data-cal-month></select>
-                <button class="btn-ghost" type="button" data-cal-apply>Go</button>
-              </div>
-            </div>
-            <button class="btn-ghost" type="button" data-cal-next>Next</button>
-          </div>
-          <div class="schedule-cal-weekdays">
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-            <span>Sun</span>
-          </div>
-          <div class="schedule-cal-grid" data-cal-grid></div>
-        </div>
-
-        <div class="schedule-list">
-          <div class="schedule-list-header">
-            <div class="schedule-list-title" data-schedule-title>Upcoming</div>
-            <div class="schedule-list-subtitle" data-schedule-subtitle></div>
-          </div>
-          <ul class="schedule-items" data-schedule-body></ul>
-          <div class="schedule-empty" data-schedule-empty>No schedule</div>
-        </div>
-      </div>
-
-      <div
-        class="schedule-data"
-        data-schedule-items
-        th:if="${hasTag}"
-        th:with="schedulePosts=${postFinder.listByTag(1,200,scheduleTag)}"
-      >
+      <article class="content-block" th:if="${homePage != null}">
+        <header class="content-header">
+          <h1 class="content-title" th:text="${homePage.spec.title}"></h1>
+        </header>
         <div
-          class="schedule-data-item"
-          data-schedule-item
-          th:each="post : ${schedulePosts.items}"
-          th:with="annotations=${post.metadata.annotations},
-                   eventStart=${annotations != null ? annotations['eventStart'] : null},
-                   eventEnd=${annotations != null ? annotations['eventEnd'] : null},
-                   contentVo=${#strings.isEmpty(post.status.excerpt) ? postFinder.content(post.metadata.name) : null},
-                   contentHtml=${contentVo != null && contentVo.content != null ? contentVo.content : ''},
-                   contentRaw=${contentVo != null && contentVo.raw != null ? contentVo.raw : ''}"
-          th:attr="data-title=${post.spec.title},
-                   data-start=${eventStart},
-                   data-end=${eventEnd},
-                   data-pinned=${post.spec.pinned},
-                   data-author=${post.owner != null ? post.owner.displayName : ''},
-                   data-summary=${post.status.excerpt},
-                   data-content=${contentHtml},
-                   data-raw=${contentRaw},
-                   data-link=${post.status.permalink}"
+          class="content-body"
+          th:utext="${homePage.content != null && homePage.content.content != null ? homePage.content.content : ''}"
         ></div>
-      </div>
-    </section>
+      </article>
+      <section class="content-block home-intro" th:if="${homePage == null}">
+        <header class="content-header">
+          <h1 class="content-title">首页未配置</h1>
+          <p class="content-desc">请在主题设置-全局中选择“默认首页关联页面”。</p>
+        </header>
+      </section>
+    </th:block>
   </th:block>
 </html>

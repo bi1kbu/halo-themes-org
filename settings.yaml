@@ -34,6 +34,11 @@ spec:
           help: 选择系统菜单作为登录后下拉菜单的追加项
           multiple: true
           value: []
+        - $formkit: singlePageSelect
+          name: home_page
+          label: 默认首页关联页面
+          help: 选择后，站点根路径 / 将渲染此单页内容
+          value: ""
     - group: footer
       label: 页脚
       formSchema:
@@ -102,18 +107,6 @@ spec:
           name: enable_change_color_scheme
           label: 允许访客切换配色
           value: true
-    - group: home
-      label: 首页
-      formSchema:
-        - $formkit: text
-          name: schedule_title
-          label: 日程模块标题
-          value: Schedule
-        - $formkit: tagSelect
-          name: schedule_tag
-          label: 日程标签
-          help: 用该标签筛选日程文章（自定义字段 eventStart/eventEnd 提供日期）
-          value: ""
     - group: projects
       label: 项目聚合页
       formSchema:

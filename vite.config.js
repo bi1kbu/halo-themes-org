@@ -12,7 +12,7 @@ module.exports = {
     rollupOptions: {
       input: {
         main: path.resolve(root, "main.js"),
-        "page-home": path.resolve(root, "pages/home.js"),
+        "page-home": path.resolve(root, "styles/page-home.css"),
         "page-outline": path.resolve(root, "pages/outline.js"),
         "page-post": path.resolve(root, "pages/post.js"),
         "page-category-intro": path.resolve(root, "pages/category-intro.js"),
