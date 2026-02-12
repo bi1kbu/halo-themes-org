@@ -2,82 +2,91 @@
 
 ## 主题简介
 
-本主题用于 Halo v2 社团/组织官网，重点面向内容展示与插件能力扩展，采用 Halo 官方主题模板（Thymeleaf），不引入重型前端框架。
-**本主题全部代码100%由AI生成，无人工手动编码，虽然经过完整测试，但难免有bug，如发现问题请提issue。本主题的后续开发及二次开发仍然建议完全AI进行。**
+本主题用于 Halo v2 社团/组织官网，重点是内容展示与插件能力适配。  
+技术路线为 Halo 官方主题模板（Thymeleaf）+ 原生 JS/Vite，不使用前后端分离。
 
 ## 兼容性
 
-- Halo：>= 2.0.0（见 `theme.yaml` 的 `requires`）
+- Halo：`>= 2.22.8`（以 `theme.yaml` 的 `spec.requires` 为准）
+- Node.js：建议 18+
+- 包管理器：pnpm
 
-## 本地开发（Docker）
+## 当前开发环境
 
-1. 使用 `dev/docker-compose.yml` 启动开发环境：
+- 使用 `halo-dev` 编排（不再使用本仓库内 Docker 开发方式）
+- 主题目录：`themes/theme-organization`
+- 本地访问：`http://localhost:8090`
 
-```bash
-docker compose -f dev/docker-compose.yml up -d
-```
+## 常用命令
 
-2. 将本项目克隆到开发环境的 `themes` 目录内，例如 `themes/theme-organization`。
-3. 在主题目录构建资源，开发时可用 `build:watch`：
-
-```bash
-pnpm install
-pnpm run build
-```
-
-## 构建与发布（Vite）
-
-1. 安装依赖：
+1. 安装依赖
 
 ```bash
 pnpm install
 ```
 
-2. 构建资源：
+2. 构建前端资源（仅构建，不打包）
 
 ```bash
 pnpm run build
 ```
 
-构建产物输出到：
+3. 监听构建
 
-- `templates/assets/build`
+```bash
+pnpm run build:watch
+```
 
-发布前请确保已执行构建（`templates/assets/build` 默认不提交）。
-
-## 打包为主题 ZIP
+4. 主题打包
 
 ```bash
 pnpm run package
 ```
 
-默认输出 `theme-organization.zip`，如需跳过构建：
+## 打包规则（已更新）
+
+`pnpm run package` 调用 `scripts/package.ps1`，当前逻辑如下：
+
+1. 打包开始先读取 `theme.yaml` 中 `spec.version`。
+2. 自动执行补丁位递增（`+0.0.1`）。
+3. 默认执行 `pnpm run build` 构建资源。
+4. 打包输出到 `build/` 目录。
+5. 产物命名：`<themeName>-<version>.zip`，例如 `theme-organization-1.0.13.zip`。
+
+可选：跳过构建
 
 ```bash
 powershell -ExecutionPolicy Bypass -File scripts/package.ps1 -SkipBuild
 ```
 
-## 主题配置入口
+## 模板与配置现状
 
-- `settings.yaml`：主题设置表单（全局、样式、分类页、页脚等）
-- `annotation-setting.yaml`：分类自定义字段（如分类介绍）
+1. 页面模板（`customTemplates.page`）当前包含：
+- 加入我们：`page-join.html`
+- 概括：`page-outline.html`
+- 历史：`page-history.html`
 
-## 插件适配
+2. “加入我们”已使用独立模板文件 `page-join.html`，避免与系统默认模板 `page.html` 语义冲突。
 
-插件清单与适配说明见 `plugins.md`，主题已内置以下插件的适配点或样式变量：
+3. 默认页面模板 `templates/page.html` 已移除 `content-header`，仅渲染正文区域。
 
-- Docsme（文档站）：`plugin:plugin-docsme`，模板包含可用性兜底
-- 搜索组件：`PluginSearchWidget`
-- 链接管理：`PluginLinks`
-- 评论组件：`PluginCommentWidget`
-- 联系表单：`PluginContactForm`
-- Shiki 代码高亮：`shiki`
-- 编辑器超链接卡片：`editor-hyperlink-card`
+4. 首页为“配置驱动单页”：
+- 在主题设置 `全局 -> 默认首页关联页面`（`settings.yaml` 中的 `home_page`）选择单页后，根路径 `/` 渲染该单页内容。
 
-如果插件未安装，模板会通过 `pluginFinder.available(...)` 进行兜底处理。
+## 主题设置入口
 
-## 结构说明
+- `settings.yaml`：主题设置（全局、样式、项目聚合页、动态分类页、页脚）
+- `annotation-setting.yaml`：分类扩展字段设置
 
-- `templates/modules/base-head.html` 引入 `build/main.css` 与 `build/main.js`
-- 页面模板按需引入 `build/page-*.css` 与 `build/page-*.js`
-- 开发时可执行 `pnpm run build:watch` 监听 `src/` 变化
+## 插件适配说明
+
+插件可用性统一通过 `pluginFinder.available(...)` 做兜底判断。  
+插件适配清单见 `plugins.md`。
+
+## 目录说明
+
+- `templates/modules/base-head.html`：全局资源入口（`build/main.css` / `build/main.js`）
+- `templates/*.html`：页面模板
+- `src/`：样式与脚本源码
+- `templates/assets/build/`：Vite 构建产物
+- `scripts/package.ps1`：主题打包脚本

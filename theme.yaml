@@ -1,4 +1,4 @@
-apiVersion: theme.halo.run/v1alpha1
+﻿apiVersion: theme.halo.run/v1alpha1
 kind: Theme
 metadata:
   name: theme-organization
@@ -48,8 +48,9 @@ spec:
       - name: 标签归档页
         description: 标签文章列表（封面 + 置顶 + 分页）
         file: tag.html
-  version: 1.0.12
+$11.0.13
   requires: "2.22.8"
   license:
     - name: MIT
       url: https://opensource.org/licenses/MIT
+
