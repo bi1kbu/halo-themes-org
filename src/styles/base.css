@@ -7,6 +7,7 @@
   --color-border-light: #e5e7eb;
   --color-accent-light: #0b4c7a;
   --color-accent-weak-light: #e6f1fa;
+  --color-on-accent-light: #ffffff;
   --color-pinned-bg-light: #f6e4bf;
   --color-pinned-border-light: #e6c07a;
   --color-code-bg-light: #f2f4f7;
@@ -22,6 +23,7 @@
   --color-border-dark: #2a2f3a;
   --color-accent-dark: #66a6d9;
   --color-accent-weak-dark: #0f2638;
+  --color-on-accent-dark: #0f1115;
   --color-pinned-bg-dark: #3a2c14;
   --color-pinned-border-dark: #8b6b2a;
   --color-code-bg-dark: #0b0f14;
@@ -53,6 +55,7 @@
   --border: var(--color-border-light);
   --accent: var(--color-accent-light);
   --accent-weak: var(--color-accent-weak-light);
+  --on-accent: var(--color-on-accent-light);
   --pinned-bg: var(--color-pinned-bg-light);
   --pinned-border: var(--color-pinned-border-light);
   --code-bg: var(--color-code-bg-light);
@@ -187,6 +190,26 @@
   --halo-hyperlink-card-inline-bg-color: var(--surface);
   --halo-hyperlink-card-inline-hover-bg-color: var(--accent-weak);
   --halo-hyperlink-card-inline-title-color: var(--text);
+
+  --halo-sw-primary-1-color: var(--accent);
+  --halo-sw-primary-2-color: var(--accent);
+  --halo-sw-primary-3-color: color-mix(in srgb, var(--accent) 60%, var(--surface) 40%);
+  --halo-sw-primary-contrast-color: var(--on-accent);
+  --halo-sw-text-1-color: var(--text);
+  --halo-sw-text-2-color: var(--muted);
+  --halo-sw-text-3-color: color-mix(in srgb, var(--muted) 85%, var(--surface) 15%);
+  --halo-sw-surface-1-color: var(--surface);
+  --halo-sw-surface-2-color: color-mix(in srgb, var(--surface) 88%, var(--bg) 12%);
+  --halo-sw-muted-1-color: color-mix(in srgb, var(--border) 60%, var(--surface) 40%);
+  --halo-sw-muted-2-color: var(--border);
+  --halo-sw-muted-3-color: color-mix(in srgb, var(--border) 85%, var(--text) 15%);
+  --halo-sw-primary-soft-bg-color: var(--accent-weak);
+  --halo-sw-primary-soft-border-color: color-mix(in srgb, var(--accent) 45%, var(--border) 55%);
+  --halo-sw-highlight-bg-color: color-mix(in srgb, var(--pinned-bg) 80%, var(--surface) 20%);
+  --halo-sw-highlight-border-color: var(--pinned-border);
+  --halo-sw-highlight-marker-color: color-mix(in srgb, var(--pinned-border) 70%, var(--accent) 30%);
+  --halo-sw-card-rounded: var(--radius-md);
+  --halo-sw-base-rounded: var(--radius-sm);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -199,6 +222,7 @@
     --border: var(--color-border-dark);
     --accent: var(--color-accent-dark);
     --accent-weak: var(--color-accent-weak-dark);
+    --on-accent: var(--color-on-accent-dark);
     --pinned-bg: var(--color-pinned-bg-dark);
     --pinned-border: var(--color-pinned-border-dark);
     --code-bg: var(--color-code-bg-dark);
@@ -224,6 +248,7 @@ html[data-theme="light"] {
   --border: var(--color-border-light);
   --accent: var(--color-accent-light);
   --accent-weak: var(--color-accent-weak-light);
+  --on-accent: var(--color-on-accent-light);
   --pinned-bg: var(--color-pinned-bg-light);
   --pinned-border: var(--color-pinned-border-light);
   --code-bg: var(--color-code-bg-light);
@@ -249,6 +274,7 @@ html[data-theme="dark"] {
   --border: var(--color-border-dark);
   --accent: var(--color-accent-dark);
   --accent-weak: var(--color-accent-weak-dark);
+  --on-accent: var(--color-on-accent-dark);
   --pinned-bg: var(--color-pinned-bg-dark);
   --pinned-border: var(--color-pinned-border-dark);
   --code-bg: var(--color-code-bg-dark);

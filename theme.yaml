@@ -37,10 +37,7 @@ spec:
     page:
       - name: 加入我们
         description: 加入我们页面（通用内容页）
-        file: page.html
-      - name: 默认模板
-        description: 通用内容页（合并单页/默认单页/默认模板）
-        file: page.html
+        file: page-join.html
       - name: 概括
         description: 左目录(H2)分节切换 + 锚点分享
         file: page-outline.html

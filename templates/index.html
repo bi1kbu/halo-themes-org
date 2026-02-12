@@ -9,9 +9,11 @@
   </th:block>
   <th:block th:fragment="content">
     <th:block
-      th:with="homePage=${theme.config.global != null
-                 ? singlePageFinder.getByName(new com.fasterxml.jackson.databind.ObjectMapper().readTree(theme.config.global.toString()).path('home_page').asText('__EMPTY__'))
-                 : null}"
+      th:with="homePageNameRaw=${theme.config.global != null
+                 ? new com.fasterxml.jackson.databind.ObjectMapper().readTree(theme.config.global.toString()).path('home_page').asText('__EMPTY__')
+                 : '__EMPTY__'},
+               homePageName=${#strings.equals(homePageNameRaw, '__EMPTY__') ? '' : homePageNameRaw},
+               homePage=${!#strings.isEmpty(homePageName) ? singlePageFinder.getByName(homePageName) : null}"
     >
       <article class="content-block" th:if="${homePage != null}">
         <header class="content-header">
