@@ -33,7 +33,10 @@ $newVersion = "{0}.{1}.{2}" -f [int]$parts[0], [int]$parts[1], ([int]$parts[2] +
 $updatedThemeYamlRaw = [regex]::Replace(
   $themeYamlRaw,
   $versionPattern,
-  ('$1' + $newVersion + '$3'),
+  {
+    param($m)
+    $m.Groups[1].Value + $newVersion + $m.Groups[3].Value
+  },
   1
 )
 Set-Content -Path $themeYamlPath -Value $updatedThemeYamlRaw -Encoding UTF8
