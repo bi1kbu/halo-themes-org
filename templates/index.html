@@ -16,9 +16,6 @@
                homePage=${!#strings.isEmpty(homePageName) ? singlePageFinder.getByName(homePageName) : null}"
     >
       <article class="content-block" th:if="${homePage != null}">
-        <header class="content-header">
-          <h1 class="content-title" th:text="${homePage.spec.title}"></h1>
-        </header>
         <div
           class="content-body"
           th:utext="${homePage.content != null && homePage.content.content != null ? homePage.content.content : ''}"
