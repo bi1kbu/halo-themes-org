@@ -5,6 +5,11 @@
   background: transparent;
 }
 
+.page-post .site-main.container {
+  padding-left: 24px;
+  padding-right: 16px;
+}
+
 .page-announcement .content-block {
   border: none;
   border-radius: 0;
@@ -239,6 +244,8 @@
   position: sticky;
   top: 96px;
   align-self: start;
+  border-left: 2px solid var(--border);
+  padding-left: var(--space-4);
 }
 
 .page-post .post-toc-list {
@@ -287,6 +294,8 @@
   .page-post .post-aside {
     position: static;
     margin-top: var(--space-5);
+    border-left: none;
+    padding-left: 0;
   }}
 
 @media (max-width: 640px) {
